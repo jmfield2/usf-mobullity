@@ -87,22 +87,19 @@ otp.config = {
      * OTP metadata API call to center and zoom the map. The following
      * properties, when set, override that behavioir.
      */
-     
-    // initLatLng : new L.LatLng(<lat>, <lng>),
-    // initZoom : 14,
-    // minZoom : 10,
-    // maxZoom : 20,
     
-    /* Whether the map should be moved to contain the full itinerary when a result is received. */
-    zoomToFitResults    : false,
+    initLatLng : new L.LatLng(28.058499, -82.416945), // CUTR position initialized
+    initZoom : 12,
+    minZoom : 8,
+    maxZoom : 20,
 
     /**
      * Site name / description / branding display options
      */
 
-    siteName            : "My OTP Instance",
+    siteName            : "MoBullity",
     siteDescription     : "An OpenTripPlanner deployment.",
-    logoGraphic         : 'images/otp_logo_darkbg_40px.png',
+    logoGraphic         : 'images/usf-logo2.gif',
     // bikeshareName    : "",
     //Enable this if you want to show frontend language chooser
     showLanguageChooser : true,
@@ -132,10 +129,12 @@ otp.config = {
             defaultBaseLayer : 'MapQuest OSM',
             isDefault: true
         },
-        {
-            id : 'analyst',
-            className : 'otp.modules.analyst.AnalystModule'
-        }
+		
+//       {
+//            id : 'analyst',
+//            className : 'otp.modules.analyst.AnalystModule',
+//        }
+
     ],
     
     
@@ -151,11 +150,13 @@ otp.config = {
      */
 
     geocoders : [
+	
         {
             name: 'OTP built-in geocoder',
             className: 'otp.core.GeocoderBuiltin'
             // URL and query parameter do not need to be set for built-in geocoder.
         }
+
     ],
 
     
@@ -165,6 +166,18 @@ otp.config = {
         title: '<img src="/images/language_icon.svg" onerror="this.onerror=\'\';this.src=\'/images/language_icon.png\'" width="30px" height="30px"/>', 
         languages: true
     },
+
+    infoWidgets: [
+              {
+            title: 'About',
+            content: '<p></p> <p> This is the USF MoBullity app. It is to be used for Trip Planning to and from the USF Tampa Campus.</p>',
+            //cssClass: 'otp-contactWidget',
+        },
+        {
+            title: 'Contact',
+            content: '<p> Questions or Comments? Contact us at: </p> <p> Sean Barbeau: barbeau@cutr.usf.edu </p>',
+        },  
+    ],
     
     
     /**
