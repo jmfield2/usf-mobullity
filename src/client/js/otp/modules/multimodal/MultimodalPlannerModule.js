@@ -38,7 +38,7 @@ otp.modules.multimodal.MultimodalPlannerModule =
         otp.modules.planner.PlannerModule.prototype.activate.apply(this);
 
         // set up options widget
-        
+                
         var optionsWidgetConfig = {
                 //TRANSLATORS: widget name
                 title : _tr("Trip Options"),
@@ -68,11 +68,10 @@ otp.modules.multimodal.MultimodalPlannerModule =
 
         modeSelector.addModeControl(new otp.widgets.tripoptions.MaxWalkSelector(this.optionsWidget));
         modeSelector.addModeControl(new otp.widgets.tripoptions.MaxBikeSelector(this.optionsWidget));
-        modeSelector.addModeControl(new otp.widgets.tripoptions.BikeTriangle(this.optionsWidget));
-        modeSelector.addModeControl(new otp.widgets.tripoptions.PreferredRoutes(this.optionsWidget));
-        modeSelector.addModeControl(new otp.widgets.tripoptions.BannedRoutes(this.optionsWidget));
-        modeSelector.addModeControl(new otp.widgets.tripoptions.WheelChairSelector(this.optionsWidget));
-
+        //modeSelector.addModeControl(new otp.widgets.tripoptions.BikeTriangle(this.optionsWidget));
+        //modeSelector.addModeControl(new otp.widgets.tripoptions.PreferredRoutes(this.optionsWidget));
+        //modeSelector.addModeControl(new otp.widgets.tripoptions.BannedRoutes(this.optionsWidget));
+        //modeSelector.addModeControl(new otp.widgets.tripoptions.StartLocation(this.optionsWidget));
         modeSelector.refreshModeControls();
 
         this.optionsWidget.addSeparator();

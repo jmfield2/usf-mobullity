@@ -79,20 +79,25 @@ otp.config = {
             subdomains : ['otile1','otile2','otile3','otile4'],
             attribution : 'Data, imagery and map information provided by <a href="http://open.mapquest.com" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
         },           
+        
     ],
     
 
     /**
      * Map start location and zoom settings: by default, the client uses the
      * OTP metadata API call to center and zoom the map. The following
-     * properties, when set, override that behavioir.
+     * properties, when set, override that behavior.
      */
     
-    initLatLng : new L.LatLng(28.058499, -82.416945), // CUTR position initialized
-    initZoom : 12,
+    //set init lat lng in map.js with geolocation
+    geoLocation: true,
+    initLatLng : new L.LatLng(28.058499, -82.416945), 
+    initZoom : 14,
     minZoom : 8,
     maxZoom : 20,
 
+	  
+    	  
     /**
      * Site name / description / branding display options
      */
@@ -108,6 +113,7 @@ otp.config = {
     showTitle           : true,
     showModuleSelector  : true,
     metric              : false,
+    showBusStops		: true,
 
 
     /**
@@ -150,13 +156,17 @@ otp.config = {
      */
 
     geocoders : [
-	
         {
             name: 'OTP built-in geocoder',
             className: 'otp.core.GeocoderBuiltin'
             // URL and query parameter do not need to be set for built-in geocoder.
         }
-
+ //                {
+ //               	 name: 'Search',
+ //               	 className: 'otp.core.Geocoder',
+ //               	 url: 'butts',
+  //              	 addressParam: 'address',
+ //                }
     ],
 
     
@@ -168,15 +178,15 @@ otp.config = {
     },
 
     infoWidgets: [
-              {
-            title: 'About',
-            content: '<p></p> <p> This is the USF MoBullity app. It is to be used for Trip Planning to and from the USF Tampa Campus.</p>',
-            //cssClass: 'otp-contactWidget',
+        {
+        	title: 'Live Map',
+        	content: '<p> Live map option is coming soon...</p>',
         },
         {
             title: 'Contact',
             content: '<p> Questions or Comments? Contact us at: </p> <p> Sean Barbeau: barbeau@cutr.usf.edu </p>',
         },  
+
     ],
     
     
@@ -184,8 +194,8 @@ otp.config = {
      * Support for the "AddThis" display for sharing to social media sites, etc.
      */
      
-    showAddThis     : false,
-    //addThisPubId    : 'your-addthis-id',
+    showAddThis     : true,
+    addThisPubId    : '#UF0983',
     //addThisTitle    : 'Your title for AddThis sharing messages',
 
 

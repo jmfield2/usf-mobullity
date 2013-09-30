@@ -15,8 +15,7 @@
 otp.namespace("otp.core");
 
 otp.core.Webapp = otp.Class({
-
-    map     : null,
+	map     : null,
 
     modules : [ ],
     moduleMenu : null,
@@ -33,8 +32,7 @@ otp.core.Webapp = otp.Class({
     urlParams : null,
 
     initialize : function() {
-
-
+    	
         // misc. housekeeping
 
         if(typeof console == 'undefined') console = { log: function(str) {} };
@@ -150,12 +148,10 @@ otp.core.Webapp = otp.Class({
             addThisHtml += 'addthis:url="'+otp.config.siteURL+'"\n';
             addThisHtml += 'addthis:title="'+otp.config.addThisTitle+'"\n';
             addThisHtml += 'addthis:description="'+otp.config.siteDescription+'">\n';
-            addThisHtml += '<a class="addthis_button_twitter"></a>\n';
             addThisHtml += '<a class="addthis_button_facebook"></a>\n';
-            addThisHtml += '<a class="addthis_button_google_plusone_share"></a>\n';
+            addThisHtml += '<a class="addthis_button_twitter"></a>\n';
             addThisHtml += '<a class="addthis_button_preferred_1"></a>\n';
             addThisHtml += '<a class="addthis_button_compact"></a>\n';
-            addThisHtml += '<a class="addthis_counter addthis_bubble_style"></a>\n';
             addThisHtml += '</div>';
 
             $(addThisHtml).appendTo('#branding');

@@ -81,6 +81,7 @@ otp.modules.planner.PlannerModule =
     endName         : null,
     startLatLng     : null,
     endLatLng       : null,
+    
 
     // the defaults params, as modified in the module-specific config
     defaultQueryParams  : null,
@@ -271,6 +272,7 @@ otp.modules.planner.PlannerModule =
         }
     },
 
+    
     getStartOTPString : function() {
         return (this.startName !== null ? this.startName + "::" : "")
                  + this.startLatLng.lat + ',' + this.startLatLng.lng;
@@ -321,7 +323,7 @@ otp.modules.planner.PlannerModule =
         else
         {
             if(this.startLatLng == null || this.endLatLng == null) {
-                // TODO: alert user
+                alert("Please select a start and end location!");
                 return;
             }
 
