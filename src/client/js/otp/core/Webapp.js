@@ -141,6 +141,11 @@ otp.core.Webapp = otp.Class({
             }
         }
 
+        // Add the locator text
+        var labelHtml = '<div id="loc_lbl" class="loc_lbl_css">';
+        labelHtml += 'Locator</div>';
+       $(labelHtml).appendTo('#branding');        
+        
         // initialize the AddThis widget
 
         if(otp.config.showAddThis) {
@@ -158,11 +163,25 @@ otp.core.Webapp = otp.Class({
 
             addthis_config = {
 		         pubid: otp.config.addThisPubId,
-		         data_track_clickback: false
+		         data_track_clickback: true
 		    };
 		    $.getScript("http://s7.addthis.com/js/250/addthis_widget.js#pubid="+otp.config.addThisPubId);
         }
 
+        
+        //add locator button
+        if(otp.config.locatorSwitch){
+        	var locatorHTML = '<div class="onoffswitch">';
+        	locatorHTML += '<input type="checkbox" id ="myonoffswitch" name="onoffswitch" class="onoffswitch-checkbox" checked>';
+        	locatorHTML += '<label class="onoffswitch-label" for="myonoffswitch">';
+        	locatorHTML += '<div class="onoffswitch-inner"></div>';
+        	locatorHTML += '<div class="onoffswitch-switch"></div>';
+        	locatorHTML += '</label>';
+        	locatorHTML += '</div>';
+        	$(locatorHTML).appendTo('#branding');
+        }
+        
+        
         // create the widget manager menu & icon
 
         this.widgetManagerMenu = new otp.core.WidgetManagerMenu(this);
