@@ -15,7 +15,7 @@
 otp.namespace("otp.core");
 
 otp.core.Webapp = otp.Class({
-	map     : null,
+        map     : null,
 
     modules : [ ],
     moduleMenu : null,
@@ -32,7 +32,7 @@ otp.core.Webapp = otp.Class({
     urlParams : null,
 
     initialize : function() {
-    	
+            
         // misc. housekeeping
 
         if(typeof console == 'undefined') console = { log: function(str) {} };
@@ -143,9 +143,9 @@ otp.core.Webapp = otp.Class({
 
         // Add the locator text
         if(otp.config.locatorSwitch){
-        	var labelHtml = '<div id="loc_lbl" class="loc_lbl_css">';
-        	labelHtml += 'Locator</div>';
-        	$(labelHtml).appendTo('#branding'); 
+                var labelHtml = '<div id="loc_lbl" class="loc_lbl_css">';
+                labelHtml += 'Locator</div>';
+                $(labelHtml).appendTo('#branding'); 
         }
         
         // initialize the AddThis widget
@@ -173,14 +173,14 @@ otp.core.Webapp = otp.Class({
         
         //add locator button
         if(otp.config.locatorSwitch){
-        	var locatorHTML = '<div class="onoffswitch">';
-        	locatorHTML += '<input type="checkbox" id ="myonoffswitch" name="onoffswitch" class="onoffswitch-checkbox" checked>';
-        	locatorHTML += '<label class="onoffswitch-label" for="myonoffswitch">';
-        	locatorHTML += '<div class="onoffswitch-inner"></div>';
-        	locatorHTML += '<div class="onoffswitch-switch"></div>';
-        	locatorHTML += '</label>';
-        	locatorHTML += '</div>';
-        	$(locatorHTML).appendTo('#branding');
+                var locatorHTML = '<div class="onoffswitch">';
+                locatorHTML += '<input type="checkbox" id ="myonoffswitch" name="onoffswitch" class="onoffswitch-checkbox" checked>';
+                locatorHTML += '<label class="onoffswitch-label" for="myonoffswitch">';
+                locatorHTML += '<div class="onoffswitch-inner"></div>';
+                locatorHTML += '<div class="onoffswitch-switch"></div>';
+                locatorHTML += '</label>';
+                locatorHTML += '</div>';
+                $(locatorHTML).appendTo('#branding');
         }
         
         
@@ -319,8 +319,8 @@ otp.core.Webapp = otp.Class({
         }));
 
         // retrieve a saved trip, if applicable
-		//if(window.location.hash !== "")
-		//	otp.util.DataStorage.retrieve(window.location.hash.replace("#", ""), this.activeModule);
+                //if(window.location.hash !== "")
+                //        otp.util.DataStorage.retrieve(window.location.hash.replace("#", ""), this.activeModule);
 
 
     },
@@ -404,15 +404,15 @@ otp.core.Webapp = otp.Class({
 
 
     hideSplash : function() {
-    	$("#splash-text").hide();
-    	for(widgetId in this.infoWidgets) {
-        	this.infoWidgets[widgetId].hide();
-    	}
+            $("#splash-text").hide();
+            for(widgetId in this.infoWidgets) {
+                this.infoWidgets[widgetId].hide();
+            }
     },
 
     setBounds : function(bounds)
     {
-    	this.map.lmap.fitBounds(bounds);
+            this.map.lmap.fitBounds(bounds);
     },
 
 
