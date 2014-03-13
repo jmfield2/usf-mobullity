@@ -11,7 +11,7 @@ otp.config = {
     //Locale language is set based on wanted language in url >
     //user cookie > language set in browser (Not accept-language) 
     locale: otp.locale.English,
-
+	
     //All avalible locales
     //key is translation name. Must be the same as po file or .json file
     //value is name of settings file for localization in locale subfolder
@@ -44,13 +44,14 @@ otp.config = {
     /**
      * The OTP web service locations
      */
-    hostname : "",
+    hostname : "http://localhost:8080",
     //municoderHostname : "http://localhost:8080",
     //datastoreUrl : 'http://localhost:9000',
-    // In the 0.10.x API the base path is "otp-rest-servlet/ws"
+	   // In the 0.10.x API the base path is "otp-rest-servlet/ws"
     // From 0.11.x onward the routerId is a required part of the base path.
     // If using a servlet container, the OTP WAR should be deployed to context path /otp
     restService: "otp/routers/default",
+
 
     /**
      * Base layers: the base map tile layers available for use by all modules.
@@ -97,7 +98,6 @@ otp.config = {
     minZoom : 8,
     maxZoom : 20,
 
-	  
     	  
     /**
      * Site name / description / branding display options
@@ -136,12 +136,10 @@ otp.config = {
             defaultBaseLayer : 'MapQuest OSM',
             isDefault: true
         },
-		
 //       {
 //            id : 'analyst',
 //            className : 'otp.modules.analyst.AnalystModule',
 //        }
-
     ],
     
     
@@ -193,8 +191,9 @@ otp.config = {
   {	
 	title: 'Contact',
 	content: '<p> Contact information for questions or comments:</p>\
-		<p>Tracy Wolf: tnwolf@mail.usf.edu<br>Mona Fathollahi: mona2@mail.usf.edu<br>Sean Barbeau: barbeau@cutr.usf.edu</p>'
+		<p>Sean Barbeau: barbeau@cutr.usf.edu</p>'
 },
+
     ],
     
     
@@ -215,10 +214,6 @@ otp.config = {
      
     timeFormat  : "h:mma",
     dateFormat  : "MMM Do YYYY"
-<<<<<<< HEAD:src/client/js/otp/config.js
-
-=======
->>>>>>> Cleaned up code, made style.css more consistent, added better comments,:otp-leaflet-client/src/main/webapp/js/otp/config.js
 };
 var options = {
 	resGetPath: 'js/otp/locale/__lng__.json',
