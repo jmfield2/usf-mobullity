@@ -29,18 +29,18 @@ import org.opentripplanner.routing.bike_rental.BikeRentalStation;
 import org.opentripplanner.routing.bike_rental.BikeRentalStationService;
 import org.opentripplanner.routing.graph.Graph;
 import org.opentripplanner.routing.services.GraphService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sun.jersey.api.spring.Autowire;
+import com.sun.jersey.api.core.InjectParam;
 import com.vividsolutions.jts.geom.Envelope;
 
 @Path("/bike_rental")
 @XmlRootElement
 @Autowire
 public class BikeRental {
+    @InjectParam
     private GraphService graphService;
 
-    @Autowired
     public void setGraphService(GraphService graphService) {
         this.graphService = graphService;
     }
