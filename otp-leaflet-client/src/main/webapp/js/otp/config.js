@@ -1,8 +1,8 @@
 otp.config = {
     debug: false,
 
-    locale: otp.locale.English,
-    locale_short: 'en',
+    locale: otp.locale.Slovenian,
+    locale_short: 'sl',
 
     /**
      * The OTP web service locations
@@ -10,6 +10,8 @@ otp.config = {
     hostname : "",
     //municoderHostname : "http://localhost:8080",
     //datastoreUrl : 'http://localhost:9000',
+    restService : "otp-rest-servlet",
+    timeOffset : 0,
 
 
     /**
@@ -60,10 +62,10 @@ otp.config = {
      * Site name / description / branding display options
      */
 
-    siteName            : "My OTP Instance",
-    siteDescription     : "An OpenTripPlanner deployment.",
+    siteName            : "Daljinko",
+    siteDescription     : "MARPROM Daljinko",
     logoGraphic         : 'images/otp_logo_darkbg_40px.png',
-    // bikeshareName    : "",
+    bikeshareName       : "BCikel",
 
     showLogo            : true,
     showTitle           : true,
@@ -90,6 +92,10 @@ otp.config = {
             defaultBaseLayer : 'MapQuest OSM',
             isDefault: true
         },
+	{
+	    id : 'bikeshare',
+	    className : 'otp.modules.bikeshare.BikeShareModule',
+	},
         {
             id : 'analyst',
             className : 'otp.modules.analyst.AnalystModule',
@@ -125,12 +131,13 @@ otp.config = {
 
     infoWidgets: [
         {
-            title: 'About',
-            content: '<p>About this site</p>',
+            title: 'O strani',
+            content: '<p>Beta verzija načrtovalnika poti za Maribor.</p>' +
+            '<p>Trenutno so vključeni vozni redi Marproma in lokacije postaj za isposojo koles BCikel</p>',
             //cssClass: 'otp-contactWidget',
         },
         {
-            title: 'Contact',
+            title: 'Kontakt',
             content: '<p>Comments? Contact us at...</p>'
         },           
     ],
