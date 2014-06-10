@@ -24,15 +24,15 @@ public class SimpleIntersectionTraversalCostModel extends AbstractIntersectionTr
 
     /** Expected time it takes to make a right at a light. */
     @Setter
-    private Double expectedRightAtLightTimeSec = 15.0;
+    private Double expectedRightAtLightTimeSec = 60.0;
 
     /** Expected time it takes to continue straight at a light. */
     @Setter
-    private Double expectedStraightAtLightTimeSec = 15.0;
+    private Double expectedStraightAtLightTimeSec = 45.0;
 
     /** Expected time it takes to turn left at a light. */
     @Setter
-    private Double expectedLeftAtLightTimeSec = 15.0;
+    private Double expectedLeftAtLightTimeSec = 75.0;
 
     // Constants for when there is no traffic light
 
