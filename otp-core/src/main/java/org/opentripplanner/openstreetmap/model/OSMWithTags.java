@@ -220,8 +220,10 @@ public class OSMWithTags {
      * @return
      */
     public boolean isMotorcarExplicitlyDenied() {
-        return isTagDeniedAccess("motorcar");
+        //FIXME: motorcar actually means only cars
+        return isTagDeniedAccess("motorcar") || isTagDeniedAccess("motor_vehicle");
     }
+    
 
     /**
      * Returns true if cars are explicitly allowed.

@@ -2633,7 +2633,7 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
 
             if (entity.isMotorcarExplicitlyDenied()) {
                 permission = permission.remove(StreetTraversalPermission.ALL_DRIVING);
-            } else if (entity.hasTag("motorcar")) {
+            } else if (entity.hasTag("motorcar") || entity.hasTag("motor_vehicle")) {
                 permission = permission.add(StreetTraversalPermission.ALL_DRIVING);
             }
 
