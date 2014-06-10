@@ -35,7 +35,7 @@ public class DefaultWayPropertySetSource implements WayPropertySetSource {
 
     private static Logger LOG = LoggerFactory.getLogger(DefaultWayPropertySetSource.class);
 
-    private Locale locale = Locale.getDefault();
+    private Locale locale = new Locale("sl", "SI"); // Locale.getDefault();
 
     ResourceBundle resources;
 
@@ -58,16 +58,16 @@ public class DefaultWayPropertySetSource implements WayPropertySetSource {
         setProperties(props, "railway=platform", StreetTraversalPermission.PEDESTRIAN);
         setProperties(props, "footway=sidewalk;highway=footway",
                 StreetTraversalPermission.PEDESTRIAN);
+        setProperties(props, "highway=footway", StreetTraversalPermission.PEDESTRIAN,
+                1.1, 1.1);
 
         /* PEDESTRIAN_AND_BICYCLE */
-        setProperties(props, "highway=cycleway", StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE,
-                0.60, 0.60);
+        
         setProperties(props, "highway=path", StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE,
                 0.75, 0.75);
         setProperties(props, "highway=pedestrian",
                 StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE, 0.90, 0.90);
-        setProperties(props, "highway=footway", StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE,
-                1.1, 1.1);
+
         setProperties(props, "highway=bridleway", StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE,
                 1.3, 1.3);
 
@@ -284,7 +284,13 @@ public class DefaultWayPropertySetSource implements WayPropertySetSource {
         /*
          * path designed for bicycles (should be treated exactly as a cycleway is), this is a multi-use path (MUP)
          */
+        setProperties(props, "highway=cycleway", StreetTraversalPermission.BICYCLE,
+                0.60, 0.60);
         setProperties(props, "highway=path;bicycle=designated",
+                StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE, 0.60, 0.60);
+        setProperties(props, "highway=cycleway;foot=designated",
+                StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE, 0.60, 0.60);
+        setProperties(props, "highway=cycleway;foot=yes",
                 StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE, 0.60, 0.60);
 
         /* special cases for footway, pedestrian and bicycles */
@@ -302,7 +308,15 @@ public class DefaultWayPropertySetSource implements WayPropertySetSource {
                 StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE, 1.1, 1.1);
         setProperties(props, "highway=footway;footway=crossing",
                 StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE, 2.5, 2.5);
+        setProperties(props, "highway=footway;footway=crossing;bicycle=no",
+                StreetTraversalPermission.PEDESTRIAN);
+        /*setProperties(props, "highway=footway;footway=crossing;bicycle=dismount",
+                StreetTraversalPermission.PEDESTRIAN);*/
         setProperties(props, "highway=footway;footway=crossing;bicycle=designated",
+                StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE, 1.1, 1.1);
+        setProperties(props, "highway=footway;footway=crossing;bicycle=yes",
+                StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE, 1.1, 1.1);
+                setProperties(props, "highway=footway;footway=crossing;cycleway=crossing",
                 StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE, 1.1, 1.1);
 
         /*
@@ -354,12 +368,12 @@ public class DefaultWayPropertySetSource implements WayPropertySetSource {
         /*
          * Automobile speeds in the United States: Based on my (mattwigway) personal experience, primarily in California
          */
-        setCarSpeed(props, "highway=motorway", 29); // 29 m/s ~= 65 mph
-        setCarSpeed(props, "highway=motorway_link", 15); // ~= 35 mph
-        setCarSpeed(props, "highway=trunk", 24.6f); // ~= 55 mph
-        setCarSpeed(props, "highway=trunk_link", 15); // ~= 35 mph
-        setCarSpeed(props, "highway=primary", 20); // ~= 45 mph
-        setCarSpeed(props, "highway=primary_link", 11.2f); // ~= 25 mph
+        setCarSpeed(props, "highway=motorway", 36); // 36 m/s ~= 130 km/h
+        setCarSpeed(props, "highway=motorway_link", 27.78f); // ~= 100 km/h
+        setCarSpeed(props, "highway=trunk", 30.56f); // ~= 110 km/h
+        setCarSpeed(props, "highway=trunk_link", 27.78f); // ~= 100 km/h
+        setCarSpeed(props, "highway=primary", 25); // ~= 90 km/h
+        setCarSpeed(props, "highway=primary_link", 25); // ~= 90 km/h
         setCarSpeed(props, "highway=secondary", 15); // ~= 35 mph
         setCarSpeed(props, "highway=secondary_link", 11.2f); // ~= 25 mph
         setCarSpeed(props, "highway=tertiary", 11.2f); // ~= 25 mph
@@ -373,7 +387,7 @@ public class DefaultWayPropertySetSource implements WayPropertySetSource {
         // This of course makes the street network time-dependent
         setCarSpeed(props, "highway=pedestrian", 2.2f); // ~= 5 mph
 
-        setCarSpeed(props, "highway=residential", 11.2f); // ~= 25 mph
+        setCarSpeed(props, "highway=residential", 13.9f); // ~= 50 km/h
         setCarSpeed(props, "highway=unclassified", 11.2f); // ~= 25 mph
         setCarSpeed(props, "highway=service", 6.7f); // ~= 15 mph
         setCarSpeed(props, "highway=track", 4.5f); // ~= 10 mph
@@ -414,6 +428,8 @@ public class DefaultWayPropertySetSource implements WayPropertySetSource {
 
         setProperties(props, "surface=cobblestone", StreetTraversalPermission.ALL, 1.3, 1.3, true);
         setProperties(props, "surface=cobblestone:flattened", StreetTraversalPermission.ALL, 1.3,
+                1.3, true);
+        setProperties(props, "surface=sett", StreetTraversalPermission.ALL, 1.3,
                 1.3, true);
         setProperties(props, "surface=grass_paver", StreetTraversalPermission.ALL, 1.3, 1.3, true);
         setProperties(props, "surface=pebblestone", StreetTraversalPermission.ALL, 1.3, 1.3, true);
@@ -593,6 +609,7 @@ public class DefaultWayPropertySetSource implements WayPropertySetSource {
         try {
             String retval = getResourceBundle().getString(key);
             LOG.debug(String.format("Localized '%s' using '%s'", key, retval));
+            //LOG.warn(String.format("Locale: '%s'", locale));
             return retval;
         } catch (MissingResourceException e) {
             LOG.warn("Missing translation for key: " + key);
