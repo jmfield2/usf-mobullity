@@ -2541,7 +2541,10 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
             }
             street.setStairs(steps);
 
-            if (way.isTagTrue("toll") || way.isTagTrue("toll:motorcar"))
+            if (way.isTagTrue("toll") || way.isTagTrue("toll:motorcar") ||
+                    way.hasTag("highway") &&
+                    ((way.getTag("highway") == "motorway") ||
+                      (way.getTag("highway") == "trunk")))
                 street.setToll(true);
             else
                 street.setToll(false);
