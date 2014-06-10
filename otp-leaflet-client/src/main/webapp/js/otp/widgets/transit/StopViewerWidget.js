@@ -96,7 +96,7 @@ otp.widgets.transit.StopViewerWidget =
     
     runTimesQuery : function() {
         var this_ = this;
-        var startTime = moment(this.datePicker.val()).add("hours", -otp.config.timeOffset).unix();
+        var startTime = moment(this.datePicker.val(), otp.config.locale.time.date_format).add("hours", -otp.config.timeOffset).unix();
         this.module.webapp.transitIndex.runStopTimesQuery(this.agencyId, this.stopId, startTime+10800, startTime+97200, this, function(data) {
             this_.times = [];
             for(var i=0; i < data.stopTimes.length; i++) {
@@ -121,7 +121,7 @@ otp.widgets.transit.StopViewerWidget =
 
         for(var i = 0; i < this.times.length; i++) {
             var time = this.times[i];
-            time.formattedTime = otp.util.Time.formatItinTime(time.time*1000, "h:mma");
+            time.formattedTime = otp.util.Time.formatItinTime(time.time*1000, otp.config.locale.time.time_format);
             //FIXME: There is probably a better way to translate to and block
             //then in each call separately
             time.to = to_trans;
