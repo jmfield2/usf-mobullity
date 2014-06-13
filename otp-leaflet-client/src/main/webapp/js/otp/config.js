@@ -62,7 +62,7 @@ otp.config = {
      * Site name / description / branding display options
      */
 
-    siteName            : "Daljinko",
+    siteName            : "Daljinko<sup>Beta</sup>",
     siteDescription     : "MARPROM Daljinko",
     logoGraphic         : 'images/otp_logo_darkbg_40px.png',
     bikeshareName       : "BCikel",
@@ -133,13 +133,15 @@ otp.config = {
         {
             title: 'O strani',
             content: '<p>Beta verzija načrtovalnika poti za Maribor.</p>' +
-            '<p>Trenutno so vključeni vozni redi Marproma in lokacije postaj za isposojo koles BCikel</p>',
+            '<p>Trenutno so vključeni vozni redi Marproma in lokacije postaj za izposojo koles BCikel</p>' +
+            '<p>Niso dodane vse vožnje avtobusov in nekateri stojijo na drugih postajah kot v resnici</p>' +
+            '<p>Temelji na <a href="http://www.opentripplanner.org/">OpenTripPlanner</a>-ju</p>',
             //cssClass: 'otp-contactWidget',
         },
-        {
+        /*{
             title: 'Kontakt',
             content: '<p>Comments? Contact us at...</p>'
-        },           
+        },*/           
     ],
     
     
