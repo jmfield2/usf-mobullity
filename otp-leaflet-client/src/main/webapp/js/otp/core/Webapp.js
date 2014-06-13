@@ -172,6 +172,7 @@ otp.core.Webapp = otp.Class({
         if(otp.config.infoWidgets !== undefined && otp.config.infoWidgets.length > 0) {
             var nav = $('<nav id="main-menu" role="article">').appendTo('#branding');
             var ul = $('<ul>').appendTo(nav);
+            $("<li><a target='_blank' href='http://live-daljinko.rhcloud.com/map'>'Živa' karta</a></li>").appendTo(ul);
             
             for(var i=0; i<otp.config.infoWidgets.length; i++) {
             
