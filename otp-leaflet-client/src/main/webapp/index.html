@@ -181,6 +181,11 @@ $(document).ready(function() {
 
     var loadedTemplates = 0;
 
+	window.alert("Vozni redi so informativne narave. Vsi podatki niso preverjeni!\nOb kliku na zobnik" +
+			" se lahko išče po postajah, ali pa pogleda poti avtobusov. Če se zemljevid približa se pojavijo postaje." + 
+			" Ob kliku na njih se vidi kdaj avtobusi ustavljajo.\nZgoraj levo se lahko izbira med večmodalnim načrtovalnikom" + 
+			" in načrtovalnikom samo za sposojena kolesa.");
+
     for(var i = 0; i < templateUrls.length; i++) {
         $.get(templateUrls[i])
         .success(function(html) {
