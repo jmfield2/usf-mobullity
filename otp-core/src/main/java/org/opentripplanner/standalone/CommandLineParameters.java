@@ -99,6 +99,11 @@ public class CommandLineParameters {
     @Parameter( names = { "-a", "--analyst"}, 
             description = "enable OTP Analyst extensions")
     boolean analyst;
+
+    @Parameter( names = {"--bindAddress"},
+	    description = "Bind adress")
+    String bindAddress = "0.0.0.0";
+
     
     @Parameter( names = { "-g", "--graphs"}, validateWith = ReadableDirectory.class, 
             description = "path to graph directory")
@@ -227,7 +232,8 @@ public class CommandLineParameters {
             }
             if ( portUnavailable ) {
                 String msg = String.format(": port %d is not available. %s.", port, reason);
-                throw new ParameterException(msg);
+		//HACK: short hack to fix starting when port and adress is provided
+		//throw new ParameterException(msg);
             }
         }
     }

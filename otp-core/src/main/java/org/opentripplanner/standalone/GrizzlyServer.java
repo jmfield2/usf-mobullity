@@ -115,7 +115,7 @@ public class GrizzlyServer {
         LOG.info("Starting OTP Grizzly server on port {} using graphs at {}", params.port, params.graphDirectory);
         HttpServer httpServer = new HttpServer();
         NetworkListener networkListener = 
-                new NetworkListener("otp_listener", "0.0.0.0", params.port); // TODO add option for address to listen on
+                new NetworkListener("otp_listener", params.bindAddress, params.port); // TODO add option for address to listen on
         ThreadPoolConfig threadPoolConfig = ThreadPoolConfig.defaultConfig()
                 .setCorePoolSize(1).setMaxPoolSize(Runtime.getRuntime().availableProcessors());
         networkListener.getTransport().setWorkerThreadPoolConfig(threadPoolConfig);
