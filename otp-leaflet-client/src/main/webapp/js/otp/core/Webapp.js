@@ -242,8 +242,12 @@ otp.core.Webapp = otp.Class({
                 var module = this.modules[i];
                 var option = $('<option'+(module == this_.activeModule ? ' selected' : '')+'>'+module.moduleName+'</option>').appendTo(selector);
             }        
+            var first_module_title = this.modules[0].moduleName;
+            _paq.push(['trackEvent', 'Module', 'current_module', first_module_title]);
             selector.change(function() {
                 this_.setActiveModule(this_.modules[this.selectedIndex]);
+                var module_title = this_.modules[this.selectedIndex].moduleName;
+                _paq.push(['trackEvent', 'Module', 'current_module', module_title]);
             });
                        
         }

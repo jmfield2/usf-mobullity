@@ -177,11 +177,17 @@ otp.widgets.Widget = otp.Class({
         this.isOpen = true;
         if(this.isMinimized) this.minimizedTab.show();
         else this.mainDiv.fadeIn(); //show();
+        if (this.id != "planner-itinWidget") {
+            _paq.push(['trackEvent', 'Widget', 'show', this.title]);
+        }
     },
 
     hide : function() {
         if(this.isMinimized) this.minimizedTab.hide();
         else this.mainDiv.fadeOut(); //hide();
+        if (this.id != "planner-itinWidget") {
+            _paq.push(['trackEvent', 'Widget', 'hide', this.title]);
+        }
     },
 
     $ : function() {

@@ -157,6 +157,9 @@
 
 <script src="js/otp/layers/StopsLayer.js?v=1"></script>
 
+<!-- Cookie law -->
+<link rel="stylesheet" href="cookie-style.min.css?v=1" />
+<script src="js/lib/cookie-plugin.min.js?v=1"></script>
 
 
 <link rel="stylesheet" href="style.css?v=1" />
@@ -171,6 +174,7 @@
 <!-- load ICH templates and create the webapp at startup -->
 <script type="text/javascript" language="javascript">
 
+   var _paq = _paq || [];
 $(document).ready(function() {
     var templateUrls = [ //new Array(
         'js/otp/layers/layers-templates.html',
@@ -231,19 +235,83 @@ $(document).ready(function() {
 
 <div id="otp-spinner"><img src="images/spinner.gif"></div>
 
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-8102379-22']);
-  _gaq.push(['_trackPageview']);
-
+<!-- Piwik -->
+<script type="text/plain" class="cc-onconsent-analytics">
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
   (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://piwik-daljinko.rhcloud.com/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 2]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
+    g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
   })();
+</script>
+<noscript><p><img src="http://piwik-daljinko.rhcloud.com/piwik.php?idsite=2" style="border:0;" alt="" /></p></noscript>
+<!-- End Piwik Code -->
+
+
+<script type="text/javascript">
+      // <![CDATA[
+      cc.initialise({
+        cookies: {
+              necessary: {
+                title: 'Obvezni piškotki',
+                description: 'Posamezni piškotki so nujni za delovanje naše spletne strani in jih ni moč onemogočiti.',
+                link: ''
+              },
+            
+              analytics: {
+                title: 'Statistika',
+                description: 'Dovoljujem anonimno spremljanje statistike obiska lokalno na Piwiki.',
+                link: ''
+              },
+            },
+        strings: {
+              advertisingDefaultDescription: "Oglasi bodo samodejno postavljeni",
+              advertisingDefaultTitle: "Oglaševanje",
+              allowCookies: "Dovoli piškotke",
+              allowCookiesImplicit: "Dovoli piškotke",
+              allowForAllSites: "Dovoli piškotke za vse strani",
+              allSitesSettingsDialogSubtitle: "Lahko dovolite piškotke za vse strani, ki uporabljajao ta modul",
+              allSitesSettingsDialogTitleA: "Nastavitve zasebnosti",
+              allSitesSettingsDialogTitleB: "za vsa spletišča",
+              analyticsDefaultDescription: "Anonimno zbiramo podatke o uporabi spletišča za izboljšavo uporabniške izkušnje",
+              analyticsDefaultTitle: "Analitika",
+              backToSiteSettings: "Nazaj na nastavitve",
+              changeForAllSitesLink: "Spremenite nastavitve za vse strani",
+              closeWindow: "Zapri okno",
+              customCookie: "Ta spletna stran uporablja piškotke",
+              defaultDescription: "Privzet opis piškotka",
+              defaultTitle: "Privzet naiv piškotka",
+              hideDetails: "skrij podrobnosti",
+              learnMore: "Preberi več",
+              notificationTitle: "Spletna stran uporablja piškotke",
+              notificationTitleImplicit: "Na spletu uporabljamo piškotke zaradi boljše uporabniške izkušnje",
+              notUsingCookies: "Ta spletna stran ne uporablja piškotkov",
+              preferenceAlways: "Vedno dovoli",
+              preferenceAsk: "Vprašaj me ob vsakem obisku",
+              preferenceConsent: "Strinjam se",
+              preferenceDecline: "Ne strinjam se",
+              preferenceNever: "Nikoli ne dovoli",
+              preferenceUseGlobal: "Uporabi globalne nastavitve",
+              privacySettings: "Nastavitve zasebnosti",
+              privacySettingsDialogSubtitle: "Za nekatere nastavitve potrebujemo vaše dovoljenje, da si zapomnimo, kdo ste",
+              privacySettingsDialogTitleA: "Nastavitve zasebnosti",
+              privacySettingsDialogTitleB: "za to spletno stran",
+              saveForAllSites: "Shrani za vse spletne strani",
+              savePreference: "Shrani nastavitve",
+              seeDetails: "prikaži podrobnosti",
+              seeDetailsImplicit: "spremeni nastavitve",
+              socialDefaultDescription: "Facebook, Twitter in ostali družbeni mediji vas morajo prepoznati, da bi delovali pravilno.",
+              socialDefaultTitle: "Družbeni mediji"
+      },
+
+        settings: {style: "dark",bannerPosition: "bottom",tagPosition: "vertical-left",consenttype: "implicit",}
+      });
+      // ]]>
+      
 
 </script>
-
 </body>
 </html>

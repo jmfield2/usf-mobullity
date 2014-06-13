@@ -371,6 +371,7 @@ otp.modules.planner.PlannerModule =
     
     planTripRequest : function(url, queryParams, successCallback) {
         var this_ = this;
+        _paq.push(['trackEvent', 'Planning', 'click', 'PlanTrip']);
         this.currentRequest = $.ajax(url, {
             data:       queryParams,
             dataType:   'jsonp',

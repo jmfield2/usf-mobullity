@@ -1054,6 +1054,7 @@ otp.widgets.tripoptions.Submit =
             //this_.tripWidget.pushSettingsToModule();
             if(typeof this_.tripWidget.module.userPlanTripStart == 'function') this_.tripWidget.module.userPlanTripStart();
             this_.tripWidget.module.planTripFunction.apply(this_.tripWidget.module);
+            _paq.push(['trackEvent', 'Planning', 'button', 'PlanTrip']);
         });
     }
 });
