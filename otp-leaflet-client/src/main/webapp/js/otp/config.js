@@ -125,10 +125,12 @@ otp.config = {
 	    id : 'bikeshare',
 	    className : 'otp.modules.bikeshare.BikeShareModule',
 	},
-        {
+        /*{
             id : 'analyst',
             className : 'otp.modules.analyst.AnalystModule',
-        }
+        },
+        */
+
     ],
     
     
@@ -144,6 +146,12 @@ otp.config = {
      */
 
     geocoders : [
+       /* {
+        'name': 'geocoder',
+        'className': 'otp.core.Geocoder',
+        'url': 'http://localhost:8080/otp-geocoder/geocode',
+        'addressParam': 'address'
+        }*/
     ],
 
     
@@ -274,7 +282,7 @@ otp.config.modes = {
         "BUSISH,WALK"         : _tr("Bus Only"), 
     //TRANSLATORS: Travel by: mode of transport (Used in selection in Travel
     //Options widgets)
-        "TRAINISH,WALK"       : _tr("Rail Only"), 
+        /*"TRAINISH,WALK"       : _tr("Rail Only"), */
     //TRANSLATORS: Travel by: mode of transport (Used in selection in Travel
     //Options widgets)
         "BICYCLE"             : _tr('Bicycle Only'),
