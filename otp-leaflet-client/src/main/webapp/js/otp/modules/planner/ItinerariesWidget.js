@@ -496,7 +496,7 @@ otp.widgets.ItinerariesWidget =
         
         if(this.showPrintLink) {
             tripSummaryFooter.append(' | ');
-            $('<a href="#">Print</a>').click(function(evt) {
+            $('<a href="#">' + _tr('Print') +'</a>').click(function(evt) {
                 evt.preventDefault();
 
                 var printWindow = window.open('','OpenTripPlanner Results','toolbar=yes, scrollbars=yes, height=500, width=800');
@@ -574,7 +574,6 @@ otp.widgets.ItinerariesWidget =
 
             var inTransitDiv = $('<div class="otp-itin-leg-elapsedDesc" />').appendTo(legDiv);
 
-            //TODO: when secsToHrMin is localized this should be ngettext
             $('<span><i>' + _tr("Time in transit") + ": " + otp.util.Time.secsToHrMin(leg.duration)+'</i></span>').appendTo(inTransitDiv);
 
             $('<span>&nbsp;[<a href="#">' + _tr("Trip Viewer") + '</a>]</span>')
