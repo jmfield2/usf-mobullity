@@ -213,7 +213,7 @@ var options = {
         keyseparator: '_|_',
 	preload: [otp.config.locale_short],
         //TODO: Language choosing works only with this disabled
-        /*lng: otp.config.locale_short,*/
+        lng: otp.config.locale_short,
         /*postProcess: 'add_nekaj', //Adds | around every string that is translated*/
         /*shortcutFunction: 'sprintf',*/
         /*postProcess: 'sprintf',*/
