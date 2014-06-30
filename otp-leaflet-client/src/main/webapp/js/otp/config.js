@@ -172,8 +172,8 @@ otp.config = {
             content: '<p>Beta verzija načrtovalnika poti za Maribor.</p>' +
             '<p>Načrtovanje poti je trenutno mogoče samo v okolici Maribora (zaradi male zmogljivosti strežnika).</p>' +
             '<p>Trenutno so vključeni vozni redi Marproma in lokacije postaj za izposojo koles BCikel</p>' +
-            '<p>Niso dodane vse vožnje avtobusov in nekateri stojijo na drugih postajah kot v podatkih:</p>' +
-            '<p>Manjka vožnja 20ke preko Zrkovc. Kje je postaja Qlandia, kjer stoji 18-ka v soboto? Ali avtobus 7 stoji na Orožnovi v soboto namesto na Strossmayerjevi. Problem je tudi pri linijah 16, 20 in Krožna 1 ki naj bi stale na TVD Osojnikova, čeprav je to s poti. Predvidevam da stojijo na TVD Čufarjeva. Linija 3 bi naj stala na Osojnikova za Osojnikova TVD Partizan, kar predvidevam da je napaka. <strong>Vsi ostali postanki bi morali ustrazati dejanskim stanjem</strong></p>' +
+            '<p>Niso še dodane vse vožnje avtobusov:</p>' +
+            '<p>Manjka vožnja 20ke preko Zrkovc. Vožnja 8ke do Mariborskega otoka in nazaj. Vožnja 9ke do Na gorci 65. <strong>Vsi ostali postanki bi morali ustrazati dejanskim stanjem</strong></p>' +
             '<p>Temelji na <a href="http://www.opentripplanner.org/">OpenTripPlanner</a>-ju</p>',
             //cssClass: 'otp-contactWidget',
         },
