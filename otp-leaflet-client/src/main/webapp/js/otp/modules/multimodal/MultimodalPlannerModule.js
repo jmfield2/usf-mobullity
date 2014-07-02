@@ -79,6 +79,9 @@ otp.modules.multimodal.MultimodalPlannerModule =
         
         // add stops layer
         this.stopsLayer = new otp.layers.StopsLayer(this);
+
+        // add road Closure Layer
+        this.roadClosureLayer = new otp.layers.RoadClosureLayer(this);
     },
     
     routesLoaded : function() {

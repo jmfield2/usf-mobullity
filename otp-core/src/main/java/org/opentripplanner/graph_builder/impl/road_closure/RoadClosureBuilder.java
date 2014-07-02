@@ -8,6 +8,7 @@ package org.opentripplanner.graph_builder.impl.road_closure;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -90,6 +92,10 @@ public class RoadClosureBuilder implements GraphBuilder {
         try {
             this.readTsv();
             StreetMatcher streetMatcher = new StreetMatcher(graph);
+            
+            RoadClosureService roadClosureService = new RoadClosureService();
+            graph.putService(RoadClosureService.class, roadClosureService);
+            
             Coordinate[] coordArray = new Coordinate[this.coordinates.size()];
             Geometry geometry = GeometryUtils.getGeometryFactory().createLineString(
                     this.coordinates.toArray(coordArray));
@@ -99,11 +105,23 @@ public class RoadClosureBuilder implements GraphBuilder {
                 NonRepeatingTimePeriod rep = NonRepeatingTimePeriod.parseRoadClosure(
                         this.roadClosureInfo.date_on, this.roadClosureInfo.date_off,
                         this.roadClosureInfo.hour_on, this.roadClosureInfo.hour_off);
+                
+                RoadClosure roadClosure = new RoadClosure();
+                roadClosure.title = "Zaprta cesta zaradi Rallya";
+                roadClosure.closureStart = new Date(rep.getStartClosure());
+                roadClosure.closureEnd = new Date(rep.getEndClosure());
+                List<Coordinate> allCoordinates = new ArrayList<Coordinate>();
                 for (Edge e:edges) {
+                    allCoordinates.addAll(Arrays.asList(e.getGeometry().getCoordinates()));
                     PlainStreetEdge pse = (PlainStreetEdge) e;
                     pse.setRoadClosedPeriod(rep);
                 //    pse.setName(pse.getName() + " TOTA");
                 }
+                Coordinate[] coordinateArray = new Coordinate[allCoordinates.size()];
+                LineString ls = GeometryUtils.getGeometryFactory().createLineString(allCoordinates.toArray(coordinateArray));
+                roadClosure.geometry = ls;
+        
+                roadClosureService.addRoadClosure(roadClosure);
             }
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(RoadClosureBuilder.class.getName()).log(Level.SEVERE, "Road closure file wasn't found", ex);
