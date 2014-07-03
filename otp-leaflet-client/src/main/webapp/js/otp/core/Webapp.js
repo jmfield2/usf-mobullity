@@ -172,6 +172,10 @@ otp.core.Webapp = otp.Class({
         if(otp.config.infoWidgets !== undefined && otp.config.infoWidgets.length > 0) {
             var nav = $('<nav id="main-menu" role="article">').appendTo('#branding');
             var ul = $('<ul>').appendTo(nav);
+            $("<li><a target='_blank' title='Prikaži/skrij zaprte ceste' href='#'>Zaprte ceste</a></li>").appendTo(ul).click(function(e) {
+                e.preventDefault();
+                this_.activeModule.roadClosureLayer.toggleBoldClosures();
+            });
             
             for(var i=0; i<otp.config.infoWidgets.length; i++) {
             

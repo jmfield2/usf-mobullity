@@ -132,6 +132,18 @@ otp.config = {
             title: 'Contact',
             content: '<p>Comments? Contact us at...</p>'
         },           
+        {
+            title: 'Legend (Road Closures)',
+            content: '<p>On higher zooms only sign is shown where route is closed.' +
+                    ' On lower zooms path is shown with different colors:</p>' +
+                '<p><strong><span style="color:green">Green</span></strong> - road will be closed in the future</p>' +
+                '<p><strong><span style="color:orange">Orange</span></strong> - road will close in next hour</p>' +
+                '<p><strong><span style="color:red">Red</span></strong> - road is closed now</p>' +
+                '<p>Router should route around closed routes if they are traversed' +
+               ' during closure time. (You can change the time with depart/arrive at...)' +
+               ' But it doesn\'t work always for unknown reasons.</p>'
+        }
+
     ],
     
     
