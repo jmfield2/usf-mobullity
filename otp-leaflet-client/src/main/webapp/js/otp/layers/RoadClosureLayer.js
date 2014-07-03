@@ -122,12 +122,12 @@ otp.layers.RoadClosureLayer =
             }
             
             if (this.isSame(from_moment, to_moment, 'day')) {
-                context.day = from_moment.format(otp.config.dateFormat);
-                context.from = from_moment.format(otp.config.timeFormat);
-                context.to = to_moment.format(otp.config.timeFormat);
+                context.day = from_moment.format(otp.config.locale.time.date_format);
+                context.from = from_moment.format(otp.config.locale.time.time_format);
+                context.to = to_moment.format(otp.config.locale.time.time_format);
             } else {
-                context.from = from_moment.format(otp.config.dateFormat+' '+otp.config.timeFormat);
-                context.to = to_moment.format(otp.config.dateFormat+' '+otp.config.timeFormat);
+                context.from = from_moment.format(otp.config.locale.time.format);
+                context.to = to_moment.format(otp.config.locale.time.format);
             }
             var popupContent = ich['otp-roadClosureLayer-popup'](context);
 
