@@ -337,6 +337,11 @@ public class RoutingRequest implements Cloneable, Serializable {
      * When true, realtime updates are ignored during this search.
      */
     public boolean ignoreRealtimeUpdates = false;
+    
+    /**
+     * When true, road closures are ignored during this search
+     */
+    public boolean ignoreRoadClosures = false;
 
     /**
      * If true, the remaining weight heuristic is disabled. Currently only implemented for the long
@@ -899,6 +904,7 @@ public class RoutingRequest implements Cloneable, Serializable {
                 && clampInitialWait == other.clampInitialWait
                 && reverseOptimizeOnTheFly == other.reverseOptimizeOnTheFly
                 && ignoreRealtimeUpdates == other.ignoreRealtimeUpdates
+                && ignoreRoadClosures == other.ignoreRoadClosures
                 && disableRemainingWeightHeuristic == other.disableRemainingWeightHeuristic
                 && ObjectUtils.nullSafeEquals(startingTransitTripId, other.startingTransitTripId);
     }
@@ -926,6 +932,7 @@ public class RoutingRequest implements Cloneable, Serializable {
                 + new Long(clampInitialWait).hashCode() * 209477
                 + new Boolean(reverseOptimizeOnTheFly).hashCode() * 95112799
                 + new Boolean(ignoreRealtimeUpdates).hashCode() * 154329
+                + new Boolean(ignoreRoadClosures).hashCode() * 154333
                 + new Boolean(disableRemainingWeightHeuristic).hashCode() * 193939;
         if (batch) {
             hashCode *= -1;

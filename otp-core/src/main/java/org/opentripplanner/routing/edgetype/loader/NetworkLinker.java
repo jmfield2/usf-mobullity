@@ -48,6 +48,7 @@ public class NetworkLinker {
         this.graph = graph;
         this.networkLinkerLibrary = new NetworkLinkerLibrary(graph, extra);
         networkLinkerLibrary.options = new RoutingRequest(TraverseMode.BICYCLE);
+        networkLinkerLibrary.options.ignoreRoadClosures = true;
     }
 
     public NetworkLinker(Graph graph) {

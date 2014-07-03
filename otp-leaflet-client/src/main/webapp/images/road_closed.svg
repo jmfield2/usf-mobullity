@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="118.12096"
+   height="118.12096"
+   id="svg3284"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   inkscape:export-filename="/home/mabu/programiranje/forotp/OpenTripPlanner/otp-leaflet-client/src/main/webapp/images/road_closed_gray.png"
+   inkscape:export-xdpi="16.762478"
+   inkscape:export-ydpi="16.762478"
+   sodipodi:docname="New document 5">
+  <defs
+     id="defs3286" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="25.420524"
+     inkscape:cy="23.696121"
+     inkscape:document-units="px"
+     inkscape:current-layer="g3303"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1278"
+     inkscape:window-height="1006"
+     inkscape:window-x="1280"
+     inkscape:window-y="16"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3289">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-432.36809,-499.01598)"
+     sodipodi:insensitive="true"
+     style="display:none">
+    <g
+       transform="translate(427.42829,494.07429)"
+       id="g3267">
+      <path
+         id="path3085"
+         transform="matrix(0.92282,0,0,0.92282,-216.537,-135.41)"
+         d="m 368,216.09 c 0,35.346 -28.654,64 -64,64 -35.346,0 -64,-28.654 -64,-64 0,-35.346 28.654,-64 64,-64 35.346,0 64,28.654 64,64 z"
+         inkscape:connector-curvature="0"
+         style="fill:#dd0000" />
+      <path
+         id="path3855"
+         transform="matrix(0.70915,0,0,0.70915,-151.582,-89.24)"
+         d="m 368,216.09 c 0,35.346 -28.654,64 -64,64 -35.346,0 -64,-28.654 -64,-64 0,-35.346 28.654,-64 64,-64 35.346,0 64,28.654 64,64 z"
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff" />
+    </g>
+  </g>
+  <g
+     transform="translate(-432.36809,-499.01598)"
+     id="g3303"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1 copy"
+     style="display:inline">
+    <path
+       id="path3307"
+       transform="matrix(0.92282,0,0,0.92282,210.89129,358.66429)"
+       d="m 368,216.09 c 0,35.346 -28.654,64 -64,64 -35.346,0 -64,-28.654 -64,-64 0,-35.346 28.654,-64 64,-64 35.346,0 64,28.654 64,64 z"
+       inkscape:connector-curvature="0"
+       style="fill:#6f6f6f;fill-opacity:1" />
+    <path
+       id="path3309"
+       transform="matrix(0.70915,0,0,0.70915,275.84629,404.83429)"
+       d="m 368,216.09 c 0,35.346 -28.654,64 -64,64 -35.346,0 -64,-28.654 -64,-64 0,-35.346 28.654,-64 64,-64 35.346,0 64,28.654 64,64 z"
+       inkscape:connector-curvature="0"
+       style="fill:#ffffff" />
+  </g>
+</svg>

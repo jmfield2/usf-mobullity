@@ -1491,6 +1491,7 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                 mode = TraverseMode.CAR;
             }
             RoutingRequest options = new RoutingRequest(mode);
+            options.ignoreRoadClosures = true;
             GenericDijkstra search = new GenericDijkstra(options);
             search.setSkipEdgeStrategy(new ListedEdgesOnly(edges));
             Set<Edge> usedEdges = new HashSet<Edge>();

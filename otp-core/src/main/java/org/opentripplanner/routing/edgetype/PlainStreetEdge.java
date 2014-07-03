@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
+import org.opentripplanner.common.NonRepeatingTimePeriod;
 
 /**
  * This represents a street segment.
@@ -130,6 +131,9 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
     /** 0 -> 360 degree angle - the angle at the end of the edge geometry */
     @Getter
     public int outAngle;
+    
+    @Setter
+    private NonRepeatingTimePeriod roadClosedPeriod;
 
     /**
      * No-arg constructor used only for customization -- do not call this unless you know
@@ -230,6 +234,20 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
     public double getDistance() {
         return length;
     }
+    
+    /**
+     * Checks if current road is closed at specified time
+     * @param options ignoreRoadClosures parameter is checked
+     * @param time
+     * @return true if road is closed at time time
+     */
+    public boolean isThisRoadClosed(RoutingRequest options, long time) {
+        if (this.roadClosedPeriod == null || options.ignoreRoadClosures) {
+            return false;
+        }
+//        System.err.println("Road name:" + this.getName());
+        return this.roadClosedPeriod.isRoadClosed(time);
+    }
 
     @Override
     public State traverse(State s0) {
@@ -263,6 +281,11 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
                 return doTraverse(s0, options.getBikeWalkingOptions(),
                         TraverseMode.WALK);
             }
+            return null;
+        }
+        
+        //Returns null if road is closed at edge transit time
+        if (isThisRoadClosed(options, s0.getTimeInMillis())) {
             return null;
         }
 
