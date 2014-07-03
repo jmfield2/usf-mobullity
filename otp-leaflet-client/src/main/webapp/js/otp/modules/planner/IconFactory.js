@@ -36,6 +36,24 @@ var EndFlagIcon = L.Icon.extend({
     }
 });
 
+var RoadClosedNowIcon = L.Icon.extend({
+    options: {
+        iconUrl: resourcePath + 'images/road_closed.png',
+        iconSize: new L.Point(22, 22),
+        iconAnchor: new L.Point(11, 11),
+        popupAnchor: new L.Point(0,-11)
+    }
+});
+
+var RoadClosedFutureIcon = L.Icon.extend({
+    options: {
+        iconUrl: resourcePath + 'images/road_closed_gray.png',
+        iconSize: new L.Point(22, 22),
+        iconAnchor: new L.Point(11, 11),
+        popupAnchor: new L.Point(0,-11)
+    }
+});
+
 
 var StartBikeIcon = L.Icon.extend({
     options: {
@@ -271,6 +289,9 @@ otp.modules.planner.IconFactory = otp.Class({
     large50 : new LargeIcon50Pct(),
     large75 : new LargeIcon75Pct(),
     large100 : new LargeIcon100Pct(),
+
+    roadClosedNow : new RoadClosedNowIcon(),
+    roadClosedFuture : new RoadClosedFutureIcon(),
     
     lowerCutoff : 0.2,
     upperCutoff : 0.8,

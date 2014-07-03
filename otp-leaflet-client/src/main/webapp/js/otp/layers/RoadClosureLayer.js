@@ -19,12 +19,15 @@ otp.layers.RoadClosureLayer =
     otp.Class(L.LayerGroup, {
    
     module : null,
+    icons       : null,
     
-    minimumZoomForClosures : 14,
+    minimumZoomForClosures : 10,
+    minimumZoomForClosuresPoly : 14,
     
     initialize : function(module) {
         L.LayerGroup.prototype.initialize.apply(this);
         this.module = module;
+        this.icons = new otp.modules.planner.IconFactory();
 
         this.roadClosures = [];
         
@@ -67,16 +70,18 @@ otp.layers.RoadClosureLayer =
     updateRoadClosures : function(roadClosures) {
         var roadClosures = this.roadClosures;
         var this_ = this;
+        var showPolyline = false;
+        //Zoom is big show polyline
+        if (this.module.webapp.map.lmap.getZoom() >= this.minimumZoomForClosuresPoly) {
+            showPolyline = true;
+        }
         
         for(var i=0; i<roadClosures.length; i++) {
 
             var roadClosure = roadClosures[i];
 
-            console.log(roadClosure);
+            /*console.log(roadClosure);*/
 
-
-            
-            
             var context = _.clone(roadClosure);
             context.title = roadClosure.title || "Zaprta cesta";
             var from_moment = moment(context.closureStart);
@@ -84,6 +89,7 @@ otp.layers.RoadClosureLayer =
             var now = moment();
             var style = null;
             var diff = from_moment.diff(now, 'hours');
+            var icon = null;
             //Road closure is passed
             if (this.isAfter(now,to_moment)) {
                 console.info("Road opened");
@@ -93,7 +99,9 @@ otp.layers.RoadClosureLayer =
                 context.closed = "Zaprto";
                 console.info("Road closed");
                 style = {color: 'red', opacity:1};
+                icon = this.icons.roadClosedNow;
             } else if (this.isBefore(now, from_moment)) {
+                icon = this.icons.roadClosedFuture;
                 //More then 1 hour before road closes
                 if (diff > 1) {
                     console.info("Road still opened");
@@ -124,10 +132,19 @@ otp.layers.RoadClosureLayer =
             var popupContent = ich['otp-roadClosureLayer-popup'](context);
 
             var polyline = new L.Polyline(otp.util.Geo.decodePolyline(roadClosure.geometry.points), style);
-            polyline.addTo(this)
-            .bindPopup(popupContent.get(0));
-            
-            
+
+            //Zoom is big show polyline
+            if (showPolyline) {
+                polyline.addTo(this)
+                .bindPopup(popupContent.get(0));
+            //small zoom show only sign
+            } else {
+                var center_of_polyline = polyline.getBounds().getCenter();
+                var marker = new L.Marker(center_of_polyline, {icon:icon, draggable: false});
+                marker.addTo(this)
+                .bindPopup(popupContent.get(0));
+            }
+
         }
     },
 
