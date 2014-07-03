@@ -67,8 +67,8 @@ public class RoadClosureBuilder implements GraphBuilder {
         });
     }
     
-    private RoadClosure readTsv(String filepath) throws FileNotFoundException, IOException, Exception {
-        log.info("Current file: {}", filepath);
+    private RoadClosure readTsv(File filepath) throws FileNotFoundException, IOException, Exception {
+        log.info("Current file: {}", filepath.getName());
         List<Coordinate> coordinates = null;
         RoadClosureInfo roadClosureInfo = null;
         coordinates = new ArrayList<>();
@@ -98,7 +98,7 @@ public class RoadClosureBuilder implements GraphBuilder {
         log.info("Read coordinates: {}", coordinates.size());
 
         //Reads closure start/stop
-        String txtfilepath = filepath.replace("tsv", "txt");
+        String txtfilepath = filepath.getAbsolutePath().replace("tsv", "txt");
         try (BufferedReader br = new BufferedReader(new FileReader(txtfilepath))) {
             String line = br.readLine();
 
@@ -111,7 +111,7 @@ public class RoadClosureBuilder implements GraphBuilder {
 
             }
         }
-        log.info("Read road info: {}", roadClosureInfo);
+        //log.info("Read road info: {}", roadClosureInfo);
 
         //makes time period
         NonRepeatingTimePeriod rep = NonRepeatingTimePeriod.parseRoadClosure(
@@ -152,27 +152,29 @@ public class RoadClosureBuilder implements GraphBuilder {
 
 
     @Override
-    public void buildGraph(Graph graph, HashMap<Class<?>, Object> extra)  {
+    public void buildGraph(Graph graph, HashMap<Class<?>, Object> extra) {
+        log.info("Building road Closures");
         log.info("Path is:{}", _path);
-        try {
-            
-            streetMatcher = new StreetMatcher(graph);
-            
-            RoadClosureService roadClosureService = new RoadClosureService();
-            graph.putService(RoadClosureService.class, roadClosureService);
-            
-            RoadClosure roadClosure = this.readTsv(_path.getAbsolutePath());
-            
-            
-            
-        
-            if (roadClosure != null) {
-                roadClosureService.addRoadClosure(roadClosure);
+        streetMatcher = new StreetMatcher(graph);
+        int addedClosures = 0;
+
+        RoadClosureService roadClosureService = new RoadClosureService();
+        graph.putService(RoadClosureService.class, roadClosureService);
+        File[] tsvFiles = this.getTSVFiles();
+        for (int i = 0; i < tsvFiles.length; i++) {
+            try {
+
+                RoadClosure roadClosure = this.readTsv(tsvFiles[i]);
+                if (roadClosure != null) {
+                    roadClosureService.addRoadClosure(roadClosure);
+                    addedClosures++;
+                }
+
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(RoadClosureBuilder.class.getName()).log(Level.SEVERE, "Road closure file wasn't found", ex);
             }
-            
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(RoadClosureBuilder.class.getName()).log(Level.SEVERE, "Road closure file wasn't found", ex);
         }
+        log.info("Added {} road closures", addedClosures);
     }
 
     @Override
@@ -187,13 +189,25 @@ public class RoadClosureBuilder implements GraphBuilder {
 
     @Override
     public void checkInputs() {
-       if (!_path.canRead()) {
-           throw new RuntimeException("Can't read RoadClosure path: " + _path);
-       }
-       String txtfilepath = this._path.getAbsolutePath().replace("tsv", "txt");
-       if (! new File(txtfilepath).canRead()) {
-           throw new RuntimeException("Can't read RoadClosure path: " + txtfilepath);
-       }
+        File[] txtFiles = this.getTXTFiles();
+        File[] tsvFiles = this.getTSVFiles();
+        if (txtFiles.length != tsvFiles.length) {
+            throw new RuntimeException(
+                    String.format("TXT and TSV numbers of files should be the same! TXT:%d, TSV:%d",
+                            txtFiles.length, tsvFiles.length));
+        }
+        for (int i = 0; i < tsvFiles.length; i++) {
+
+            if (!tsvFiles[i].canRead()) {
+                throw new RuntimeException("Can't read RoadClosure tsv file: " + tsvFiles[i]);
+            }
+            
+            String txtfilepath = tsvFiles[i].getAbsolutePath().replace("tsv", "txt");
+            File txtFile = new File(txtfilepath);
+            if (!txtFile.canRead()) {
+                throw new RuntimeException("Can't read RoadClosure txt file: " + txtFile);
+            }
+        }
     }
     
 }
