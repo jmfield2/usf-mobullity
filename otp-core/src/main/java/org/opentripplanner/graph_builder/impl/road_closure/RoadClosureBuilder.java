@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,52 +43,111 @@ public class RoadClosureBuilder implements GraphBuilder {
     
     private File _path;
     
+    StreetMatcher streetMatcher;
+    
     public void setPath(File path) {
         _path = path;
     }
     
-    private List<Coordinate> coordinates = null;
-    private RoadClosureInfo roadClosureInfo = null;
+    private File[] getTSVFiles() {
+        return _path.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(".tsv");
+            }
+        });
+    }
     
-    private void readTsv() throws FileNotFoundException, IOException, Exception {
-        this.coordinates = new ArrayList<>();
-        this.roadClosureInfo = new RoadClosureInfo();
-        try(BufferedReader br = new BufferedReader(new FileReader(this._path))) {
+    private File[] getTXTFiles() {
+        return _path.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(".txt");
+            }
+        });
+    }
+    
+    private RoadClosure readTsv(String filepath) throws FileNotFoundException, IOException, Exception {
+        log.info("Current file: {}", filepath);
+        List<Coordinate> coordinates = null;
+        RoadClosureInfo roadClosureInfo = null;
+        coordinates = new ArrayList<>();
+        roadClosureInfo = new RoadClosureInfo();
+        //reads coordinates
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             //reads twice because first line are column names
             String line = br.readLine();
             line = br.readLine();
             String[] values = line.split("\\t", -1); // don't truncate empty fields
-            
-            
-            while(line != null) {
+
+            while (line != null) {
                 //ignores comments
                 if (!line.startsWith("#") && !line.trim().isEmpty()) {
                     values = line.split("\\t", -1); // don't truncate empty fields
-                    
-                    this.coordinates.add(new Coordinate(Double.parseDouble(values[2]), Double.parseDouble(values[1])));
+
+                    coordinates.add(new Coordinate(Double.parseDouble(values[2]), Double.parseDouble(values[1])));
                 }
                 line = br.readLine();
-                
+
             }
         }
-        log.info("Read coordinates: {}", this.coordinates.size());
-        
-        String txtfilepath = this._path.getAbsolutePath().replace("tsv", "txt");
-        try(BufferedReader br = new BufferedReader(new FileReader(txtfilepath))) {
+        //creates linestring from coordinates
+        Coordinate[] coordArray = new Coordinate[coordinates.size()];
+        LineString geometry = GeometryUtils.getGeometryFactory().createLineString(
+                coordinates.toArray(coordArray));
+        log.info("Read coordinates: {}", coordinates.size());
+
+        //Reads closure start/stop
+        String txtfilepath = filepath.replace("tsv", "txt");
+        try (BufferedReader br = new BufferedReader(new FileReader(txtfilepath))) {
             String line = br.readLine();
-            
+
             String[] values = line.split("=", -1); // don't truncate empty fields
-            
-            
-            while(line != null) {
+
+            while (line != null) {
                 values = line.split("=", -1); // don't truncate empty fields
-                this.roadClosureInfo.add(values[0], values[1]);
+                roadClosureInfo.add(values[0], values[1]);
                 line = br.readLine();
-                
+
             }
         }
-        log.info("Read road info: {}", this.roadClosureInfo);
-        
+        log.info("Read road info: {}", roadClosureInfo);
+
+        //makes time period
+        NonRepeatingTimePeriod rep = NonRepeatingTimePeriod.parseRoadClosure(
+                roadClosureInfo.date_on, roadClosureInfo.date_off,
+                roadClosureInfo.hour_on, roadClosureInfo.hour_off);
+
+        RoadClosure roadClosure = new RoadClosure();
+        roadClosure.period = rep;
+        //roadClosure.title = "Zaprta cesta zaradi Rallya";
+        roadClosure.description = roadClosureInfo.description;
+        roadClosure.closureStart = new Date(rep.getStartClosure());
+        roadClosure.closureEnd = new Date(rep.getEndClosure());
+
+        //FIXME: biking and walking can go through closed roads
+        //Matches coordinates with street network
+        List<Edge> edges = streetMatcher.match(geometry);
+        if (edges != null) {
+            log.info("Matched with {} edges.", edges.size());
+
+            List<Coordinate> allCoordinates = new ArrayList<Coordinate>();
+            for (Edge e : edges) {
+                allCoordinates.addAll(Arrays.asList(e.getGeometry().getCoordinates()));
+                PlainStreetEdge pse = (PlainStreetEdge) e;
+                pse.setRoadClosedPeriod(roadClosure.period);
+                //pse.setName(pse.getName() + " TOTA");
+            }
+            Coordinate[] coordinateArray = new Coordinate[allCoordinates.size()];
+            LineString ls = GeometryUtils.getGeometryFactory().createLineString(allCoordinates.toArray(coordinateArray));
+            roadClosure.geometry = ls;
+            log.info("Made roadClosure: {}", roadClosure);
+            return roadClosure;
+        } else {
+            log.warn("No edges could be matched!");
+            return null;
+
+        }
     }
 
 
@@ -95,40 +155,21 @@ public class RoadClosureBuilder implements GraphBuilder {
     public void buildGraph(Graph graph, HashMap<Class<?>, Object> extra)  {
         log.info("Path is:{}", _path);
         try {
-            this.readTsv();
-            StreetMatcher streetMatcher = new StreetMatcher(graph);
+            
+            streetMatcher = new StreetMatcher(graph);
             
             RoadClosureService roadClosureService = new RoadClosureService();
             graph.putService(RoadClosureService.class, roadClosureService);
             
-            Coordinate[] coordArray = new Coordinate[this.coordinates.size()];
-            Geometry geometry = GeometryUtils.getGeometryFactory().createLineString(
-                    this.coordinates.toArray(coordArray));
-            List<Edge> edges = streetMatcher.match(geometry);
-            if (edges != null) {
-                log.info("Found {} edges.", edges.size());
-                NonRepeatingTimePeriod rep = NonRepeatingTimePeriod.parseRoadClosure(
-                        this.roadClosureInfo.date_on, this.roadClosureInfo.date_off,
-                        this.roadClosureInfo.hour_on, this.roadClosureInfo.hour_off);
-                
-                RoadClosure roadClosure = new RoadClosure();
-                //roadClosure.title = "Zaprta cesta zaradi Rallya";
-                roadClosure.description = this.roadClosureInfo.description;
-                roadClosure.closureStart = new Date(rep.getStartClosure());
-                roadClosure.closureEnd = new Date(rep.getEndClosure());
-                List<Coordinate> allCoordinates = new ArrayList<Coordinate>();
-                for (Edge e:edges) {
-                    allCoordinates.addAll(Arrays.asList(e.getGeometry().getCoordinates()));
-                    PlainStreetEdge pse = (PlainStreetEdge) e;
-                    pse.setRoadClosedPeriod(rep);
-                //    pse.setName(pse.getName() + " TOTA");
-                }
-                Coordinate[] coordinateArray = new Coordinate[allCoordinates.size()];
-                LineString ls = GeometryUtils.getGeometryFactory().createLineString(allCoordinates.toArray(coordinateArray));
-                roadClosure.geometry = ls;
+            RoadClosure roadClosure = this.readTsv(_path.getAbsolutePath());
+            
+            
+            
         
+            if (roadClosure != null) {
                 roadClosureService.addRoadClosure(roadClosure);
             }
+            
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(RoadClosureBuilder.class.getName()).log(Level.SEVERE, "Road closure file wasn't found", ex);
         }

@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.opentripplanner.common.NonRepeatingTimePeriod;
 import org.opentripplanner.model.json_serialization.EncodedPolylineJSONSerializer;
 import org.opentripplanner.routing.transit_index.adapters.LineStringAdapter;
 
@@ -43,6 +44,9 @@ public class RoadClosure implements Serializable {
     @JsonSerialize(using = EncodedPolylineJSONSerializer.class)
     @XmlJavaTypeAdapter(LineStringAdapter.class)
     public LineString geometry;
+    
+    
+    NonRepeatingTimePeriod period;
 
     @Override
     public int hashCode() {
@@ -74,6 +78,9 @@ public class RoadClosure implements Serializable {
         return true;
     }
 
-
+    @Override
+    public String toString() {
+        return "RoadClosure{" + "title=" + title + ", description=" + description + ", closureStart=" + closureStart + ", closureEnd=" + closureEnd + ", geometry=" + geometry.getCoordinates().length + '}';
+    }
     
 }

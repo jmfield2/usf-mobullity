@@ -66,7 +66,7 @@ public class NonRepeatingTimePeriod implements Serializable {
         Date start = df.parse(date_on + " " + hour_on);
         Date end = df.parse(date_off + " " + hour_off);
         
-        System.err.println(String.format("Start:%s - End:%s", start, end));
+//        System.err.println(String.format("Start:%s - End:%s", start, end));
         
         ret.startClosure = start.getTime();
         ret.endClosure = end.getTime();
