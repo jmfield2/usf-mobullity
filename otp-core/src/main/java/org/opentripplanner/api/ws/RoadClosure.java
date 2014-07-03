@@ -70,7 +70,7 @@ public class RoadClosure {
         Collection<org.opentripplanner.graph_builder.impl.road_closure.RoadClosure> roadClosures = roadClosureService.getClosures();
         List<org.opentripplanner.graph_builder.impl.road_closure.RoadClosure> out = new ArrayList<org.opentripplanner.graph_builder.impl.road_closure.RoadClosure>();
         for (org.opentripplanner.graph_builder.impl.road_closure.RoadClosure roadClosure: roadClosures) {
-            if (envelope.contains(roadClosure.geometry.getEnvelopeInternal())) {
+            if (envelope.intersects(roadClosure.geometry.getEnvelopeInternal())) {
                 out.add(roadClosure);
             }
         }
