@@ -22,7 +22,9 @@ otp.layers.RoadClosureLayer =
     icons       : null,
     
     minimumZoomForClosures : 10,
-    minimumZoomForClosuresPoly : 14,
+    minimumZoomForClosuresPoly : 13,
+
+    bold : false,
     
     initialize : function(module) {
         L.LayerGroup.prototype.initialize.apply(this);
@@ -64,6 +66,13 @@ otp.layers.RoadClosureLayer =
     isSame: function(a,b, units) {
         units = typeof units !== 'undefined' ? units : 'millisecond';
         return +a.clone().startOf(units) == +moment(b).startOf(units);
+    },
+
+    toggleBoldClosures : function() {
+        this.clearLayers();
+        this.bold = !this.bold;
+        this.clearL
+        this.updateRoadClosures();
     },
 
     
@@ -108,7 +117,7 @@ otp.layers.RoadClosureLayer =
                     context.closed = "Bo zaprta";
                     style = {
                         color: 'green',
-                        opacity: 0.1
+                        opacity: 0.2
                     };
                 //Road will close in one hour
                 } else {
@@ -131,10 +140,16 @@ otp.layers.RoadClosureLayer =
             }
             var popupContent = ich['otp-roadClosureLayer-popup'](context);
 
+            //shows path as polyline even if zoom is small
+            if (this.bold) {
+                style["opacity"] = 1;
+                style["weight"] = 3;
+            }
+
             var polyline = new L.Polyline(otp.util.Geo.decodePolyline(roadClosure.geometry.points), style);
 
-            //Zoom is big show polyline
-            if (showPolyline) {
+            //Zoom is big show polyline or user wants to see closures
+            if (showPolyline || this.bold) {
                 polyline.addTo(this)
                 .bindPopup(popupContent.get(0));
             //small zoom show only sign

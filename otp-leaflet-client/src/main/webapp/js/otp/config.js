@@ -186,6 +186,19 @@ otp.config = {
             title: '<img src="/images/language_icon.svg" onerror="this.onerror=\'\';this.src=\'/images/language_icon.png\'" width="30px" height="30px"/>', 
             languages: true
         } */
+        {
+            title: 'Legenda (Zapore cest)',
+            content: '<p>Dodane so zapore cest Rallya in pa zaprta Tezenska ulica</p>' +
+                '<p>Ko je karta oddaljena je prikazan samo znak.' +
+                    ' Ko je približana pa lahko vidimo poti različnih barv:</p>' +
+                '<p><strong><span style="color:green">Zelena</span></strong> - cesta bo zaprta v prihodnosti</p>' +
+                '<p><strong><span style="color:orange">Oranžna</span></strong> - cesta bo zaprta v naslednji uri</p>' +
+                '<p><strong><span style="color:red">Rdeča</span></strong> - cesta je zaprta</p>' +
+                '<p>Načrtovalnik poti bi moral ignorirati zaprte ceste, če so zaprte v času potovanja' +
+               ' (Čas potovanja se lahko spreminja v Nastavitha poti...)' +
+               ' Ampak to iz neznanih razlogov še ne deluje vedno (Je namreč Beta).</p>'
+        }
+
     ],
     
     
