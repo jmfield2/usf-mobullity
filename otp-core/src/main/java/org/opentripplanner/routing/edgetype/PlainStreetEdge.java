@@ -235,10 +235,17 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
         return length;
     }
     
-    public boolean isThisRoadClosed(long time) {
-        if (this.roadClosedPeriod == null) {
+    /**
+     * Checks if current road is closed at specified time
+     * @param options ignoreRoadClosures parameter is checked
+     * @param time
+     * @return true if road is closed at time time
+     */
+    public boolean isThisRoadClosed(RoutingRequest options, long time) {
+        if (this.roadClosedPeriod == null || options.ignoreRoadClosures) {
             return false;
         }
+//        System.err.println("Road name:" + this.getName());
         return this.roadClosedPeriod.isRoadClosed(time);
     }
 
@@ -278,7 +285,7 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
         }
         
         //Returns null if road is closed at edge transit time
-        if (isThisRoadClosed(s0.getTimeInMillis())) {
+        if (isThisRoadClosed(options, s0.getTimeInMillis())) {
             return null;
         }
 
