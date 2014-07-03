@@ -53,14 +53,19 @@ public class RoadClosureBuilder implements GraphBuilder {
         this.coordinates = new ArrayList<>();
         this.roadClosureInfo = new RoadClosureInfo();
         try(BufferedReader br = new BufferedReader(new FileReader(this._path))) {
+            //reads twice because first line are column names
             String line = br.readLine();
             line = br.readLine();
             String[] values = line.split("\\t", -1); // don't truncate empty fields
             
             
             while(line != null) {
-                values = line.split("\\t", -1); // don't truncate empty fields
-                this.coordinates.add(new Coordinate(Double.parseDouble(values[2]), Double.parseDouble(values[1])));
+                //ignores comments
+                if (!line.startsWith("#") && !line.trim().isEmpty()) {
+                    values = line.split("\\t", -1); // don't truncate empty fields
+                    
+                    this.coordinates.add(new Coordinate(Double.parseDouble(values[2]), Double.parseDouble(values[1])));
+                }
                 line = br.readLine();
                 
             }
@@ -107,7 +112,8 @@ public class RoadClosureBuilder implements GraphBuilder {
                         this.roadClosureInfo.hour_on, this.roadClosureInfo.hour_off);
                 
                 RoadClosure roadClosure = new RoadClosure();
-                roadClosure.title = "Zaprta cesta zaradi Rallya";
+                //roadClosure.title = "Zaprta cesta zaradi Rallya";
+                roadClosure.description = this.roadClosureInfo.description;
                 roadClosure.closureStart = new Date(rep.getStartClosure());
                 roadClosure.closureEnd = new Date(rep.getEndClosure());
                 List<Coordinate> allCoordinates = new ArrayList<Coordinate>();

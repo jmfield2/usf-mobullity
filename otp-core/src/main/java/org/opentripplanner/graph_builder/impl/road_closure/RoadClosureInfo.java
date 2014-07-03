@@ -17,14 +17,13 @@ public class RoadClosureInfo {
     String day_off = null;
     String hour_on = null;
     String hour_off = null;
+    String description = null;
 
     @Override
     public String toString() {
-        return "RoadClosureInfo{" + "date_on=" + date_on + ", date_off=" + date_off + ", day_on=" + day_on + ", day_off=" + day_off + ", hour_on=" + hour_on + ", hour_off=" + hour_off + '}';
+        return "RoadClosureInfo{" + "date_on=" + date_on + ", date_off=" + date_off + ", day_on=" + day_on + ", day_off=" + day_off + ", hour_on=" + hour_on + ", hour_off=" + hour_off + ", description=" + description + '}';
     }
-    
-    
-    
+   
     public void add(String tagName, String tagValue) throws Exception {
         tagValue = tagValue.trim();
         switch (tagName) {
@@ -45,6 +44,9 @@ public class RoadClosureInfo {
                 break;
             case "hour_off":
                 hour_off = tagValue;
+                break;
+            case "description":
+                description = tagValue;
                 break;
             default:
                 throw new Exception(String.format("Invalid tagName:", tagName));
