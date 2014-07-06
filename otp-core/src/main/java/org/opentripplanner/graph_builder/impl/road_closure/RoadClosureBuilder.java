@@ -17,6 +17,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +68,28 @@ public class RoadClosureBuilder implements GraphBuilder {
         });
     }
     
+    private LineString createMatchingGeometry(Geometry geometry, NonRepeatingTimePeriod period) {
+        //FIXME: biking and walking can go through closed roads
+        //Matches coordinates with street network
+        List<Edge> edges = streetMatcher.match(geometry);
+        if (edges != null) {
+            log.info("Matched with {} edges.", edges.size());
+
+            List<Coordinate> allCoordinates = new ArrayList<Coordinate>();
+            for (Edge e : edges) {
+                allCoordinates.addAll(Arrays.asList(e.getGeometry().getCoordinates()));
+                PlainStreetEdge pse = (PlainStreetEdge) e;
+                pse.setRoadClosedPeriod(period);
+                //log.info("Closed road:{}", pse);
+                //pse.setName(pse.getName() + " TOTA");
+            }
+            Coordinate[] coordinateArray = new Coordinate[allCoordinates.size()];
+            return GeometryUtils.getGeometryFactory().createLineString(allCoordinates.toArray(coordinateArray));
+        } else {
+            return null;
+        }
+    }
+    
     private RoadClosure readTsv(File filepath) throws FileNotFoundException, IOException, Exception {
         log.info("Current file: {}", filepath.getName());
         List<Coordinate> coordinates = null;
@@ -95,6 +118,12 @@ public class RoadClosureBuilder implements GraphBuilder {
         Coordinate[] coordArray = new Coordinate[coordinates.size()];
         LineString geometry = GeometryUtils.getGeometryFactory().createLineString(
                 coordinates.toArray(coordArray));
+        
+        //reverses coordinates to close roads with edges in other direction
+        Collections.reverse(coordinates);
+        Coordinate[] coordArrayRev = new Coordinate[coordinates.size()];
+        LineString geometryRev = GeometryUtils.getGeometryFactory().createLineString(
+                coordinates.toArray(coordArrayRev));
         log.info("Read coordinates: {}", coordinates.size());
 
         //Reads closure start/stop
@@ -125,28 +154,26 @@ public class RoadClosureBuilder implements GraphBuilder {
 
         RoadClosure roadClosure = new RoadClosure();
         roadClosure.period = rep;
-        //roadClosure.title = "Zaprta cesta zaradi Rallya";
+
         roadClosure.description = roadClosureInfo.description;
         roadClosure.closureStart = new Date(rep.getStartClosure());
         roadClosure.closureEnd = new Date(rep.getEndClosure());
 
-        //FIXME: biking and walking can go through closed roads
-        //Matches coordinates with street network
-        List<Edge> edges = streetMatcher.match(geometry);
-        if (edges != null) {
-            log.info("Matched with {} edges.", edges.size());
-
-            List<Coordinate> allCoordinates = new ArrayList<Coordinate>();
-            for (Edge e : edges) {
-                allCoordinates.addAll(Arrays.asList(e.getGeometry().getCoordinates()));
-                PlainStreetEdge pse = (PlainStreetEdge) e;
-                pse.setRoadClosedPeriod(roadClosure.period);
-                //pse.setName(pse.getName() + " TOTA");
-            }
-            Coordinate[] coordinateArray = new Coordinate[allCoordinates.size()];
-            LineString ls = GeometryUtils.getGeometryFactory().createLineString(allCoordinates.toArray(coordinateArray));
+        LineString ls = createMatchingGeometry(geometry, rep);
+        LineString lsRev = createMatchingGeometry(geometryRev, rep);
+        if (ls != null && lsRev != null) {
             roadClosure.geometry = ls;
             log.info("Made roadClosure: {}", roadClosure);
+            return roadClosure;
+        } else if (ls != null) {
+            roadClosure.geometry = ls;
+            log.info("Made roadClosure: {}", roadClosure);
+            log.warn("Reverse wasn't matched.");
+            return roadClosure;
+        } else if (lsRev != null) {
+            roadClosure.geometry = lsRev;
+            log.info("Made roadClosure: {}", roadClosure);
+            log.warn("Normal wasn't matched.");
             return roadClosure;
         } else {
             log.warn("No edges could be matched!");
