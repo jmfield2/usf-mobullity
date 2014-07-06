@@ -156,6 +156,7 @@ public class RoadClosureBuilder implements GraphBuilder {
         roadClosure.period = rep;
 
         roadClosure.description = roadClosureInfo.description;
+        roadClosure.url = roadClosureInfo.url;
         roadClosure.closureStart = new Date(rep.getStartClosure());
         roadClosure.closureEnd = new Date(rep.getEndClosure());
 
