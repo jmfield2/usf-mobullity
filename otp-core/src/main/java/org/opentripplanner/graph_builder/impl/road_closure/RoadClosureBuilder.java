@@ -118,6 +118,11 @@ public class RoadClosureBuilder implements GraphBuilder {
                 roadClosureInfo.date_on, roadClosureInfo.date_off,
                 roadClosureInfo.hour_on, roadClosureInfo.hour_off);
 
+        if (new Date().getTime() > rep.getEndClosure()) {
+            log.info("Road closure ends before today. Ignoring");
+            return null;
+        }
+
         RoadClosure roadClosure = new RoadClosure();
         roadClosure.period = rep;
         //roadClosure.title = "Zaprta cesta zaradi Rallya";
