@@ -84,7 +84,7 @@ public class RoadClosureBuilder implements GraphBuilder {
                 allCoordinates.addAll(Arrays.asList(e.getGeometry().getCoordinates()));
                 PlainStreetEdge pse = (PlainStreetEdge) e;
                 pse.setRoadClosedPeriod(period);
-                //log.info("Closed road:{}", pse);
+                //log.debug("Closed road:{}", pse);
                 //pse.setName(pse.getName() + " TOTA");
             }
             Coordinate[] coordinateArray = new Coordinate[allCoordinates.size()];
