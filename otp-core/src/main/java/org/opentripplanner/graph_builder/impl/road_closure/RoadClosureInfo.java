@@ -19,6 +19,7 @@ public class RoadClosureInfo {
     String hour_off = null;
     String description = null;
     String url = null;
+    String way_id = null;
 
     @Override
     public String toString() {
@@ -51,6 +52,9 @@ public class RoadClosureInfo {
                 break;
             case "url":
                 url = tagValue;
+                break;
+            case "way_id":
+                way_id = tagValue;
                 break;
             default:
                 throw new Exception(String.format("Invalid tagName:{}", tagName));
