@@ -62,6 +62,14 @@ public class NonRepeatingTimePeriod implements Serializable {
             String date_off, String hour_on, String hour_off) throws ParseException, Exception {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         NonRepeatingTimePeriod ret = new NonRepeatingTimePeriod();
+
+        if (hour_on == null) {
+            hour_on = "00:00";
+        }
+
+        if (hour_off == null) {
+            hour_off = "23:59";
+        }
         
         Date start = df.parse(date_on + " " + hour_on);
         Date end = df.parse(date_off + " " + hour_off);

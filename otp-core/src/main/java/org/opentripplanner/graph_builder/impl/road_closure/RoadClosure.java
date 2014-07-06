@@ -35,6 +35,10 @@ public class RoadClosure implements Serializable {
     
     @XmlAttribute
     @JsonSerialize
+    public String url;
+    
+    @XmlAttribute
+    @JsonSerialize
     public Date closureStart;
     
     @XmlAttribute

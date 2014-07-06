@@ -401,6 +401,7 @@ public class RoutingRequest implements Cloneable, Serializable {
     public RoutingRequest(TraverseMode mode) {
         this();
         this.setModes(new TraverseModeSet(mode));
+        this.ignoreRoadClosures = true;
     }
 
     public RoutingRequest(TraverseMode mode, OptimizeType optimize) {
