@@ -53,7 +53,7 @@ public class RoadClosureInfo {
                 url = tagValue;
                 break;
             default:
-                throw new Exception(String.format("Invalid tagName:", tagName));
+                throw new Exception(String.format("Invalid tagName:{}", tagName));
         }
     }
     
