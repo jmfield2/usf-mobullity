@@ -26,6 +26,7 @@ otp.core.Map = otp.Class({
     contextMenuLatLng       : null,
     
     baseLayers  : {},
+	overLayMaps : {},
     
     initialize : function(webapp) {
         var this_ = this;
@@ -98,8 +99,14 @@ otp.core.Map = otp.Class({
             	this.removeLayer(tempM);
             	this.removeLayer(tempA);
             };
-       
+			
+			
+            var marker = L.marker([28.058499, -82.416945]);
             
+            this.overLayMaps ={
+            		"CUTR" : marker,
+            };
+	   
             /* here are the controls for layers and zooming on the map */
         this.layer_control = L.control.layers(this.baseLayers).addTo(this.lmap);
         L.control.zoom({ position : 'topright' }).addTo(this.lmap);
