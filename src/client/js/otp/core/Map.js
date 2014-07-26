@@ -26,12 +26,11 @@ otp.core.Map = otp.Class({
     contextMenuLatLng       : null,
     
     baseLayers  : {},
+	overLayMaps : {},
     
     initialize : function(webapp) {
         var this_ = this;
         this.webapp = webapp;
-        
-        
                 
         //var baseLayers = {};
         var defaultBaseLayer = null;
@@ -45,15 +44,14 @@ otp.core.Map = otp.Class({
 
             var layer = new L.TileLayer(layerConfig.tileUrl, layerProps);
 
-	        this.baseLayers[layerConfig.name] = layer;
+                this.baseLayers[layerConfig.name] = layer;
             if(i == 0) defaultBaseLayer = layer;            
-	        
-	        if(typeof layerConfig.getTileUrl != 'undefined') {
-        	    layer.getTileUrl = otp.config.getTileUrl;
+                
+                if(typeof layerConfig.getTileUrl != 'undefined') {
+                    layer.getTileUrl = otp.config.getTileUrl;
             }
         }
         
-
         var mapProps = { 
             layers  : [ defaultBaseLayer ],
             center : (otp.config.initLatLng || new L.LatLng(0,0)),
@@ -62,10 +60,115 @@ otp.core.Map = otp.Class({
         }
         if(otp.config.minZoom) mapProps['minZoom'] = otp.config.minZoom;  //_.extend(mapProps, { minZoom : otp.config.minZoom });
         if(otp.config.maxZoom) mapProps['maxZoom'] = otp.config.maxZoom; //_.extend(mapProps, { maxZoom : otp.config.maxZoom });
+        
+        // http://stackoverflow.com/questions/15671949/why-does-calling-leaflets-setzoom-twice-results-on-the-second-being-ignored
+        if (L.DomUtil.TRANSITION) {
+        	L.Map.addInitHook(function() {
+        		L.DomEvent.on(this._mapPane, L.DomUtil.TRANSITION_END, function() {
+        			var zoom = this._viewActions.shift();
+        			if (zoom != undefined) {
+        				this.setView(zoom[0], zoom[1]);
+        			}
+        		}, this);
+        	});
+        }
+        
+        L.Map.include(!L.DomUtil.TRANSITION ? {} : {
+        	_viewActions: [],
+        	queueView: function(latlng, zoom) {
+        		if (this._animatingZoom) {
+        			this._viewActions.push([latlng, zoom]);
+        		}
+        		else {
+        			this.setView(latlng, zoom);
+        		}
+        	}
+        });
+		
+        this.lmap = new L.Map('map', mapProps);        
+		
+        /*Locates user's current location if geoLocation in config.js is set to true*/
+        var marker = new L.marker();
+        var tempM = new L.marker();
+        var accCircle = new L.circle();
+        var tempA = new L.circle();
+        count=0;
+        
+		// Establish map boundaries from OTP
+        var url = otp.config.hostname + '/' + otp.config.restService + '/metadata';
+        $.ajax(url, {
+            data: { routerId : otp.config.routerId },            
+            dataType: 'JSON',
+            success: function(data) {				
+                this_.lmap.fitBounds([
+                    [data.lowerLeftLatitude, data.lowerLeftLongitude],
+                    [data.upperRightLatitude, data.upperRightLongitude]
+                ]);				
+				
+				otp.config.mapBoundary = new L.latLngBounds(new L.latLng(data.lowerLeftLatitude, data.lowerLeftLongitude), new L.latLng(data.upperRightLatitude, data.upperRightLongitude));
+		
+				if(otp.config.geoLocation){
+					this_.lmap.locate({watch: true, enableHighAccuracy: true});
+					this_.lmap.on('locationfound', onLocationFound);
+				}						
+				
+            }
+        });		    
+		           
+            /* sets a marker at the current location */
+            function onLocationFound(e){
+     			
+				count = count+1;
+								
+				// 40 accuracy for wifi, 22000 for wired/city center approximations
+				if (e.accuracy >= 22000) {
+					console.log("Accuracy beyond threshold; recentering on USF.");
+					e.latlng = otp.config.initLatLng;
+					this.queueView(e.latlng, 15);
+					return; // dont bother adding a marker 
+				}
+				
+				// if e.latlng is outside of map boundaries (tampa), recenter on USF				
+				if ( ! otp.config.mapBoundary.contains(e.latlng)) {
+					console.log("Geolocation is outside of map boundaries; recentering on USF.");
+					e.latlng = otp.config.initLatLng;
+					this.queueView(e.latlng, 15);
+					return; // and don't add a marker on first load
+				}				
+				
+            	var locationSpot = L.Icon.extend({
+            		options: {
+            			iconUrl: resourcePath + 'images/locationSpot.svg',
+            			iconSize: new L.Point(10,10),
+            		}
+            	});
+            	tempM = marker;
+            	tempA = accCircle;
+            	var locSpot = new locationSpot();
+            	marker = L.marker(e.latlng,{icon : locSpot,}).bindPopup('Current Location');
+            	accCircle = L.circle(e.latlng,e.accuracy,{color:"blue", opacity: .25, fillOpacity: .1, weight: 3});
+            	//adds new marker and accuracy circle
+            	this.addLayer(marker);
+            	this.addLayer(accCircle);
+            	//if statement will make it so the map only zooms on the first function call
+            	if (count == 1){
+            	  this.queueView(e.latlng, 17);
+            	};
+            	//following removes the last set of map markers on the last function call
+            	this.removeLayer(tempM);
+            	this.removeLayer(tempA);
+            };
+			
+			
+  //          var marker = L.marker([28.058499, -82.416945]);
+            
+            this.overLayMaps ={
+            		//"CUTR" : marker,
+            };
+	   
+            /* here are the controls for layers and zooming on the map */
 
-        this.lmap = new L.Map('map', mapProps);
-
-        this.layer_control = L.control.layers(this.baseLayers).addTo(this.lmap);
+        this.layer_control = L.control.layers(this.baseLayers, this.overLayMaps).addTo(this.lmap);
         L.control.zoom({ position : 'topright' }).addTo(this.lmap);
         //this.lmap.addControl(new L.Control.Zoom({ position : 'topright' }));
        
@@ -113,9 +216,9 @@ otp.core.Map = otp.Class({
         var overlays = { };
         
         if(typeof otp.config.overlayTileUrl != 'undefined') {
-	    	var overlayTileLayer = new L.TileLayer(otp.config.overlayTileUrl);
-	    	//this.lmap.addLayer(overlayTileLayer);
-	    	//overlays['Overlay'] = overlayTileLayer;
+                    var overlayTileLayer = new L.TileLayer(otp.config.overlayTileUrl);
+                    //this.lmap.addLayer(overlayTileLayer);
+                    //overlays['Overlay'] = overlayTileLayer;
         }
         
         //this.layerControl = new L.Control.Layers(baseMaps, overlays);
@@ -138,7 +241,8 @@ otp.core.Map = otp.Class({
         
         this.contextMenu = new otp.core.MapContextMenu(this);
       
-        this.activated = true;        
+        this.activated = true;
+        
     },
     
     addContextMenuItem : function(text, clickHandler) {
@@ -184,7 +288,7 @@ otp.core.Map = otp.Class({
     
     setBounds : function(bounds)
     {
-    	this.lmap.fitBounds(bounds);
+            this.lmap.fitBounds(bounds);
     },
     
     $ : function() {
@@ -193,4 +297,3 @@ otp.core.Map = otp.Class({
     
     CLASS_NAME : "otp.core.Map"
 });
-

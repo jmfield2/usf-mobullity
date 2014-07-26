@@ -2,7 +2,9 @@ package org.opentripplanner.routing.graph;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -426,7 +428,9 @@ public class GraphIndex {
                         stopTimes.times.add(new TripTimeShort(t, sidx, stop));
                     }
                 }
-                sidx++;
+                
+                if ( ! times.times.isEmpty()) ret.add(times);
+                
             }
             ret.add(stopTimes);
         }

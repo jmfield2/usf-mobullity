@@ -23,9 +23,9 @@ otp.modules.multimodal.MultimodalPlannerModule =
     
     itinWidget  : null,
     
-    showIntermediateStops : false,
+    showIntermediateStops : true,
     
-    stopsWidget: false,
+    stopsWidget: true,
     
     routeData : null,
     
@@ -38,11 +38,15 @@ otp.modules.multimodal.MultimodalPlannerModule =
         otp.modules.planner.PlannerModule.prototype.activate.apply(this);
 
         // set up options widget
-        
+                
         var optionsWidgetConfig = {
-                //TRANSLATORS: widget name
-                title : _tr("Trip Options"),
-                closeable : true,
+        		title : 'TRIP PLANNER',
+        		customHeader : true, // use a custom header
+        		headerClass : 'otp-defaultTripWidget-header',
+                closeable : false,
+                minimizable : true,
+                draggable : false,
+                resizable : false,
                 persistOnClose: true,
         };
         
@@ -68,11 +72,10 @@ otp.modules.multimodal.MultimodalPlannerModule =
 
         modeSelector.addModeControl(new otp.widgets.tripoptions.MaxWalkSelector(this.optionsWidget));
         modeSelector.addModeControl(new otp.widgets.tripoptions.MaxBikeSelector(this.optionsWidget));
-        modeSelector.addModeControl(new otp.widgets.tripoptions.BikeTriangle(this.optionsWidget));
-        modeSelector.addModeControl(new otp.widgets.tripoptions.PreferredRoutes(this.optionsWidget));
-        modeSelector.addModeControl(new otp.widgets.tripoptions.BannedRoutes(this.optionsWidget));
-        modeSelector.addModeControl(new otp.widgets.tripoptions.WheelChairSelector(this.optionsWidget));
-
+        //modeSelector.addModeControl(new otp.widgets.tripoptions.BikeTriangle(this.optionsWidget));
+        //modeSelector.addModeControl(new otp.widgets.tripoptions.PreferredRoutes(this.optionsWidget));
+        //modeSelector.addModeControl(new otp.widgets.tripoptions.BannedRoutes(this.optionsWidget));
+        //modeSelector.addModeControl(new otp.widgets.tripoptions.StartLocation(this.optionsWidget));
         modeSelector.refreshModeControls();
 
         this.optionsWidget.addSeparator();
@@ -80,8 +83,26 @@ otp.modules.multimodal.MultimodalPlannerModule =
         
         this.optionsWidget.applyQueryParams(this.defaultQueryParams);
         
-        // add stops layer
-        this.stopsLayer = new otp.layers.StopsLayer(this);
+        //Add layers
+        if(otp.config.showBullRunnerStops == true || otp.config.showHartBusStops == true){
+        	this.stopsLayer = new otp.layers.StopsLayer(this);
+        }
+        if(otp.config.showBusPositions){
+        	this.busLayers = new otp.layers.BusPositionsLayer(this);
+        }
+        
+        if (otp.config.showBikeLanes) {
+        	this.bikeLanes = new otp.layers.BikeLanesLayer(this);
+        }
+
+        if(otp.config.showBikeStations){
+           	this.bikeLayers = new otp.layers.BikeStationsLayer(this);
+        }
+
+        // Layer Selector		
+        this.layerWidget = new otp.widgets.LayersWidget('otp-'+this.id+'-layersWidget', this);		
+                
+        this.optionsWidget.minimize();
     },
     
     routesLoaded : function() {

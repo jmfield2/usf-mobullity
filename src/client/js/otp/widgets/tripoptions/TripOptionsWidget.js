@@ -31,8 +31,9 @@ otp.widgets.tripoptions.TripOptionsWidget =
         //TRANSLATORS: Widget title
         if(!_.has(options, 'title')) options['title'] = _tr("Travel Options");
         if(!_.has(options, 'cssClass')) options['cssClass'] = 'otp-defaultTripWidget';
+        
         otp.widgets.Widget.prototype.initialize.call(this, id, module, options);
-
+        
         this.mainDiv.addClass('otp-tripOptionsWidget');
 
         //this.planTripCallback = planTripCallback;
@@ -57,10 +58,12 @@ otp.widgets.tripoptions.TripOptionsWidget =
 
     initScrollPanel : function() {
         this.scrollPanel = $('<div id="'+this.id+'-scollPanel" class="notDraggable" style="overflow: auto;"></div>').appendTo(this.$());
-        this.$().resizable({
-            minHeight: 80,
-            alsoResize: this.scrollPanel
-        });
+        	if(this.resizable){
+	        	this.$().resizable({
+	            minHeight: 80,
+	            alsoResize: this.scrollPanel
+	        	}); 
+	        };
     },
 
     addSeparator : function(scrollable) {
@@ -250,9 +253,12 @@ otp.widgets.tripoptions.LocationsSelector =
                 this_.tripWidget.inputChanged();
             },
         })
-        .dblclick(function() {
-            $(this).select();
+        .change(function() {
+        	$(this).select();
         });
+//        .dblclick(function() {
+//            $(this).select();
+//        });
         return input;
     },
 
@@ -459,29 +465,51 @@ otp.widgets.tripoptions.ModeSelector =
 
     id           :  null,
 
-    modes        : otp.config.modes,
+    modes        : { "TRANSIT,WALK" : "Bus &amp; Walk", 
+                     "TRANSIT,BICYCLE" : "Bus &amp; Bicycle",
+                     //"TRANSIT" : "Bus Only", 
+                    // "TRAINISH,WALK" : "Rail Only", 
+                     "BICYCLE" : 'Bicycle Only',
+		     "BICYCLE_RENT" : "Rented Bicycle",
+                     "WALK" : 'Walk Only',
+                     "CAR" : 'Drive Only',
+                   },
+    
 
     optionLookup : null,
     modeControls : null,
 
-    initialize : function(tripWidget) {
+    
+    
+     initialize : function(tripWidget) {
         otp.widgets.tripoptions.TripOptionsWidgetControl.prototype.initialize.apply(this, arguments);
         this.id = tripWidget.id+"-modeSelector";
         this.modeControls = [];
         this.optionLookup = {};
-
         //TRANSLATORS: Label for dropdown Travel by: [mode of transport]
         var html = "<div class='notDraggable'>" + _tr("Travel by") + ": ";
         html += '<select id="'+this.id+'">';
         _.each(this.modes, function(text, key) {
             html += '<option>'+text+'</option>';
         });
-        html += '</select>';
+        html += '</select>';        
+        
         html += '<div id="'+this.id+'-widgets" style="overflow: hidden;"></div>';
         html += "</div>";
 
         $(html).appendTo(this.$());
+
+	// Add Bicycle Safety
+	html = "<div class='notDraggable',> Bicycle Safety: ";
+	html += "<select id='bike_safety'>";
+	html += "<option value=''>No Preference</option>";
+	html += "<option value='1'>Prefer Lanes</option>";
+	html += "</select>";
+	html += "</div>";
+       	$(html).appendTo(this.$());
+ 
         //this.setContent(content);
+        
     },
 
     doAfterLayout : function() {
@@ -492,6 +520,12 @@ otp.widgets.tripoptions.ModeSelector =
             });
             this_.refreshModeControls();
         });
+
+	$('#bike_safety').change(function() {
+		if ($('#bike_safety').val() == 1) this_.tripWidget.module.optimize = "SAFE_LANES";
+		else this_.tripWidget.module.optimize = "QUICK";
+	});
+
     },
 
     restorePlan : function(data) {
@@ -608,6 +642,7 @@ otp.widgets.tripoptions.MaxDistanceSelector =
             $('#'+this_.id+'-value').val(presetVal.toFixed(2));
             $('#'+this_.id+'-presets option:eq(0)').prop('selected', true);
         });
+
     },
 
     restorePlan : function(data) {
@@ -1103,6 +1138,32 @@ otp.widgets.tripoptions.Submit =
         });
     }
 });
+
+//** Start Location **//
+
+otp.widgets.tripoptions.StartLocation =
+	otp.Class(otp.widgets.tripoptions.TripOptionsWidgetControl, {
+		
+	initialize : function(tripWidget) {
+		opt.widgets.tripoptions.TripOptionsWidgetControl.prototype.initialize.apply(this, arguments);
+		this.id = tripWidget.id+"-StartLocation";
+	
+		label = "I WANT TO GO FROM: ";
+		var html = '<div class="notDraggable">'+label+'<input id="'+this.id+'-value" type="text" style="width:50px;" value="my location" />';
+		html += "</div>";
+	
+		$(html).appendTo(this.$());
+	}
+	
+	
+	
+	
+	});
+	
+	
+	
+
+
 
 //** Group Trip **//
 

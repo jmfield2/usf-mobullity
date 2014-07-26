@@ -132,14 +132,15 @@ otp.widgets.transit.StopViewerWidget =
         var block_trans = _tr('Block');
 
         for(var i = 0; i < this.times.length; i++) {
-            var time = this.times[i];
-            time.formattedTime = otp.util.Time.formatItinTime(time.time*1000, otp.config.locale.time.time_format);
+            var time = this.times[i];            
+            time.formattedTime = time.arrival.format(otp.config.timeFormat);
             //FIXME: There is probably a better way to translate to and block
             //then in each call separately
             time.to = to_trans;
             time.block = block_trans;
             ich['otp-stopViewer-timeListItem'](time).appendTo(this.timeList);
-            var diff = Math.abs(this.activeTime - time.time*1000);
+            console.log(time);
+            var diff = Math.abs(this.activeTime - time.arrival.unix()*1000);
             if(diff < minDiff) {
                 minDiff = diff;
                 bestIndex = i;

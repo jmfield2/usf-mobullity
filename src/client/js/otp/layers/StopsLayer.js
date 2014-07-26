@@ -14,11 +14,21 @@
 
 otp.namespace("otp.layers");
 
-var StopIcon20 = L.Icon.extend({
+var bullrunnerStopIcon = L.Icon.extend({
+    options: {
+        iconUrl: resourcePath + 'images/busStopButton.png',
+        shadowUrl: null,
+        iconSize: new L.Point(8,8),
+        iconAnchor: new L.Point(10, 10),
+        popupAnchor: new L.Point(0, -5)
+    }
+});
+
+var hartStopIcon = L.Icon.extend({
     options: {
         iconUrl: resourcePath + 'images/stop20.png',
         shadowUrl: null,
-        iconSize: new L.Point(20, 20),
+        iconSize: new L.Point(8,8),
         iconAnchor: new L.Point(10, 10),
         popupAnchor: new L.Point(0, -5)
     }
@@ -36,9 +46,14 @@ otp.layers.StopsLayer =
         L.LayerGroup.prototype.initialize.apply(this);
         this.module = module;
 
+        this.module.stopViewerWidget = new otp.widgets.transit.StopViewerWidget('otp-'+this.id+'-StopViewerWidget', this.module);
+        
         this.stopsLookup = {};
-
-        this.module.addLayer("stops", this);
+       
+        this.stopsLayer = this.module.addLayer("stops", this);
+        
+        this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
+        
         this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
         this.module.webapp.map.lmap.on('popupopen', function (e) {
             this_.module.webapp.indexApi.loadRoutesForStop(e.popup._source._stopId, this_, function(data) {
@@ -67,6 +82,10 @@ otp.layers.StopsLayer =
     updateStops : function(stops) {
         var stops = _.values(this.stopsLookup);
         var this_ = this;
+        var routeData = this.module.webapp.transitIndex.routes;
+
+       	// USF Bull Runner_A index, routeData
+ 
         var stop_viewer_trans = _tr('Stop Viewer');
         //TRANSLATORS: Plan Trip [From Stop| To Stop] Used in stoplayer popup
         var plan_trip_trans = _tr('Plan Trip');
@@ -82,14 +101,26 @@ otp.layers.StopsLayer =
             stop.lat = stop.lat || stop.stopLat;
             stop.lon = stop.lon || stop.stopLon;
 
-            // temporary TriMet specific code
-            if(stop.stopUrl && stop.stopUrl.indexOf("http://trimet.org") === 0) {
-                stop.titleLink = 'http://www.trimet.org/go/cgi-bin/cstops.pl?action=entry&resptype=U&lang=en&noCat=Landmark&Loc=' + stop.id.id;
-            }
-            //console.log(stop);
+	    flag = false;
+	    for (x in stop.routes) {
+		r = stop.routes[x];
+		if (webapp.modules[0].busLayers.visible.indexOf(r.shortName) != -1 || 
+		    (otp.config.showHartBusStops && r.agency == "Hillsborough Area Regional Transit") ) {
+			flag = true;
+			break;
+		}
+	    }
 
-            var icon = new StopIcon20();
+	    if (!flag) continue;
 
+//            if(stop.stopUrl.indexOf("http://trimet.org") === 0) {
+//                stop.titleLink = 'http://www.trimet.org/go/cgi-bin/cstops.pl?action=entry&resptype=U&lang=en&noCat=Landmark&Loc=' + stop.id.id;
+//            }
+//            console.log(stop);
+
+            var bullIcon = new bullrunnerStopIcon();
+            var hartIcon = new hartStopIcon();
+            
             var context = _.clone(stop);
             context.agencyStopLinkText = otp.config.agencyStopLinkText || "Agency Stop URL";
             context.stop_viewer = stop_viewer_trans;
@@ -101,6 +132,7 @@ otp.layers.StopsLayer =
 
             popupContent.find('.stopViewerLink').data('stop', stop).click(function() {
                 var thisStop = $(this).data('stop');
+                              
                 this_.module.stopViewerWidget.show();
                 this_.module.stopViewerWidget.setActiveTime(moment().add("hours", -otp.config.timeOffset).unix()*1000);
                 this_.module.stopViewerWidget.setStop(thisStop.id, thisStop.name);
@@ -118,25 +150,35 @@ otp.layers.StopsLayer =
                 this_.module.setEndPoint(new L.LatLng(thisStop.lat, thisStop.lon), false, thisStop.stopName);
                 this_.module.webapp.map.lmap.closePopup();
             });
-            /*
             if(stop.routes) {
                 var routeList = popupContent.find('.routeList');
                 for(var r = 0; r < stop.routes.length; r++) {
-                    var agencyAndId = stop.routes[r].agencyId + '_' + stop.routes[r].id;
+                    var agencyAndId = stop.routes[r].agency.id + '_' + stop.routes[r].id;
+                    var routeData = {"routeShortName":stop.routes[r].shortName, "routeLongName":stop.routes[r].longName};
                     //var routeData = this.module.webapp.indexApi.routes[agencyAndId].routeData;
                     ich['otp-stopsLayer-popupRoute'](routeData).appendTo(routeList);
                     // TODO: click opens RouteViewer
                     //routeList.append('<div>'+agencyAndId+'</div>');
                 }
             }
-            */
-            m = L.marker([stop.lat, stop.lon], {
-                icon : icon,
-            });
-            m._stopId = stop.id;
-            m.addTo(this)
-             .bindPopup(popupContent.get(0));
 
+          
+            if(stop.agency == "USF Bull Runner" && otp.config.showBullRunnerStops == true){
+            	//only want to display USF BullRunner stops in this layer
+            	L.marker([stop.lat, stop.lon], {
+            		icon : bullIcon,
+            	}).addTo(this_)
+            	.bindPopup(popupContent.get(0));
+            }
+            
+            else if(stop.agency == "Hillsborough Area Regional Transit" && otp.config.showHartBusStops == true){
+            	//only want to display Hart stops in this layer
+            	L.marker([stop.lat, stop.lon], {
+            		icon : hartIcon,
+            	}).addTo(this_)
+            	.bindPopup(popupContent.get(0));
+            }
+            
         }
     },
 });

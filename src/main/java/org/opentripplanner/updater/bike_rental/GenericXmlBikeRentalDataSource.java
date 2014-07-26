@@ -29,7 +29,7 @@ public abstract class GenericXmlBikeRentalDataSource implements BikeRentalDataSo
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericXmlBikeRentalDataSource.class);
 
-    private String url;
+    protected String url;
 
     List<BikeRentalStation> stations = new ArrayList<BikeRentalStation>();
 
@@ -60,6 +60,47 @@ public abstract class GenericXmlBikeRentalDataSource implements BikeRentalDataSo
         }
         LOG.info("Can't update bike rental station list from: " + url + ", keeping current list.");
         return false;
+    }
+
+    protected void parseXML(InputStream data) throws ParserConfigurationException, SAXException,
+            IOException {
+        ArrayList<BikeRentalStation> out = new ArrayList<BikeRentalStation>();
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true); // never forget this!
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(data);
+
+        NodeList nodes;
+        try {
+            Object result = xpathExpr.evaluate(doc, XPathConstants.NODESET);
+            nodes = (NodeList) result;
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException(e);
+        }
+
+        for (int i = 0; i < nodes.getLength(); ++i) {
+            Node node = nodes.item(i);
+            if (!(node instanceof Element)) {
+                continue;
+            }
+            HashMap<String, String> attributes = new HashMap<String, String>();
+            Node child = node.getFirstChild();
+            while (child != null) {
+                if (!(child instanceof Element)) {
+                    child = child.getNextSibling();
+                    continue;
+                }
+                attributes.put(child.getNodeName(), child.getTextContent());
+                child = child.getNextSibling();
+            }
+            BikeRentalStation brstation = makeStation(attributes);
+            if (brstation != null)
+                out.add(brstation);
+        }
+        synchronized(this) {
+            stations = out;
+        }
     }
 
     @Override

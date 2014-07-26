@@ -124,6 +124,9 @@ public class GraphUpdaterConfigurator {
                         else if (type.equals("websocket-gtfs-rt-updater")) {
                             updater = new WebsocketGtfsRealtimeUpdater();
                         }
+                        else if (type.equals("vehicle-position-updater")){
+                        	updater = new PollingVehiclePositionsUpdater();
+                        }
                         else if (type.equals("real-time-alerts")) {
                             updater = new GtfsRealtimeAlertsUpdater();
                         }
