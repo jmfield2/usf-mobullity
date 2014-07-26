@@ -101,6 +101,7 @@ public class CityBikesBikeRentalDataSource implements BikeRentalDataSource, Pref
                 out.add(brStation);
             }
         }
+                
         synchronized (this) {
             stations = out;
         }
