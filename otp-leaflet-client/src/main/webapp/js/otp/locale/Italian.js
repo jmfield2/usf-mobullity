@@ -17,18 +17,18 @@ otp.namespace("otp.locale");
 /**
   * @class
   */
-otp.locale.English = {
+otp.locale.Italian = {
 
     config :
     {
         //Name of a language written in a language itself (Used in Frontend to
         //choose a language)
-        name: 'English',
+        name: 'Italiano',
         //FALSE-imperial units are used
         //TRUE-Metric units are used
-        metric : false, 
+        metric : true, 
         //Name of localization file (*.po file) in otp-leaflet-client/src/main/webapp/i18n
-        locale_short : "en",
+        locale_short : "it",
         //Name of datepicker localization in
         //otp-leaflet-client/src/main/webapp/js/lib/jquery-ui/i18n (usually
         //same as locale_short)
@@ -38,54 +38,32 @@ otp.locale.English = {
         //into otp-leaflet-client/src/main/webapp/js/lib/jquery-ui/i18n
         //and add it in index.html after other localizations
         //It will be used automatically when UI is switched to this locale
-        datepicker_locale_short: "" //Doesn't use localization
-
+        datepicker_locale_short: "it" 
     },
 
-    /**
-     * Info Widgets: a list of the non-module-specific "information widgets"
-     * that can be accessed from the top bar of the client display. Expressed as
-     * an array of objects, where each object has the following fields:
-     * - content: <string> the HTML content of the widget
-     * - [title]: <string> the title of the widget
-     * - [cssClass]: <string> the name of a CSS class to apply to the widget.
-     * If not specified, the default styling is used.
-     */
-    infoWidgets : [
-            {
-                title: 'About',
-                content: '<p>About this site</p>',
-                //cssClass: 'otp-contactWidget',
-            },
-            {
-                title: 'Contact',
-                content: '<p>Comments? Contact us at...</p>'
-            },
-    ],
 
-
-    //Time options are used in timeFixes branch
-    //Left in for now for better merging
     time:
     {
-        hour_abbrev    : "hour",
-        hours_abbrev   : "hours",
-        hour           : "hour",
-        hours          : "hours",
+        hour_abbrev    : "ora",
+        hours_abbrev   : "ore",
+        hour           : "ora",
+        hours          : "ore",
 
-        minute         : "minute",
-        minutes        : "minutes",
+        minute         : "minuto",
+        minutes        : "minuti",
         minute_abbrev  : "min",
-        minutes_abbrev : "mins",
+        minutes_abbrev : "min",
         second_abbrev  : "sec",
-        seconds_abbrev : "secs",
-        format         : "MMM Do YYYY, h:mma", //moment.js
-        date_format    : "MM/DD/YYYY", //momentjs must be same as date_picker format which is by default: mm/dd/yy
-        time_format    : "h:mma", //momentjs
+        seconds_abbrev : "sec",
+        format: "DD.MM.YYYY, h:mm",//"d.m.Y \\H:i"
+        date_format: "DD/MM/YYYY",//"d.m.Y",
+        time_format: "HH:mm",//"H:i",
+        date_format_picker: "dd/mm/yy",
         time_format_picker : "hh:mmtt", //http://trentrichardson.com/examples/timepicker/#tp-formatting
-        months         : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        months         : ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']
     },
 
-    CLASS_NAME : "otp.locale.English"
+
+    CLASS_NAME : "otp.locale.Italian"
 };
 

@@ -1,32 +1,34 @@
 otp.config = {
     debug: false,
 
-    locale: otp.locale.Slovenian,
-    locale_short: 'sl',
+    //This is default locale when wanted locale isn't found
+    //Locale language is set based on wanted language in url >
+    //user cookie > language set in browser (Not accept-language) 
+    locale: otp.locale.English,
 
-    //Add all locales you want to see in your frontend langzuage chooser
-    //code must be the same as locale name in js/locale withoud .js part
-    //name must be name of the language in that language
-    active_locales : [
-        { 
-            code: 'en',
-            name: 'English'
-        },
-        {
-            code:'de',
-            name: 'Deutsch'
-        }
-    ],
+    //All avalible locales
+    //key is translation name. Must be the same as po file or .json file
+    //value is name of settings file for localization in locale subfolder
+    //File should be loaded in index.html
+    locales : {
+        'en': otp.locale.English,
+        'de': otp.locale.German,
+        'sl': otp.locale.Slovenian,
+        'fr': otp.locale.French,
+        'it': otp.locale.Italian,
+        'ca_ES': otp.locale.Catalan
+    },
 
     languageChooser : function() {
+        var active_locales = _.values(otp.config.locales);
         var str = "<ul>";
-        var localesLength = otp.config.active_locales.length;
+        var localesLength = active_locales.length;
         var param_name = i18n.options.detectLngQS;
         for (var i = 0; i < localesLength; i++) {
-            var current_locale = otp.config.active_locales[i];
+            var current_locale = active_locales[i];
             var url_param = {};
-            url_param[param_name] = current_locale.code;
-            str += '<li><a href="?' + $.param(url_param) + '">' + current_locale.name + ' (' + current_locale.code + ')</a></li>';
+            url_param[param_name] = current_locale.config.locale_short;
+            str += '<li><a href="?' + $.param(url_param) + '">' + current_locale.config.name + ' (' + current_locale.config.locale_short + ')</a></li>';
         }
         str += "</ul>";
         return str;
@@ -95,11 +97,13 @@ otp.config = {
     siteDescription     : "MARPROM Daljinko",
     logoGraphic         : 'images/otp_logo_darkbg_40px.png',
     bikeshareName       : "BCikel",
+    //Enable this if you want to show frontend language chooser
+    showLanguageChooser : true,
 
     showLogo            : true,
     showTitle           : true,
     showModuleSelector  : true,
-    metric              : true,
+    metric              : false,
 
 
     /**
@@ -155,38 +159,12 @@ otp.config = {
     ],
 
     
-    /**
-     * Info Widgets: a list of the non-module-specific "information widgets"
-     * that can be accessed from the top bar of the client display. Expressed as
-     * an array of objects, where each object has the following fields:
-     *   - content: <string> the HTML content of the widget
-     *   - [title]: <string> the title of the widget
-     *   - [cssClass]: <string> the name of a CSS class to apply to the widget.
-     *        If not specified, the default styling is used.
-     */
 
-
-    infoWidgets: [
-        {
-            title: 'O strani',
-            content: '<p>Beta verzija načrtovalnika poti za Maribor.</p>' +
-            '<p>Načrtovanje poti je trenutno mogoče samo v okolici Maribora (zaradi male zmogljivosti strežnika).</p>' +
-            '<p>Trenutno so vključeni vozni redi Marproma in lokacije postaj za izposojo koles BCikel</p>' +
-            '<p>Niso še dodane vse vožnje avtobusov:</p>' +
-            '<p>Manjka vožnja 20ke preko Zrkovc. <strong>Vsi ostali postanki bi morali ustrezati dejanskemu stanju</strong></p>' +
-            '<p>Temelji na <a href="http://www.opentripplanner.org/">OpenTripPlanner</a>-ju</p>',
-            //cssClass: 'otp-contactWidget',
-        },
-        /*{
-            title: 'Kontakt',
-            content: '<p>Comments? Contact us at...</p>'
-        },
-        //Enable this if you want to show frontend language chooser
-        {
-            title: '<img src="/images/language_icon.svg" onerror="this.onerror=\'\';this.src=\'/images/language_icon.png\'" width="30px" height="30px"/>', 
-            languages: true
-        } */
-    ],
+    //This is shown if showLanguageChooser is true
+    infoWidgetLangChooser : {
+        title: '<img src="/images/language_icon.svg" onerror="this.onerror=\'\';this.src=\'/images/language_icon.png\'" width="30px" height="30px"/>', 
+        languages: true
+    },
     
     
     /**
@@ -211,7 +189,7 @@ var options = {
 	fallbackLng: 'en',
         nsseparator: ';;', //Fixes problem when : is in translation text
         keyseparator: '_|_',
-	preload: [otp.config.locale_short],
+	preload: ['en'],
         //TODO: Language choosing works only with this disabled
         lng: otp.config.locale_short,
         /*postProcess: 'add_nekaj', //Adds | around every string that is translated*/
@@ -231,7 +209,24 @@ i18n.addPostProcessor('add_nekaj', function(val, key, opts) {
 });
 
 i18n.init(options, function(t) {
-    console.log("loaded");
+    //Sets locale and metric based on currently selected/detected language
+    if (i18n.lng() in otp.config.locales) {
+        otp.config.locale = otp.config.locales[i18n.lng()];
+        otp.config.metric = otp.config.locale.config.metric;
+        //Conditionally load datepicker-lang.js?
+    } 
+
+    //Use infoWidgets from locale
+    //Default locale is English which has infoWidgets
+    if ("infoWidgets" in otp.config.locale) {
+        otp.config.infoWidgets=otp.config.locale.infoWidgets;
+    } else {
+        otp.config.infoWidgets=otp.locale.English.infoWidgets;
+    }
+
+    if (otp.config.showLanguageChooser) {
+        otp.config.infoWidgets.push(otp.config.infoWidgetLangChooser);
+    }
     //Accepts Key, value or key, value1 ... valuen
     //Key is string to be translated
     //Value is used for sprintf parameter values

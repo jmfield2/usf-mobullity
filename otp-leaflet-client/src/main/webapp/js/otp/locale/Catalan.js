@@ -10,24 +10,26 @@
    
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>. 
- */
+*/
 
 otp.namespace("otp.locale");
 
 /**
- * @class
- */
-otp.locale.French = {
+  * @class
+  */
+//Ã¡:\xE1, Ã©:\xE9, Ã­:\xED Ã³:\xF3, Ãº:\xFA, Ã�:\xC1, Ã‰:\xC9, Ã�:\xCD, Ã“:\xD3, Ãš:\xDA, Ã±:\xF1, Ã‘:\xD1
+otp.locale.Catalan = {
 
-    config : {
+    config : 
+    {
         //Name of a language written in a language itself (Used in Frontend to
         //choose a language)
-        name: 'Français',
+        name: 'Català',
         //FALSE-imperial units are used
         //TRUE-Metric units are used
         metric : true, 
         //Name of localization file (*.po file) in otp-leaflet-client/src/main/webapp/i18n
-        locale_short : "fr",
+        locale_short : "ca_ES",
         //Name of datepicker localization in
         //otp-leaflet-client/src/main/webapp/js/lib/jquery-ui/i18n (usually
         //same as locale_short)
@@ -37,29 +39,30 @@ otp.locale.French = {
         //into otp-leaflet-client/src/main/webapp/js/lib/jquery-ui/i18n
         //and add it in index.html after other localizations
         //It will be used automatically when UI is switched to this locale
-        datepicker_locale_short: "fr"
+        datepicker_locale_short: "ca" 
     },
 
 
-    time : {
+    time:
+    {
         // TODO
-        hour_abbrev    : "hour",
-        hours_abbrev   : "hours",
-        hour           : "hour",
-        hours          : "hours",
+        hour_abbrev    : "hora",
+        hours_abbrev   : "hores",
+        hour           : "hora",
+        hours          : "hores",
 
-        format : "d.m.Y \\à H:i",
-        date_format : "d-m-Y",
-        time_format : "H:i",
-        minute : "minute",
-        minutes : "minutes",
-        minute_abbrev : "min",
-        minutes_abbrev : "min",
-        second_abbrev : "sec",
-        seconds_abbrev : "sec",
-        months : [ 'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc' ]
+        minute         : "minut",
+        minutes        : "minuts",
+        minute_abbrev  : "min",
+        minutes_abbrev : "mins",
+        second_abbrev  : "seg",
+        seconds_abbrev : "segs",
+        format         : "D, j M H:i",
+        date_format    : "d-m-Y",
+        time_format    : "H:i",
+        months         : ['gen', 'feb', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'des']
     },
 
 
-    CLASS_NAME : "otp.locale.French"
+    CLASS_NAME : "otp.locale.Catalan"
 };
