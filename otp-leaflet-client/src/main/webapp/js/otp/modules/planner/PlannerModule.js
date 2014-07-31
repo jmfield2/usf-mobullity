@@ -356,6 +356,8 @@ otp.modules.planner.PlannerModule =
             }
         } 	
         $('#otp-spinner').show();
+
+        _.extend(queryParams, {locale : otp.config.locale.config.locale_short} );
         
         this.lastQueryParams = queryParams;
 
