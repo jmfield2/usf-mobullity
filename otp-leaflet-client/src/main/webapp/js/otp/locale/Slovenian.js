@@ -61,10 +61,10 @@ otp.locale.Slovenian = {
                 '<p>Temelji na <a href="http://www.opentripplanner.org/">OpenTripPlanner</a>-ju</p>',
                 //cssClass: 'otp-contactWidget',
             },
-            {
+            /*{
                 title: 'Kontakt',
                 content: '<p>Komentarji? Kontaktirate nas lahko...</p>'
-            },
+            },*/
         {
             title: 'Legenda (Zapore cest)',
             content: '<p>Dodane so zapore cest Rallya in pa zaprta Tezenska ulica</p>' +
