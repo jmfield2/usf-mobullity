@@ -185,6 +185,7 @@ public class Timetable implements Serializable {
             if ( ! serviceDay.serviceRunning(tt.serviceCode)) continue; // TODO merge into call on next line
             if ( ! tt.tripAcceptable(s0, stopIndex)) continue;
             int adjustedTime = adjustTimeForTransfer(s0, currentStop, tt.trip, boarding, serviceDay, time);
+            System.out.println("*** TimeTable: getNextTri, time = "+ time+ ", adjustedTime = "+ adjustedTime);
             if (adjustedTime == -1) continue;
             LOG.debug("  running freq {}", freq);
             if (boarding) {
@@ -206,6 +207,7 @@ public class Timetable implements Serializable {
         if (bestFreq != null) {
             // A FrequencyEntry beat all the TripTimes.
             // Materialize that FrequencyEntry entry at the given time.
+        	System.out.print("*** TimeTable: apply the time shift");
             bestTrip = bestFreq.tripTimes.timeShift(stopIndex, bestTime, boarding);
         }
         return bestTrip;
@@ -265,7 +267,9 @@ public class Timetable implements Serializable {
         Arrays.fill(minRunningTimes, Integer.MAX_VALUE);
         // Concatenate raw TripTimes and those referenced from FrequencyEntries
         List<TripTimes> allTripTimes = Lists.newArrayList(tripTimes);
-        for (FrequencyEntry freq : frequencyEntries) allTripTimes.add(freq.tripTimes);
+        for (FrequencyEntry freq : frequencyEntries) {
+        	allTripTimes.add(freq.tripTimes);
+        }
         for (TripTimes tt : allTripTimes) {
             for (int h = 0; h < nHops; ++h) {
                 int dt = tt.getDwellTime(h);

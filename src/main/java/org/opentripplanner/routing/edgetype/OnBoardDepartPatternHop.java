@@ -106,7 +106,7 @@ public class OnBoardDepartPatternHop extends Edge implements OnboardEdge {
         /* Can't be traversed backwards. */
         if (options.isArriveBy())
             return null;
-
+        System.out.println("OnBoardDepartPatternHop edge+ get running time");
         StateEditor s1 = state0.edit(this);
         // s1.setBackMode(TraverseMode.BOARDING); TODO Do we need this?
         s1.setServiceDay(serviceDay);

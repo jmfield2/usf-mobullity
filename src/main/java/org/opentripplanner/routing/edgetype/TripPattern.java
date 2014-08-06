@@ -328,6 +328,8 @@ public class TripPattern implements Serializable {
     public void add(FrequencyEntry freq) {
         trips.add(freq.tripTimes.trip);
         scheduledTimetable.addFrequencyEntry(freq);
+        System.out.println("first try to fix the realtime update");
+        scheduledTimetable.addTripTimes(freq.tripTimes);
         if (this.route != freq.tripTimes.trip.getRoute()) {
             LOG.warn("The trip {} is on a different route than its stop pattern, which is on {}.", freq.tripTimes.trip, route);
         }

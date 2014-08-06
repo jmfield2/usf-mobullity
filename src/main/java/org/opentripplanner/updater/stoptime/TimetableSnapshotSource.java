@@ -147,7 +147,8 @@ public class TimetableSnapshotSource {
                         applied = handleAddedTrip(tripUpdate, agencyId, serviceDate);
                         break;
                     case UNSCHEDULED:
-                        applied = handleUnscheduledTrip(tripUpdate, agencyId, serviceDate);
+                    	applied = handleScheduledTrip(tripUpdate, agencyId, serviceDate);
+//                        applied = handleUnscheduledTrip(tripUpdate, agencyId, serviceDate);
                         break;
                     case CANCELED:
                         applied = handleCanceledTrip(tripUpdate, agencyId, serviceDate);

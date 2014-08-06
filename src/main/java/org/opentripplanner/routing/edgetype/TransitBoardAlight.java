@@ -131,12 +131,11 @@ public class TransitBoardAlight extends TablePatternEdge implements OnboardEdge 
     public State traverse(State s0, long arrivalTimeAtStop) {
         RoutingContext rctx    = s0.getContext();
         RoutingRequest options = s0.getOptions();
-
         /* If the user requested a wheelchair accessible trip, check whether and this stop is not accessible. */
         if (options.wheelchairAccessible && ! getPattern().wheelchairAccessible(stopIndex)) {
             return null;
         };
-
+        System.out.println("\nTransit Board Alight edge + getDepartureTime");
         /*
          * Determine whether we are going onto or off of transit. Entering and leaving transit is
          * not the same thing as boarding and alighting. When arriveBy == true, we are entering

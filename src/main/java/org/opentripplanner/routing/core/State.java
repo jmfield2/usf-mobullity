@@ -708,7 +708,7 @@ public class State implements Cloneable {
 
         while (orig.getBackState() != null) {
             edge = orig.getBackEdge();
-            
+            //System.out.println("use optimize = "+ optimize);
             if (optimize) {
                 // first board/last alight: figure in wait time in on the fly optimization
                 if (edge instanceof TransitBoardAlight &&
@@ -848,7 +848,8 @@ public class State implements Cloneable {
      * Reverse-optimize a path after it is complete, by default
      */
     public State optimize() {
-        return optimizeOrReverse(true, false);
+        //return optimizeOrReverse(true, false);
+        return optimizeOrReverse(false, false);
     }
 
     /**

@@ -226,6 +226,7 @@ public class TripTimes implements Serializable, Comparable<TripTimes>, Cloneable
 
     /** @return the amount of time in seconds that the vehicle waits at the stop. */
     public int getDepartureTime(int stop) {
+    	System.out.println("---TripTimes + get DepartureTime, "+ this.trip.getId()+ ", stop = "+ stop);
         if (departureTimes == null) return getScheduledDepartureTime(stop);
         else return departureTimes[stop]; // updated times are not time shifted.
     }
@@ -238,6 +239,7 @@ public class TripTimes implements Serializable, Comparable<TripTimes>, Cloneable
 
     /** @return the amount of time in seconds that the vehicle takes to reach the following stop. */
     public int getRunningTime(int stop) {
+    	System.out.println("---TripTimes + get running time: "+ this.trip.getId()+ ", stop = "+ stop );
         // timeShift is not relevant since this involves updated times and is relative.
         return getArrivalTime(stop + 1) - getDepartureTime(stop);
     }
@@ -391,6 +393,7 @@ public class TripTimes implements Serializable, Comparable<TripTimes>, Cloneable
         TripTimes shifted = this.clone();
         // Adjust 0-based times to match desired stoptime.
         int shift = time - (depart ? getDepartureTime(stop) : getArrivalTime(stop));
+        System.out.println(", shift = " + shift+ ", pre = "+ shifted.timeShift);
         shifted.timeShift += shift; // existing shift should usually (always?) be 0 on freqs
         return shifted;
     }
