@@ -108,7 +108,8 @@ public class TripTimes implements Serializable, Comparable<TripTimes>, Cloneable
      * Is this trip cancelled?
      */
     private boolean cancelled = false;
-
+    //added for debug
+    public String vehicleID = null;
     /** A Set of stop indexes that are marked as timepoints in the GTFS input. */
     private final BitSet timepoints;
 
@@ -226,7 +227,7 @@ public class TripTimes implements Serializable, Comparable<TripTimes>, Cloneable
 
     /** @return the amount of time in seconds that the vehicle waits at the stop. */
     public int getDepartureTime(int stop) {
-    	System.out.println("---TripTimes + get DepartureTime, "+ this.trip.getId()+ ", stop = "+ stop);
+    	//System.out.println("---TripTimes + get DepartureTime, "+ this.trip.getId()+ ", stop = "+ stop);
         if (departureTimes == null) return getScheduledDepartureTime(stop);
         else return departureTimes[stop]; // updated times are not time shifted.
     }
@@ -236,10 +237,16 @@ public class TripTimes implements Serializable, Comparable<TripTimes>, Cloneable
         // timeShift is not relevant since this involves updated times and is relative.
         return getDepartureTime(stop) - getArrivalTime(stop);
     }
-
+    //added for debug
+    public String getVehicleID(){
+    	return vehicleID;
+    }
+    public void setVehicleID(String currentVehicleID){
+    	vehicleID = currentVehicleID;
+    }
     /** @return the amount of time in seconds that the vehicle takes to reach the following stop. */
     public int getRunningTime(int stop) {
-    	System.out.println("---TripTimes + get running time: "+ this.trip.getId()+ ", stop = "+ stop );
+    	//System.out.println("---TripTimes + get running time: "+ this.trip.getId()+ ", stop = "+ stop );
         // timeShift is not relevant since this involves updated times and is relative.
         return getArrivalTime(stop + 1) - getDepartureTime(stop);
     }
@@ -283,7 +290,7 @@ public class TripTimes implements Serializable, Comparable<TripTimes>, Cloneable
         for (int s = 0; s < nStops; s++) {
             int arr = getArrivalTime(s);
             int dep = getDepartureTime(s);
-
+            System.out.println("stop = "+ s+ ", prevDep "+ prevDep + ", arr = "+ arr);
             if (dep < arr) {
                 LOG.error("Negative dwell time in TripTimes at stop index {}.", s);
                 return false;
