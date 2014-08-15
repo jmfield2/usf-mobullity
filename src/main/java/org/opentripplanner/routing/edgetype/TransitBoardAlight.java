@@ -135,7 +135,7 @@ public class TransitBoardAlight extends TablePatternEdge implements OnboardEdge 
         if (options.wheelchairAccessible && ! getPattern().wheelchairAccessible(stopIndex)) {
             return null;
         };
-        //System.out.println("\nTransit Board Alight edge + getDepartureTime");
+        
         /*
          * Determine whether we are going onto or off of transit. Entering and leaving transit is
          * not the same thing as boarding and alighting. When arriveBy == true, we are entering
@@ -237,6 +237,7 @@ public class TransitBoardAlight extends TablePatternEdge implements OnboardEdge 
             int bestWait = -1;
             TripTimes  bestTripTimes  = null;
             ServiceDay bestServiceDay = null;
+            System.out.println("\n*** Transit Board Alight edge ****");
             for (ServiceDay sd : rctx.serviceDays) {
                 /* Find the proper timetable (updated or original) if there is a realtime snapshot. */
                 Timetable timetable = tripPattern.getUpdatedTimetable(options, sd);
@@ -263,7 +264,7 @@ public class TransitBoardAlight extends TablePatternEdge implements OnboardEdge 
             }
             if (bestWait < 0) return null; // no appropriate trip was found
             Trip trip = bestTripTimes.trip;
-            
+            System.out.println("....BestTrip vehicleID: "+bestTripTimes.vehicleID);
             /* check if route and/or Agency are banned for this plan */
             // FIXME this should be done WHILE searching for a trip.
             if (options.tripIsBanned(trip)) return null;
