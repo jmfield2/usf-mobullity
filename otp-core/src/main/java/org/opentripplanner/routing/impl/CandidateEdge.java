@@ -238,9 +238,9 @@ public class CandidateEdge {
             if ((edge.getStreetClass() & platform) != 0) {
                 // this a hack, but there's not really a better way to do it
                 myScore /= PLATFORM_PREFERENCE;
-            }
+            //}
             // apply strong preference to platforms for the specified modes 
-            if ((edge.getStreetClass() & platform) != 0) {
+            //if ((edge.getStreetClass() & platform) != 0) {
                 // we're subtracting here because no matter how close we are to a
                 // good non-car non-platform edge, we really want to avoid it in
                 // case it's a Pedway or other weird and unlikely starting location.
