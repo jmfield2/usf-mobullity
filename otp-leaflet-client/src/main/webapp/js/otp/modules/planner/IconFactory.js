@@ -54,6 +54,24 @@ var RoadClosedFutureIcon = L.Icon.extend({
     }
 });
 
+var RoadWorksNowIcon = L.Icon.extend({
+    options: {
+        iconUrl: resourcePath + 'images/road_works.png',
+        iconSize: new L.Point(22, 22),
+        iconAnchor: new L.Point(11, 11),
+        popupAnchor: new L.Point(0,-11)
+    }
+});
+
+var RoadWorksFutureIcon = L.Icon.extend({
+    options: {
+        iconUrl: resourcePath + 'images/road_works_gray.png',
+        iconSize: new L.Point(22, 22),
+        iconAnchor: new L.Point(11, 11),
+        popupAnchor: new L.Point(0,-11)
+    }
+});
+
 
 var StartBikeIcon = L.Icon.extend({
     options: {
@@ -292,6 +310,9 @@ otp.modules.planner.IconFactory = otp.Class({
 
     roadClosedNow : new RoadClosedNowIcon(),
     roadClosedFuture : new RoadClosedFutureIcon(),
+
+    roadWorksNow : new RoadWorksNowIcon(),
+    roadWorksFuture : new RoadWorksFutureIcon(),
     
     lowerCutoff : 0.2,
     upperCutoff : 0.8,

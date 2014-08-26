@@ -165,6 +165,16 @@ public class RoadClosureBuilder implements GraphBuilder {
         roadClosure.closureEnd = new Date(rep.getEndClosure());
         roadClosure.title = roadClosureInfo.title;
         roadClosure.full = roadClosureInfo.full;
+        roadClosure.show_only = roadClosureInfo.showOnly;
+        
+        
+        //Show only are roads for which geometry isn't fully correct
+        //For these roads we only show closures and don't close them in a graph
+        if (roadClosure.show_only) {
+            roadClosure.geometry = geometry;
+            log.info("Made roadClosure for show: {}", roadClosure);
+            return roadClosure;
+        }
         
         //We have way IDS
         if (roadClosureInfo.way_id != null) {

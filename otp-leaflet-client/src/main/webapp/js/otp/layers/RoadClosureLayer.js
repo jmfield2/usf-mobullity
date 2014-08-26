@@ -107,10 +107,22 @@ otp.layers.RoadClosureLayer =
             } else if(this.isBefore(now,to_moment) && this.isAfter(now, from_moment)) {
                 context.closed = "Zaprto";
                 console.info("Road closed");
-                style = {color: 'red', opacity:1};
-                icon = this.icons.roadClosedNow;
+                if (roadClosure.show_only) {
+                    style = {color: 'blue', opacity: 0.6};
+                } else {
+                    style = {color: 'red', opacity:1};
+                }
+                if (roadClosure.show_only) {
+                    icon = this.icons.roadWorksNow;
+                } else {
+                    icon = this.icons.roadClosedNow;
+                }
             } else if (this.isBefore(now, from_moment)) {
-                icon = this.icons.roadClosedFuture;
+                if (roadClosure.show_only) {
+                    icon = this.icons.roadWorksFuture;
+                } else {
+                    icon = this.icons.roadClosedFuture;
+                }
                 //More then 1 hour before road closes
                 if (diff > 1) {
                     console.info("Road still opened");
@@ -144,6 +156,10 @@ otp.layers.RoadClosureLayer =
             if (this.bold) {
                 style["opacity"] = 1;
                 style["weight"] = 3;
+            }
+
+            if (roadClosure.show_only) {
+                style["dashArray"] = "4, 8";
             }
 
             var polyline = new L.Polyline(otp.util.Geo.decodePolyline(roadClosure.geometry.points), style);
