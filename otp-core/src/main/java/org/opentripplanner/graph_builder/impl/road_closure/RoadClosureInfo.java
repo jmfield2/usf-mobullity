@@ -18,8 +18,11 @@ public class RoadClosureInfo {
     String hour_on = null;
     String hour_off = null;
     String description = null;
+    String title = null;
     String url = null;
     String way_id = null;
+    Boolean full = false;
+    
 
     @Override
     public String toString() {
@@ -50,14 +53,20 @@ public class RoadClosureInfo {
             case "description":
                 description = tagValue;
                 break;
+            case "title":
+                title = tagValue;
+                break;
             case "url":
                 url = tagValue;
                 break;
             case "way_id":
                 way_id = tagValue;
                 break;
+            case "full":
+                full = new Boolean(tagValue);
+                break;
             default:
-                throw new Exception(String.format("Invalid tagName:{}", tagName));
+                throw new Exception(String.format("Invalid tagName:%s", tagName));
         }
     }
     
