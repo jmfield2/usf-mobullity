@@ -139,6 +139,9 @@ otp.config = {
                 '<p><strong><span style="color:green">Green</span></strong> - road will be closed in the future</p>' +
                 '<p><strong><span style="color:orange">Orange</span></strong> - road will close in next hour</p>' +
                 '<p><strong><span style="color:red">Red</span></strong> - road is closed now</p>' +
+                '<p><strong><span style="color:blue">Blue</span></strong> - road is partially closed now' +
+                '(It could be fully closed but, It doesn\'t match correctly to streets so it isn\t used in routing)</p>' +
+                '<p>If road is dashed it means we don\'t know what specificaly is closed</p>' +
                 '<p>Router should route around closed routes if they are traversed' +
                ' during closure time. (You can change the time with depart/arrive at...)' +
                ' But it doesn\'t work always for unknown reasons.</p>'

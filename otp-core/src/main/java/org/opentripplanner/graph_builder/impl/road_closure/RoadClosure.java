@@ -43,6 +43,10 @@ public class RoadClosure implements Serializable {
     
     @XmlAttribute
     @JsonSerialize
+    public Boolean show_only;
+    
+    @XmlAttribute
+    @JsonSerialize
     public Date closureStart;
     
     @XmlAttribute
@@ -88,7 +92,7 @@ public class RoadClosure implements Serializable {
 
     @Override
     public String toString() {
-        return "RoadClosure{" + "title=" + title + ", description=" + description + ", closureStart=" + closureStart + ", closureEnd=" + closureEnd + ", geometry=" + geometry.getCoordinates().length + '}';
+        return "RoadClosure{" + "title=" + title + ",show_only=" + show_only + ", description=" + description + ", closureStart=" + closureStart + ", closureEnd=" + closureEnd + ", geometry=" + geometry.getCoordinates().length + '}';
     }
     
 }

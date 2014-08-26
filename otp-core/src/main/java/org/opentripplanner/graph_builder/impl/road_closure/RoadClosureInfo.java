@@ -22,6 +22,7 @@ public class RoadClosureInfo {
     String url = null;
     String way_id = null;
     Boolean full = false;
+    Boolean showOnly = false;
     
 
     @Override
@@ -63,7 +64,10 @@ public class RoadClosureInfo {
                 way_id = tagValue;
                 break;
             case "full":
-                full = new Boolean(tagValue);
+                full = new Boolean(tagValue.toLowerCase());
+                break;
+            case "show_only":
+                showOnly = new Boolean(tagValue.toLowerCase());
                 break;
             default:
                 throw new Exception(String.format("Invalid tagName:%s", tagName));
