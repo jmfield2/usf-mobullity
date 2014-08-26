@@ -135,10 +135,10 @@ public class RoadClosureBuilder implements GraphBuilder {
         try (BufferedReader br = new BufferedReader(new FileReader(txtfilepath))) {
             String line = br.readLine();
 
-            String[] values = line.split("=", -1); // don't truncate empty fields
+            String[] values = line.split("=", 2); // Split only on first =
 
             while (line != null) {
-                values = line.split("=", -1); // don't truncate empty fields
+                values = line.split("=", 2); // Split only on first =
                 roadClosureInfo.add(values[0], values[1]);
                 line = br.readLine();
 
@@ -163,6 +163,8 @@ public class RoadClosureBuilder implements GraphBuilder {
         roadClosure.url = roadClosureInfo.url;
         roadClosure.closureStart = new Date(rep.getStartClosure());
         roadClosure.closureEnd = new Date(rep.getEndClosure());
+        roadClosure.title = roadClosureInfo.title;
+        roadClosure.full = roadClosureInfo.full;
         
         //We have way IDS
         if (roadClosureInfo.way_id != null) {
