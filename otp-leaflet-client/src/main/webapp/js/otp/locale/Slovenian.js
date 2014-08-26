@@ -70,9 +70,12 @@ otp.locale.Slovenian = {
             content: '<p>Dodane so zapore cest Rallya in pa zaprta Tezenska ulica</p>' +
                 '<p>Ko je karta oddaljena je prikazan samo znak.' +
                     ' Ko je približana pa lahko vidimo poti različnih barv:</p>' +
+                    '<p>Če je cesta črtkana pomeni, da ne vemo natančno kje je zaprta. Lahko da je delno zaprta' +
+                    ' Ali pa zaprt samo pločnik. Zato je prikazana črtkano oz. modro. Ni pa upoštevana v načrtovalniku.' +
                 '<p><strong><span style="color:green">Zelena</span></strong> - cesta bo zaprta v prihodnosti</p>' +
                 '<p><strong><span style="color:orange">Oranžna</span></strong> - cesta bo zaprta v naslednji uri</p>' +
                 '<p><strong><span style="color:red">Rdeča</span></strong> - cesta je zaprta</p>' +
+                '<p><strong><span style="color:blue">Modra črtkana</span></strong> - Nekaj pri cesti je zaprto</p>' +
                 '<p>Načrtovalnik poti bi moral ignorirati zaprte ceste, če so zaprte v času potovanja' +
                ' (Čas potovanja se lahko spreminja v Nastavitha poti...)', 
         }
