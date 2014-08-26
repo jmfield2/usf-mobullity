@@ -479,7 +479,11 @@ otp.widgets.ItinerariesWidget =
             }*/
            //TRANSLATORS: cost of trip
             tripSummary.append('<div class="otp-itinTripSummaryLabel">' + _tr("Fare") +'</div><div class="otp-itinTripSummaryText">'+itin.getFareStr()+'</div>');
+        } else if (itin.itinData.fare) {
+           //TRANSLATORS: cost of trip
+            tripSummary.append('<div class="otp-itinTripSummaryLabel">' + _tr("Fare") +'</div><div class="otp-itinTripSummaryText">'+itin.getFareStr()+'</div>');
         }
+
         
         
         
