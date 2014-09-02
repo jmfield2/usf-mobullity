@@ -14,6 +14,7 @@
 package org.opentripplanner.routing.edgetype;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import java.util.Locale;
 import org.onebusaway.gtfs.model.Stop;
@@ -52,6 +53,13 @@ public class PatternHop extends TablePatternEdge implements OnboardEdge, HopEdge
     public double getDistance() {
         return SphericalDistanceLibrary.getInstance().distance(start.getLat(), start.getLon(), end.getLat(),
                 end.getLon());
+    }
+    
+    public double getGeoDistance() {
+        if (geometry == null) {
+            return getDistance();
+        }
+        return SphericalDistanceLibrary.getInstance().fastLength(geometry);
     }
 
     public TraverseMode getMode() {

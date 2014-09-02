@@ -14,22 +14,28 @@
 package org.opentripplanner.routing.impl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Currency;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.Stop;
+import org.opentripplanner.common.model.P2;
+import org.opentripplanner.common.model.T2;
 import org.opentripplanner.routing.core.Fare;
+import org.opentripplanner.routing.core.Fare.FareType;
 import org.opentripplanner.routing.core.FareRuleSet;
 import org.opentripplanner.routing.core.State;
 import org.opentripplanner.routing.core.WrappedCurrency;
-import org.opentripplanner.routing.core.Fare.FareType;
 import org.opentripplanner.routing.edgetype.HopEdge;
+import org.opentripplanner.routing.edgetype.PatternHop;
 import org.opentripplanner.routing.graph.Edge;
 import org.opentripplanner.routing.services.FareService;
 import org.opentripplanner.routing.spt.GraphPath;
@@ -50,6 +56,10 @@ class Ride {
     long startTime;
 
     long endTime;
+    
+    double startDistance;
+    
+    double endDistance;
 
     // in DefaultFareServiceImpl classifier is just the TraverseMode
     // it can be used differently in custom fare services
@@ -74,9 +84,14 @@ class Ride {
             builder.append(" to zone ");
             builder.append(endZone);
         }
+        builder.append("(from distance ");
+        builder.append(startDistance);
+        builder.append(" to distance ");
+        builder.append(endDistance);
+                
         builder.append(" on route ");
         builder.append(route);
-        if (zones.size() > 0) {
+        if (zones.size() > 0 && startZone != null) {
             builder.append(" through zones ");
             boolean first = true;
             for (String zone : zones) {
@@ -89,7 +104,8 @@ class Ride {
             }
         }
         builder.append(" at ");
-        builder.append(startTime);
+        Date tmp = new Date(startTime*1000);
+        builder.append(tmp);
         if (classifier != null) {
             builder.append(", classified by ");
             builder.append(classifier.toString());
@@ -117,6 +133,60 @@ public class DefaultFareServiceImpl implements FareService, Serializable {
     protected HashMap<AgencyAndId, FareRuleSet> fareRules;
 
     protected HashMap<AgencyAndId, FareAttribute> fareAttributes;
+    
+    // Each entry is <max time, cents at that time>; the list is sorted in
+    // ascending time order
+    private static final List<T2<Integer, Float>> pricing_by_distance;
+    
+    static {
+        pricing_by_distance = new ArrayList<>();
+        pricing_by_distance.add((new T2<>(6, 1.30F)));
+        pricing_by_distance.add((new T2<>(11, 1.80F)));
+        pricing_by_distance.add((new T2<>(16, 2.30F)));
+        pricing_by_distance.add((new T2<>(21, 2.70F)));
+        pricing_by_distance.add((new T2<>(26, 3.10F)));
+        pricing_by_distance.add((new T2<>(31, 3.60F)));
+        pricing_by_distance.add((new T2<>(36, 4.10F)));
+        pricing_by_distance.add((new T2<>(41, 4.70F)));
+        pricing_by_distance.add((new T2<>(46, 5.20F)));
+        pricing_by_distance.add((new T2<>(51, 5.60F)));
+        pricing_by_distance.add((new T2<>(56, 6.00F)));
+        pricing_by_distance.add((new T2<>(61, 6.30F)));
+        pricing_by_distance.add((new T2<>(66, 6.70F)));
+        pricing_by_distance.add((new T2<>(71, 6.90F)));
+        pricing_by_distance.add((new T2<>(76, 7.20F)));
+        pricing_by_distance.add((new T2<>(81, 7.50F)));
+        pricing_by_distance.add((new T2<>(86, 7.90F)));
+        pricing_by_distance.add((new T2<>(91, 8.30F)));
+        pricing_by_distance.add((new T2<>(96, 8.70F)));
+        pricing_by_distance.add((new T2<>(101, 9.20F)));
+        pricing_by_distance.add((new T2<>(106, 9.60F)));
+        pricing_by_distance.add((new T2<>(111, 9.90F)));
+        pricing_by_distance.add((new T2<>(116, 10.30F)));
+        pricing_by_distance.add((new T2<>(121, 10.70F)));
+        pricing_by_distance.add((new T2<>(126, 11.10F)));
+        pricing_by_distance.add((new T2<>(131, 11.40F)));
+        pricing_by_distance.add((new T2<>(136, 11.60F)));
+        pricing_by_distance.add((new T2<>(141, 12.00F)));
+        pricing_by_distance.add((new T2<>(146, 12.40F)));
+        pricing_by_distance.add((new T2<>(151, 12.80F)));
+        pricing_by_distance.add((new T2<>(161, 13.60F)));
+        pricing_by_distance.add((new T2<>(171, 14.40F)));
+        pricing_by_distance.add((new T2<>(181, 15.20F)));
+        pricing_by_distance.add((new T2<>(191, 16.00F)));
+        pricing_by_distance.add((new T2<>(201, 16.80F)));
+        pricing_by_distance.add((new T2<>(211, 17.60F)));
+        pricing_by_distance.add((new T2<>(221, 18.40F)));
+        pricing_by_distance.add((new T2<>(231, 19.20F)));
+        
+        Collections.sort(pricing_by_distance, new Comparator<T2<Integer, Float>>() {
+            @Override
+            public int compare(T2<Integer, Float> arg0, T2<Integer, Float> arg1) {
+                return arg1.getFirst() - arg0.getFirst();
+            }
+
+        });
+    }
 
     public DefaultFareServiceImpl(HashMap<AgencyAndId, FareRuleSet>   fareRules,
                                   HashMap<AgencyAndId, FareAttribute> fareAttributes) {
@@ -127,6 +197,7 @@ public class DefaultFareServiceImpl implements FareService, Serializable {
     public static List<Ride> createRides(GraphPath path) {
         List<Ride> rides = new LinkedList<Ride>();
         Ride ride = null;
+        double cur_distance = 0;
         for (State state : path.states) {
             Edge edge = state.getBackEdge();
             if ( ! (edge instanceof HopEdge))
@@ -140,13 +211,25 @@ public class DefaultFareServiceImpl implements FareService, Serializable {
                 ride.route = state.getRoute();
                 ride.startTime = state.getBackState().getTimeSeconds();
                 ride.firstStop = hEdge.getStartStop();
+                if (hEdge instanceof PatternHop) {
+                    PatternHop phEdge = (PatternHop) edge;
+                    ride.startDistance = phEdge.getGeoDistance();
+                    cur_distance = ride.startDistance;
+                }
             }
+            
             ride.lastStop = hEdge.getEndStop();
             ride.endZone  = ride.lastStop.getZoneId();
             ride.zones.add(ride.endZone);
             ride.endTime  = state.getTimeSeconds();
             // in default fare service, classify rides by mode 
             ride.classifier = state.getBackMode();
+            if (hEdge instanceof PatternHop) {
+                
+                PatternHop phEdge = (PatternHop) edge;
+                cur_distance += phEdge.getGeoDistance();
+                ride.endDistance = cur_distance;
+            }
         }
         return rides;
     }
@@ -215,19 +298,26 @@ public class DefaultFareServiceImpl implements FareService, Serializable {
         
         Ride firstRide = rides.get(0);
         long   startTime = firstRide.startTime;
+        double startDistance = firstRide.startDistance;
         String startZone = firstRide.startZone;
         String endZone = firstRide.endZone;
         // stops don't really have an agency id, they have the per-feed default id
         String feedId = firstRide.firstStop.getId().getAgencyId();  
         long lastRideStartTime = firstRide.startTime;
         long lastRideEndTime = firstRide.endTime;
+        double lastRideStartDistance = firstRide.startTime;
+        double lastRidEndDistance = firstRide.endTime;
+        Set<String> agencies = new HashSet<>(5);
         for (Ride ride : rides) {
             if ( ! ride.firstStop.getId().getAgencyId().equals(feedId)) {
                 LOG.debug("skipped multi-feed ride sequence {}", rides);
                 return Float.POSITIVE_INFINITY;
             }
+            agencies.add(ride.route.getAgencyId());
             lastRideStartTime = ride.startTime;
             lastRideEndTime = ride.endTime;
+            lastRideStartDistance = ride.startDistance;
+            lastRidEndDistance = ride.endDistance;
             endZone = ride.endZone;
             routes.add(ride.route);
             zones.addAll(ride.zones);
@@ -238,6 +328,13 @@ public class DefaultFareServiceImpl implements FareService, Serializable {
         float bestFare = Float.POSITIVE_INFINITY;
         long tripTime = lastRideStartTime - startTime;
         long journeyTime = lastRideEndTime - startTime;
+        double tripDistance = lastRidEndDistance - startDistance;
+        
+        LOG.info("Ride in agencies: {}", agencies);
+        if (agencies.size() == 1 && agencies.contains("A22")) {
+            return calculateDistanceCost("A22", tripDistance);
+        }
+        
         // find the best fare that matches this set of rides
         for (AgencyAndId fareId : fareAttributes.keySet()) {
         	// fares also don't really have an agency id, they will have the per-feed default id
@@ -275,6 +372,22 @@ public class DefaultFareServiceImpl implements FareService, Serializable {
         }
         return bestFare;
 
+    }
+
+    private float calculateDistanceCost(String agencyID, double tripDistance) {
+        
+        double tripDistanceKm = tripDistance/1000;
+        LOG.info("Calculating distance fare for {} distance:{}", agencyID, tripDistanceKm);
+        float price = 0;
+        for(T2<Integer, Float> distance_price: pricing_by_distance) {
+            if (tripDistanceKm < distance_price.getFirst()) {
+                price = distance_price.getSecond();
+                //LOG.info("Found price for {} km = {}", distance_price.getFirst(), distance_price.getSecond());
+            } else {
+                break;
+            }
+        }
+        return price;
     }
 
 }
