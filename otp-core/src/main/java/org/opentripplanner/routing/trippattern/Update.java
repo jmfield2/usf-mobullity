@@ -102,7 +102,14 @@ public class Update extends AbstractUpdate implements Comparable<Update> {
                     tripId, stopSeq, stopId, status, delay);
         
         return String.format("Update trip %s Stop #%d:%s (%s) A%s D%s", 
-                tripId, stopSeq, stopId, status, arrive, depart);
+                tripId, stopSeq, stopId, status, numSecToTime(arrive), numSecToTime(depart));
+    }
+    
+    private String numSecToTime(int time) {
+        int hour = time/3600;
+        int min = time/60-(hour*60);
+        int sec = time - (time/60);
+        return String.format("%d:%d:%d",hour, min, sec);
     }
     
     public static enum Status {

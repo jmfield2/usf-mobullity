@@ -258,12 +258,20 @@ public class TripUpdateList extends AbstractUpdate {
                 u = updates.get(i);
             int ti = pattern.getTripIndex(this.tripId);
             // stop-hop conversion
-            int schedArr = (i < 1) ? 0 : pattern.getArrivalTime(i-1, ti);
-            int schedDep = (i >= nHops) ? 0 : pattern.getDepartureTime(i, ti);
-            System.out.printf("Stop %02d %s A%d D%d >>> %s\n", i, s.getId().getId(), 
+            String schedArr = (i < 1) ? "0" : numSecToTime(pattern.getArrivalTime(i-1, ti));
+            String schedDep = (i >= nHops) ? "0" : numSecToTime(pattern.getDepartureTime(i, ti));
+            System.out.printf("Stop %02d %s (%s) A%s D%s >>> %s\n", i, s.getId().getId(), s.getName(),
                     schedArr, schedDep, (u == null) ? "--" : u.toString());
         }
         return MATCH_FAILED;
+    }
+    
+    private String numSecToTime(int s) {
+        int m = s / 60;
+        s = s % 60;
+        int h = m / 60;
+        m = m % 60;
+        return String.format("%02d:%02d:%02d", h, m, s);
     }
     
     private int matchBlockSimple(TableTripPattern pattern) {

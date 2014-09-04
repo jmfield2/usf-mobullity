@@ -190,6 +190,8 @@ public class TimetableSnapshotSource {
         if (pattern == null) {
             LOG.warn("No pattern found for tripId {}, skipping TripUpdate.", tripUpdateList.getTripId());
             return false;
+        } else {
+            LOG.info("Finding stops for trip:{}", tripUpdateList.getTripId());
         }
 
         // we have a message we actually want to apply
