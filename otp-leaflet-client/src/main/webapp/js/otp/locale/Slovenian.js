@@ -55,7 +55,7 @@ otp.locale.Slovenian = {
                 title: 'O strani',
                 content: '<p>Beta verzija načrtovalnika poti za Maribor.</p>' +
                 '<p>Načrtovanje poti je trenutno mogoče samo v okolici Maribora (zaradi male zmogljivosti strežnika).</p>' +
-                '<p>Trenutno so vključeni vozni redi Marproma in lokacije postaj za izposojo koles BCikel</p>' +
+                '<p>Trenutno so vključeni vozni redi Marproma (in testno nekaj neaktualnih primestnih) in lokacije postaj za izposojo koles BCikel</p>' +
                 '<p>Niso še dodane vse vožnje avtobusov:</p>' +
                 '<p>Manjka vožnja 20ke preko Zrkovc. <strong>Vsi ostali postanki bi morali ustrezati dejanskemu stanju</strong></p>' +
                 '<p>Temelji na <a href="http://www.opentripplanner.org/">OpenTripPlanner</a>-ju</p>',
