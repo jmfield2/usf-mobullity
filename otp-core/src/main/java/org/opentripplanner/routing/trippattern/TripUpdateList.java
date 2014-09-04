@@ -532,7 +532,7 @@ public class TripUpdateList extends AbstractUpdate {
                 return null;
             }
             
-            long today = serviceDate.getAsDate(TimeZone.getTimeZone("GMT")).getTime() / 1000;
+            long today = serviceDate.getAsDate(TimeZone.getTimeZone("Europe/Ljubljana")).getTime() / 1000;
             long arrivalTime = -1, departureTime = -1;
             
             if(stopTimeUpdate.hasArrival()) {
