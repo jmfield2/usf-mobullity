@@ -84,6 +84,8 @@ public class PollingStoptimeUpdater extends PollingGraphUpdater {
                 updateSource = new GtfsRealtimeHttpTripUpdateSource();
             } else if (sourceType.equals("gtfs-zmq")) {
                 updateSource = new GtfsRealtimeZmqTripUpdateSource();
+            } else if (sourceType.equals("gtfs-file")) {
+                updateSource = new GtfsRealtimeFileTripUpdateSource();
             } else if (sourceType.equals("kv8-zmq")) {
                 updateSource = new Kv8ZmqTripUpdateSource();
             }
