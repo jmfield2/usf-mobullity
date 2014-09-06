@@ -257,6 +257,10 @@ public class CandidateEdge {
                 // case it's a Pedway or other weird and unlikely starting location.
                 myScore -= CAR_PREFERENCE;
             }
+        } else if (mode.getBicycle()) {
+            if (edge.getPermission().allows(StreetTraversalPermission.BICYCLE)) {
+                myScore -= CAR_PREFERENCE;
+            }
         }
 
         // Consider the heading in the score if it is available.

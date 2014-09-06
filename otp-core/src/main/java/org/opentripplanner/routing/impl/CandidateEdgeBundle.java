@@ -126,4 +126,14 @@ public class CandidateEdgeBundle extends ArrayList<CandidateEdge> {
         }
         return false;
     }
+    
+    public boolean allowsCycling() {
+        for (CandidateEdge ce : CandidateEdgeBundle.this) {
+            StreetEdge e = ce.getEdge();
+            if (e.getPermission().allows(StreetTraversalPermission.BICYCLE)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
