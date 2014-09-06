@@ -82,6 +82,11 @@ public class Itinerary {
      * The number of transfers this trip has.
      */
     public Integer transfers = 0;
+    
+    /**
+     * Number of traffic lights in this itinerary
+     */
+    public Integer trafficLights = 0;
 
     /**
      * The cost of this trip

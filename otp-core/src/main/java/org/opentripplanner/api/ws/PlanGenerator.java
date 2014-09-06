@@ -240,6 +240,10 @@ public class PlanGenerator {
         calculateTimes(itinerary, states);
 
         calculateElevations(itinerary, edges);
+        
+        for (Leg leg : itinerary.legs) {
+            itinerary.trafficLights += leg.trafficLights;
+        }
 
         itinerary.walkDistance = lastState.getWalkDistance();
 

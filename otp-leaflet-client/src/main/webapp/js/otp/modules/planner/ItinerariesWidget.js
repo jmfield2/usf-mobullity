@@ -454,6 +454,10 @@ otp.widgets.ItinerariesWidget =
             }*/
             tripSummary.append('<div class="otp-itinTripSummaryLabel">Fare</div><div class="otp-itinTripSummaryText">'+itin.getFareStr()+'</div>');
         }
+        if ("trafficLights" in itin.itinData) {
+            tripSummary.append('<div class="otp-itinTripSummaryLabel">Traffic lights</div><div class="otp-itinTripSummaryText">' +
+                itin.itinData.trafficLights + '</div>');
+        }
         
         
         

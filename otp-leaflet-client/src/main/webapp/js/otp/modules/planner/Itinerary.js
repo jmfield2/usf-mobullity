@@ -296,6 +296,10 @@ otp.modules.planner.Itinerary = otp.Class({
             }
             html += '<div class="otp-itinTripSummaryLabel">Fare</div><div class="otp-itinTripSummaryText">'+this.getFareStr()+'</div>';
         }
+        if ("trafficLights" in this.itinData) {
+            html +='<div class="otp-itinTripSummaryLabel">Traffic lights</div><div class="otp-itinTripSummaryText">' +
+                this.itinData.trafficLights + '</div>';
+        }
         html += '</div>';
 
         html += '</div>';
