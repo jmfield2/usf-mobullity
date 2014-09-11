@@ -159,7 +159,7 @@ public class Timetable implements Serializable {
         int bestTime = boarding ? Integer.MAX_VALUE : Integer.MIN_VALUE;
         // Hoping JVM JIT will distribute the loop over the if clauses as needed.
         // We could invert this and skip some service days based on schedule overlap as in RRRR.
-        System.out.println("get next trip "+ this.getPattern().getRoute().getId() +", stopIndex = "+ stopIndex + ", len TripTimes = "+ tripTimes.size());
+        // System.out.println("get next trip "+ this.getPattern().getRoute().getId() +", stopIndex = "+ stopIndex + ", len TripTimes = "+ tripTimes.size());
         int count = 0;
         for (TripTimes tt : tripTimes) {
         	count++;
@@ -174,7 +174,7 @@ public class Timetable implements Serializable {
                     bestTrip = tt;
                     bestTime = depTime;
                 }
-                System.out.println(".........trip: "+ count+ ", vehicleID = "+ tt.getVehicleID()+ " , "+ "boarding: depTime= "+ depTime/3600+":"+ (depTime%3600)/60);
+                // System.out.println(".........trip: "+ count+ ", vehicleID = "+ tt.getVehicleID()+ " , "+ "boarding: depTime= "+ depTime/3600+":"+ (depTime%3600)/60);
             } else {
                 int arvTime = tt.getArrivalTime(stopIndex);
                 if (arvTime < 0) continue;
@@ -182,7 +182,7 @@ public class Timetable implements Serializable {
                     bestTrip = tt;
                     bestTime = arvTime;
                 }
-                System.out.println(".........trip: "+ count+ ", vehicleID = "+ tt.getVehicleID()+ " , arvTime = "+ arvTime/3600+":"+ (arvTime%3600)/60);
+                // System.out.println(".........trip: "+ count+ ", vehicleID = "+ tt.getVehicleID()+ " , arvTime = "+ arvTime/3600+":"+ (arvTime%3600)/60);
             }
         }
         // ACK all logic is identical to above.
@@ -309,7 +309,7 @@ public class Timetable implements Serializable {
     /** @return the index of TripTimes for this trip ID in this particular Timetable */
     public int getTripIndex(AgencyAndId tripId) {
         int ret = 0;
-        System.out.println("previous tripTimes.size = "+ tripTimes.size());
+        //System.out.println("previous tripTimes.size = "+ tripTimes.size());
         for (TripTimes tt : tripTimes) {
             // could replace linear search with indexing in stoptime updater, but not necessary
             // at this point since the updater thread is far from pegged.
@@ -338,6 +338,9 @@ public class Timetable implements Serializable {
     	int noStopsWithRealtimeUpdate = 0;
     	boolean estimationDone = false;
     	int previous = 0;
+    	int lastNzInd = 0;
+    	int firstNzIndex = -1;
+    	boolean verbose = true;
     	
         if (tripUpdate == null) {
             LOG.error("A null TripUpdate pointer was passed to the Timetable class update method.");
@@ -368,7 +371,7 @@ public class Timetable implements Serializable {
             }
 
             TripTimes newTimes = new TripTimes(getTripTimes(tripIndex));
-            System.out.println("----new TripTimes :" + tripUpdate.getTrip().getRouteId() +" , "+ tripUpdate.getVehicle().getId() );
+            //System.out.println("----new TripTimes :" + tripUpdate.getTrip().getRouteId() +" , "+ tripUpdate.getVehicle().getId() );
             newTimes.setVehicleID(tripUpdate.getVehicle().getId());
             
             if (tripDescriptor.hasScheduleRelationship() && tripDescriptor.getScheduleRelationship()
@@ -385,8 +388,8 @@ public class Timetable implements Serializable {
 
                 int numStops = newTimes.getNumStops()-1;
                 Integer delay = null;
-                System.out.println("numStops = "+ (int)(numStops-1));
-                int firstNzIndex = -1;
+                //System.out.println("numStops = "+ (int)(numStops-1));
+                 
                 boolean foundMatch = false;
                 for (int i = 0; i < numStops; i++) {
                  	
@@ -523,7 +526,7 @@ public class Timetable implements Serializable {
                 
                 //estimate the missing realtime info for tail of queue, eg: [t1, t2, t3, 0, 0 ]---> [t1, t2, t3, t4, t5]
                 //needs to be in a function
-                int lastNzInd = noStopsWithRealtimeUpdate;//numStops -2;
+                 lastNzInd = noStopsWithRealtimeUpdate;//numStops -2;
 //                while( 0 < lastNzInd){
 //                	if (newTimes.getArrivalTime(lastNzInd) == 0)
 //                		lastNzInd --;
@@ -531,9 +534,7 @@ public class Timetable implements Serializable {
 //                		break;
 //           	    }
             
-                System.out.println("\n++++  firstNzIndex = "+ firstNzIndex +  "--------------------"); 
-                System.out.println("++++  lastNzInd = "+ lastNzInd +  "--------------------"); 
-                
+               
 //                for(int i = lastNzInd + 1; i< numStops - 1; i++){
 //                	System.out.print("tail: estimate for stop: "+ i);
 //                	newTimes.estimateArrivaltime(i);
@@ -543,7 +544,7 @@ public class Timetable implements Serializable {
                 //estimate arrival time for head of queue, eg: [0, 0, t3, t4]--> [t1, t2, t3, t4]
                 if (0 < firstNzIndex && firstNzIndex != 0){
                 	for(int i = firstNzIndex ; 0 <= i; i--){
-                    	System.out.print("head: estimate for stop: "+ i);
+                    	//System.out.print("head: estimate for stop: "+ i);
                     	//newTimes.estimateArrivaltime(i, 0);
                     	newTimes.backPropagateDelay(i);
                     }
@@ -567,23 +568,26 @@ public class Timetable implements Serializable {
             	this.tripTimes.add(tripIndex, newTimes);
             }
            
+           if (verbose){ 
+        	 System.out.println("++++  firstNzIndex = "+ firstNzIndex +  "--------------------"); 
+             System.out.println("++++  lastNzInd = "+ lastNzInd +  "--------------------"); 
              
             if (estimationDone){
-	            System.out.println("\n*******after estimation*************\n");
+	            System.out.println("*******after estimation*************");
 	           // just for the debug
 	            int pre = 0;
 	            for (int i= 0; i <  newTimes.getNumStops()-1 ; i++){
 	            	int time= newTimes.getArrivalTime(i);
 	            	if (time < pre){
-	            		System.out.println("      ... Decreasing after estimation     ");
+	            		System.out.println("      ... Decreasing ....     ");
 	            	}
 	            	pre = time;
 	            	System.out.println("Route: "+ this.getPattern().getRoute().getId().getId() +", veh: "+ tripUpdate.getVehicle().getId() + ", seq: "+ i + ", "+ this.getPattern().getStop(i).getId().getId()+", arrival = "+ (int)(time/3600)+":"+ (int)(time%3600)/60);
 	            }
             }
             System.out.println("tripTimes size = "+ this.tripTimes.size());
-            System.out.println("--------------------------------------------------------------------------");
-           
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        }
         } catch (Exception e) { // prevent server from dying while debugging
             e.printStackTrace();
             return false;

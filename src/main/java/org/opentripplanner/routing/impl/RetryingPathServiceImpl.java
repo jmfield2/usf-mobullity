@@ -120,7 +120,7 @@ public class RetryingPathServiceImpl implements PathService {
             // options.worstTime = maxTime;
             //options.maxWeight = maxWeight;
             long subsearchBeginTime = System.currentTimeMillis();
-            System.out.println("-------------------------BEGIN SUBSEARCH------------------------\n");
+            //System.out.println("-------------------------BEGIN SUBSEARCH------------------------\n");
             LOG.debug("BEGIN SUBSEARCH");
             ShortestPathTree spt = sptService.getShortestPathTree(currOptions, timeout);
             if (spt == null) {
