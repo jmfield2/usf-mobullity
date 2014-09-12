@@ -13,6 +13,8 @@
 
 package org.opentripplanner.updater.bike_rental;
 
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -43,36 +45,32 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public abstract class GenericXmlBikeRentalDataSource implements BikeRentalDataSource, PreferencesConfigurable {
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 
-    private static final Logger log = LoggerFactory.getLogger(BixiBikeRentalDataSource.class);
+public abstract class GenericCsvBikeRentalDataSource implements BikeRentalDataSource, PreferencesConfigurable {
+
+    private static final Logger log = LoggerFactory.getLogger(GenericCsvBikeRentalDataSource.class);
 
     protected String url;
 
     ArrayList<BikeRentalStation> stations = new ArrayList<BikeRentalStation>();
 
-    private XPathExpression xpathExpr;
+    private String delimiter;
 
-    public GenericXmlBikeRentalDataSource(String path) {
-        XPathFactory factory = XPathFactory.newInstance();
-
-        XPath xpath = factory.newXPath();
-        try {
-            xpathExpr = xpath.compile(path);
-        } catch (XPathExpressionException e) {
-            throw new RuntimeException(e);
-        }
+    public GenericCsvBikeRentalDataSource(String delim) {
+    	this.delimiter = delim;    	
     }
 
     @Override
     public boolean update() {
         try {
-            InputStream data = HttpUtils.getData(url);
+            BufferedReader data = new BufferedReader(new FileReader(url));
             if (data == null) {
                 log.warn("Failed to get data from url " + url);
                 return false;
             }
-            parseXML(data);
+            parse(data);
         } catch (IOException e) {
             log.warn("Error reading bike rental feed from " + url, e);
             return false;
@@ -85,41 +83,32 @@ public abstract class GenericXmlBikeRentalDataSource implements BikeRentalDataSo
         return true;
     }
 
-    protected void parseXML(InputStream data) throws ParserConfigurationException, SAXException,
+    protected void parse(BufferedReader data) throws ParserConfigurationException, SAXException,
             IOException {
         ArrayList<BikeRentalStation> out = new ArrayList<BikeRentalStation>();
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true); // never forget this!
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(data);
+        // XXX line.split should be replaced by a more sophisticated csv parser
         
-        NodeList nodes;
-        try {
-            Object result = xpathExpr.evaluate(doc, XPathConstants.NODESET);
-            nodes = (NodeList) result;
-        } catch (XPathExpressionException e) {
-            throw new RuntimeException(e);
+        List<String> headers = new ArrayList<String>();        
+        String line = data.readLine();       
+        String[] p = line.split(this.delimiter);
+
+		for (String column : p) {
+        	headers.add(column);
         }
 
-        for (int i = 0; i < nodes.getLength(); ++i) {
-            Node node = nodes.item(i);
-            if (!(node instanceof Element)) {
-                continue;
-            }
+		while ((line = data.readLine()) != null) {
+
+			p = line.split(this.delimiter);
             HashMap<String, String> attributes = new HashMap<String, String>();
-            Node child = node.getFirstChild();
-            while (child != null) {
-                if (!(child instanceof Element)) {
-                    child = child.getNextSibling();
-                    continue;
-                }
-                attributes.put(child.getNodeName(), child.getTextContent());
-                child = child.getNextSibling();
+            for (int i=0; i < p.length; i++) {
+            	attributes.put(headers.get(i), p[i]);
             }
+            
             BikeRentalStation brstation = makeStation(attributes);
             if (brstation != null)
                 out.add(brstation);
+                       
         }
         synchronized(this) {
             stations = out;
