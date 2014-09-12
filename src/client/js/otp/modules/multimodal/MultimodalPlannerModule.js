@@ -92,6 +92,9 @@ otp.modules.multimodal.MultimodalPlannerModule =
         if(otp.config.showBusPositions){
         	this.busLayers = new otp.layers.BusPositionsLayer(this);
         }
+        if(otp.config.showBikeStations){
+        	this.bikeLayers = new otp.layers.BikeStationsLayer(this);
+        }
     },
     
     routesLoaded : function() {
