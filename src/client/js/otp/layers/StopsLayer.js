@@ -77,6 +77,8 @@ otp.layers.StopsLayer =
     updateStops : function(stops) {
         var stops = _.values(this.stopsLookup);
         var this_ = this;
+        var routeData = this.module.webapp.transitIndex.routes;
+        
         var stop_viewer_trans = _tr('Stop Viewer');
         //TRANSLATORS: Plan Trip [From Stop| To Stop] Used in stoplayer popup
         var plan_trip_trans = _tr('Plan Trip');
@@ -97,7 +99,7 @@ otp.layers.StopsLayer =
 //            if(stop.stopUrl.indexOf("http://trimet.org") === 0) {
 //                stop.titleLink = 'http://www.trimet.org/go/cgi-bin/cstops.pl?action=entry&resptype=U&lang=en&noCat=Landmark&Loc=' + stop.id.id;
 //            }
-            //console.log(stop);
+//            console.log(stop);
 
             var bullIcon = new bullrunnerStopIcon();
             var hartIcon = new hartStopIcon();
@@ -130,7 +132,7 @@ otp.layers.StopsLayer =
                 this_.module.setEndPoint(new L.LatLng(thisStop.lat, thisStop.lon), false, thisStop.stopName);
                 this_.module.webapp.map.lmap.closePopup();
             });
-            /*
+            
             if(stop.routes) {
                 var routeList = popupContent.find('.routeList');
                 for(var r = 0; r < stop.routes.length; r++) {
