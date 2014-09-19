@@ -22,7 +22,7 @@ otp.core.TransitIndex = otp.Class({
     routes          : null,
     
     initialize : function(webapp) {
-        this.webapp = webapp;
+        this.webapp = webapp;       
     },
 
     loadAgencies : function(callbackTarget, callback) {
@@ -200,10 +200,10 @@ otp.core.TransitIndex = otp.Class({
             params.routerId = otp.config.routerId;
         }
         
-        var url = otp.config.hostname + '/' + otp.config.restService + '/index/' + stopId + '/stopTimes';
+        var url = otp.config.hostname + '/' + otp.config.restService + '/index/stops/' + agencyId + "_" + stopId + '/stoptimes';
         $.ajax(url, {
   //          data:       params,
-            dataType:   'jsonp',
+            dataType:   'json',
                 
             success: function(data) {
                 callback.call(callbackTarget, data);                

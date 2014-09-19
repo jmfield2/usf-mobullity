@@ -241,8 +241,8 @@ public class GraphIndex {
         State state = new State(req);
         for (TripPattern pattern : patternsForStop.get(stop)) {
             StopTimesInPattern times = new StopTimesInPattern(pattern);
-            // Should actually be getUpdatedTimetable
-            Timetable table = pattern.getScheduledTimetable();
+            
+            Timetable table = pattern.getUpdatedTimetable(req, state.getServiceDay());
             // A Stop may occur more than once in a pattern, so iterate over all Stops.
             int sidx = 0;
             for (Stop currStop : table.getPattern().getStopPattern().stops) {
