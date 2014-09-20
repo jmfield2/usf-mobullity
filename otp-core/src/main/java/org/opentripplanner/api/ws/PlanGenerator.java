@@ -638,6 +638,8 @@ public class PlanGenerator {
             leg.tripId = trip.getId().getId();
             leg.tripShortName = trip.getTripShortName();
             leg.tripBlockId = trip.getBlockId();
+            leg.wheelchairAccessible = trip.getWheelchairAccessible();
+            leg.bikesAllowed = trip.getBikesAllowed();
 
             if (serviceDay != null) {
                 leg.serviceDate = serviceDay.getServiceDate().getAsString();

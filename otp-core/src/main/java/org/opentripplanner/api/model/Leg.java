@@ -174,6 +174,14 @@ public class Leg {
     @JsonSerialize
     public String agencyId = null;
     
+    @XmlAttribute
+    @JsonSerialize
+    public Integer bikesAllowed;
+
+    @XmlAttribute
+    @JsonSerialize
+    public Integer wheelchairAccessible;
+    
     /**
      * For transit legs, the ID of the trip.
      * For non-transit legs, null.

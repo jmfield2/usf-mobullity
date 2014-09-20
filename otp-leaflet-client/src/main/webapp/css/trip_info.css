@@ -1,0 +1,20 @@
+/* Forbidden */
+.bicycle_2, .wheelchair_2 {
+	color:red;
+	opacity:0.8;
+}
+
+/* Allowed */
+.bicycle_1, .wheelchair_1 {
+	color:green;
+}
+
+/* Unknown */
+.bicycle_0, .wheelchair_0 {
+	color:lightgray;
+	opacity:0.7;
+}
+
+.bicycle_0:after, .wheelchair_0:after {
+	content:"?";
+}

@@ -387,6 +387,14 @@ otp.widgets.ItinerariesWidget =
                 if(leg.alerts) {
                     headerHtml += '&nbsp;&nbsp;<img src="images/alert.png" style="vertical-align: -20%;" />';
                 }
+
+                if(leg.bikesAllowed !== null) {
+                    headerHtml += '<b class="icon-bicycle bicycle_' + leg.bikesAllowed + '"></b>';
+                }
+
+                if(leg.wheelchairAccessible !== null) {
+                    headerHtml += '<b class="icon-wheelchair wheelchair_' + leg.wheelchairAccessible + '"></b>';
+                }
             }
             
             $("<h3>"+headerHtml+"</h3>").appendTo(legDiv).data('leg', leg).hover(function(evt) {
