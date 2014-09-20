@@ -1,7 +1,6 @@
 {
     "Transit": "Transit",
     "Bus Only": "Bus Only",
-    "Rail Only": "Rail Only",
     "Bicycle Only": "Bicycle Only",
     "Bicycle &amp; Transit": "Bicycle &amp; Transit",
     "Walk Only": "Walk Only",
@@ -198,6 +197,7 @@
     "Geocoder": "Geocoder",
     "Arrive": "Arrive",
     "Now": "Now",
+    "Wheelchair accesible trip:": "Wheelchair accesible trip:",
     "Travel by": "Travel by",
     "Presets": "Presets",
     "Maximum walk": "Maximum walk",

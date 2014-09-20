@@ -1,7 +1,6 @@
 {
     "Transit": "ÖPNV",
     "Bus Only": "nur Bus",
-    "Rail Only": "nur Bahn",
     "Bicycle Only": "Fahrrad",
     "Bicycle &amp; Transit": "ÖPNV und Fahrrad",
     "Walk Only": "zu Fuß",
@@ -193,6 +192,7 @@
     "Geocoder": "Geocoder",
     "Arrive": "Ankunft",
     "Now": "Jetzt",
+    "Wheelchair accesible trip:": "Barrierefreie Route:",
     "Travel by": "Fortbewegungsart/Verkehrsmittel",
     "Presets": "Voreinstellungen",
     "Maximum walk": "maximale Gehstrecke",

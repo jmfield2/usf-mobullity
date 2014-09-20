@@ -1,7 +1,6 @@
 {
     "Transit": "Transport públic",
     "Bus Only": "Només bus",
-    "Rail Only": "Només tren",
     "Bicycle Only": "Bicicleta",
     "Bicycle &amp; Transit": "Transport públic i bicicleta",
     "Walk Only": "Només a peu",
@@ -193,6 +192,7 @@
     "Geocoder": "",
     "Arrive": "Arribada a",
     "Now": "",
+    "Wheelchair accesible trip:": "Viatge amb accessibilitat:",
     "Travel by": "Mode de viatge",
     "Presets": "",
     "Maximum walk": "Màxima distància fins la parada",

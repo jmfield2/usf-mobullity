@@ -1,7 +1,6 @@
 {
     "Transit": "Transports en commun",
     "Bus Only": "Bus uniquement",
-    "Rail Only": "Tram / Train uniquement",
     "Bicycle Only": "Vélo",
     "Bicycle &amp; Transit": "Transports en commun + Vélo",
     "Walk Only": "Marche",
@@ -193,6 +192,7 @@
     "Geocoder": "Géocodeur",
     "Arrive": "Arrivée",
     "Now": "Maintenant",
+    "Wheelchair accesible trip:": "Accessible aux fauteuils roulants:",
     "Travel by": "Voyager par",
     "Presets": "Val. pré-définies",
     "Maximum walk": "Marcher au maximum",
