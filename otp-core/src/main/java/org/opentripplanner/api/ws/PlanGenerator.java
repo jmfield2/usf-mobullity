@@ -73,6 +73,7 @@ import org.opentripplanner.routing.spt.GraphPath;
 import org.opentripplanner.routing.trippattern.TripTimes;
 import org.opentripplanner.routing.util.ElevationProfileSegment;
 import org.opentripplanner.routing.vertextype.ExitVertex;
+import org.opentripplanner.routing.vertextype.IntersectionVertex;
 import org.opentripplanner.routing.vertextype.OnboardDepartVertex;
 import org.opentripplanner.routing.vertextype.TransitVertex;
 import org.opentripplanner.util.PolylineEncoder;
@@ -263,6 +264,10 @@ public class PlanGenerator {
         calculateTimes(itinerary, states);
 
         calculateElevations(itinerary, edges);
+        
+        for (Leg leg : itinerary.legs) {
+            itinerary.trafficLights += leg.trafficLights;
+        }
 
         itinerary.walkDistance = lastState.getWalkDistance();
 
@@ -389,6 +394,8 @@ public class PlanGenerator {
         }
         
         addModeAndAlerts(leg, states);
+        
+        addIntersectionsInfo(leg, states);
 
         TimeZone timeZone = leg.startTime.getTimeZone();
         leg.agencyTimeZoneOffset = timeZone.getOffset(leg.startTime.getTimeInMillis());
@@ -1152,6 +1159,50 @@ public class PlanGenerator {
             throw new RuntimeException(
                     "TransitIndexBuilder is required for first/last/next/previous trip");
         }
+    }
+
+    /**
+     * Calculates how many traffic lights we need to use
+     * 
+     * It counts 2 complex intersections as one traffic light
+     * @param leg Leg for which we are calculating
+     * @param states 
+     */
+    private void addIntersectionsInfo(Leg leg, State[] states) {
+        if (leg.mode.equals("CAR") || leg.mode.equals("BICYCLE") || leg.mode.equals("WALK")) {
+            double distanceFromPrevTrafficLight = 0;
+            for (State state : states) {
+                
+                if (leg.trafficLights > 0 && (state.getBackEdge() instanceof PlainStreetEdge)) {
+                    distanceFromPrevTrafficLight += ((PlainStreetEdge) state.getBackEdge()).getLength();
+                }
+                Vertex vertex = state.getVertex();
+                if (vertex instanceof IntersectionVertex) {
+                    //LOG.info("Crossed intersection:{}", vertex);
+                    if (((IntersectionVertex) vertex).isTrafficLight()) {
+                        //LOG.info("With traffic light: {}, {}", ((PlainStreetEdge) state.getBackEdge()).getLength(), distanceFromLastTrafficLight);
+
+                        //We always add first traffic light
+                        if (leg.trafficLights == 0) {
+                            leg.trafficLights += 1;
+                            //LOG.info("Added:{}", leg.trafficLights);
+                        
+                        //We only count traffic light if it is at least 13 away from last traffic light
+                        //This is used on complex intersections when street is
+                        //represented with two one way streets in OSM and one intersection
+                        // is tagged with 4 traffic lights even though you only drive through one
+                        //More here: http://wiki.openstreetmap.org/wiki/Traffic_signals
+                        } else if (distanceFromPrevTrafficLight > 13.0) {
+                            leg.trafficLights += 1;
+                            //LOG.info("Added:{}", leg.trafficLights);
+
+                        }
+                        distanceFromPrevTrafficLight = 0;
+                    }
+                }
+
+            }
+        }   
     }
 
 }

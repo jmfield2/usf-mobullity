@@ -45,6 +45,11 @@ public class Leg {
      * The date and time this leg ends.
      */
     public Calendar endTime = null;
+      
+    /**
+     * Number of trafficLights
+     */
+    public int trafficLights = 0;
     
     /**
      * For transit leg, the offset from the scheduled departure-time of the boarding stop in this leg.
