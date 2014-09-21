@@ -56,8 +56,9 @@ otp.locale.Slovenian = {
                 content: '<p>Beta verzija načrtovalnika poti za Maribor.</p>' +
                 '<p>Načrtovanje poti je trenutno mogoče samo v okolici Maribora (zaradi male zmogljivosti strežnika).</p>' +
                 '<p>Trenutno so vključeni vozni redi Marproma (in testno nekaj neaktualnih primestnih) in lokacije postaj za izposojo koles BCikel</p>' +
-                '<p>Niso še dodane vse vožnje avtobusov:</p>' +
-                '<p>Manjka vožnja 20ke preko Zrkovc. <strong>Vsi ostali postanki bi morali ustrezati dejanskemu stanju</strong></p>' +
+                '<p>Dodane so vse vožnje avtobusov:</p>' +
+                '<p><strong>Vsi postanki bi morali ustrezati dejanskemu stanju</strong></p>' +
+                '<p>Če je le možno so dodane tudi aktualne spremembe voženj objavljene na strani marprom.si</p>' +
                 '<p>Temelji na <a href="http://www.opentripplanner.org/">OpenTripPlanner</a>-ju</p>',
                 //cssClass: 'otp-contactWidget',
             },
@@ -67,7 +68,7 @@ otp.locale.Slovenian = {
             },*/
         {
             title: 'Legenda (Zapore cest)',
-            content: '<p>Dodane so zapore cest Rallya in pa zaprta Tezenska ulica</p>' +
+            content: '<p>Dodane so nekatere zapore cest v Mariboru</p>' +
                 '<p>Ko je karta oddaljena je prikazan samo znak.' +
                     ' Ko je približana pa lahko vidimo poti različnih barv:</p>' +
                     '<p>Če je cesta črtkana pomeni, da ne vemo natančno kje je zaprta. Lahko da je delno zaprta' +
@@ -76,8 +77,8 @@ otp.locale.Slovenian = {
                 '<p><strong><span style="color:orange">Oranžna</span></strong> - cesta bo zaprta v naslednji uri</p>' +
                 '<p><strong><span style="color:red">Rdeča</span></strong> - cesta je zaprta</p>' +
                 '<p><strong><span style="color:blue">Modra črtkana</span></strong> - Nekaj pri cesti je zaprto</p>' +
-                '<p>Načrtovalnik poti bi moral ignorirati zaprte ceste, če so zaprte v času potovanja' +
-               ' (Čas potovanja se lahko spreminja v Nastavitha poti...)', 
+                '<p>Načrtovalnik poti obvozi zaprte ceste, če so zaprte v času potovanja' +
+               ' (Čas potovanja se lahko spreminja v Nastavitvah poti...)', 
         }
     ],
 
