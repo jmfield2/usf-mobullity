@@ -244,7 +244,7 @@ public class OSMWithTags {
      * @return
      */
     public boolean isBicycleExplicitlyDenied() {
-        return isTagDeniedAccess("bicycle");
+        return isTagDeniedAccess("bicycle") || "use_sidepath".equals(getTag("bicycle"));
     }
 
     /**
