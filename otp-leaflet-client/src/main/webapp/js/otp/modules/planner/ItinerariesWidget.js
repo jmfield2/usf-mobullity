@@ -493,7 +493,8 @@ otp.widgets.ItinerariesWidget =
         }
 
         if ("trafficLights" in itin.itinData) {
-            tripSummary.append('<div class="otp-itinTripSummaryLabel">Traffic lights</div><div class="otp-itinTripSummaryText">' +
+            //TRANSLATORS: number of traffic lights on a route
+            tripSummary.append('<div class="otp-itinTripSummaryLabel">' + _tr("Traffic lights") + '</div><div class="otp-itinTripSummaryText">' +
                 itin.itinData.trafficLights + '</div>');
         }
         
