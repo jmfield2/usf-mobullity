@@ -442,11 +442,9 @@ public class Timetable implements Serializable {
                                     
                                    if (a < previous){
                 	            		System.out.println("      ---- Decreasing----     ");
-                	            	}
-                                  // System.out.println("route "+this.getPattern().getRoute().getId().getId() +", veh: "+ tripUpdate.getVehicle().getId() + ", stop "+ i +" ,ID: "+ this.getPattern().getStop(i).getId().getId()  + ", "+ update.getStopId()+ ", arrival = " + a/3600+ ":" + (a%3600)/60);
-                                   
+                	            	}                                  
                                     previous = a;
-                                    delay = newTimes.getArrivalDelay(i);
+                                    delay = newTimes.getArrivalDelay(i);                                   
                                 } else {
                                     LOG.error("Arrival time at index {} is erroneous.", i);
                                     return false;
@@ -500,8 +498,9 @@ public class Timetable implements Serializable {
                         } else {
                         	
                         	if ( firstNzIndex != -1){
-	                            newTimes.updateArrivalDelay(i, delay);
-//                        		newTimes.estimateArrivaltime(i, 0);
+	                            //newTimes.updateArrivalDelay(i, delay);
+                         		newTimes.estimateArrivaltime(i, 0);
+                         		System.out.println("***realtime update is missing: stop: "+ i);
 //	                            int a = newTimes.getArrivalTime(i);
 	                            //System.out.println("***realtime update is missing: stop: "+ i+ ", ID: "+this.getPattern().getStop(i).getId().getId() + ", arrival = " + a/3600+ ":" + (a%3600)/60);
 	                            
