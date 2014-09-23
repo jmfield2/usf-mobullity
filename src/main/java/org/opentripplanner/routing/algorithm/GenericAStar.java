@@ -182,7 +182,7 @@ public class GenericAStar implements SPTService { // maybe this should be wrappe
         
         Collection<Edge> edges = runState.options.isArriveBy() ? runState.u_vertex.getIncoming() : runState.u_vertex.getOutgoing();
         for (Edge edge : edges) {
-
+        	 
             // Iterate over traversal results. When an edge leads nowhere (as indicated by
             // returning NULL), the iteration is over. TODO Use this to board multiple trips.
             for (State v = edge.traverse(runState.u); v != null; v = v.getNextResult()) {
@@ -247,16 +247,16 @@ public class GenericAStar implements SPTService { // maybe this should be wrappe
             /*
              * Terminate based on timeout?
              */
-            if (abortTime < Long.MAX_VALUE  && System.currentTimeMillis() > abortTime) {
-                LOG.warn("Search timeout. origin={} target={}", runState.rctx.origin, runState.rctx.target);
-                // Rather than returning null to indicate that the search was aborted/timed out,
-                // we instead set a flag in the routing context and return the SPT anyway. This
-                // allows returning a partial list results even when a timeout occurs.
-                runState.options.rctx.aborted = true; // signal search cancellation up to higher stack frames
-                runState.options.rctx.debugOutput.timedOut = true; // signal timeout in debug output object
-
-                break;
-            }
+//            if (abortTime < Long.MAX_VALUE  && System.currentTimeMillis() > abortTime) {
+//                LOG.warn("Search timeout. origin={} target={}", runState.rctx.origin, runState.rctx.target);
+//                // Rather than returning null to indicate that the search was aborted/timed out,
+//                // we instead set a flag in the routing context and return the SPT anyway. This
+//                // allows returning a partial list results even when a timeout occurs.
+//                runState.options.rctx.aborted = true; // signal search cancellation up to higher stack frames
+//                runState.options.rctx.debugOutput.timedOut = true; // signal timeout in debug output object
+//
+//                break;
+//            }
             
             /*
              * Get next best state and, if it hasn't already been dominated, add adjacent states to queue.

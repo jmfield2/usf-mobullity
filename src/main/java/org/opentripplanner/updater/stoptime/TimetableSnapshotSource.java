@@ -13,6 +13,8 @@
 
 package org.opentripplanner.updater.stoptime;
 
+ 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.TimeZone;
@@ -39,7 +41,6 @@ import com.google.transit.realtime.GtfsRealtime.TripUpdate;
  */
 public class TimetableSnapshotSource {
     private static final Logger LOG = LoggerFactory.getLogger(TimetableSnapshotSource.class);
-
     @Setter
     private int logFrequency = 2000;
 
@@ -105,13 +106,22 @@ public class TimetableSnapshotSource {
 
     /**
      * Method to apply a trip update list to the most recent version of the timetable snapshot.
+     * @throws IOException 
      */
-    public void applyTripUpdates(List<TripUpdate> updates, String agencyId) {
+    public void applyTripUpdates(List<TripUpdate> updates, String agencyId)  {
         if (updates == null) {
             LOG.warn("updates is null");
             return;
         }
-
+        System.out.println("~~~~~~~~~~~~~~~~~~~~ new set of stops~~~~~~~~~~~~~~~~~~~~~~~~~");
+        for (TripPattern pattern: graphIndex.patternForTrip.values()){
+        	
+        	int currentSize = pattern.getScheduledTimetable().getTripTimes().size(); 
+        	for (int i= pattern.noTrips; i < currentSize; i++){
+        		pattern.getScheduledTimetable().getTripTimes().remove(i);
+        		System.out.println("Before applying realtime update, item "+ i+ " in " + pattern.getRoute().getId() + " has been removed from the list, current size"+ pattern.getScheduledTimetable().getTripTimes().size());
+        	}
+        }
         LOG.debug("message contains {} trip updates", updates.size());
         int uIndex = 0;
         for (TripUpdate tripUpdate : updates) {
@@ -147,7 +157,9 @@ public class TimetableSnapshotSource {
                         applied = handleAddedTrip(tripUpdate, agencyId, serviceDate);
                         break;
                     case UNSCHEDULED:
-                        applied = handleUnscheduledTrip(tripUpdate, agencyId, serviceDate);
+                    	//System.out.println("--------------"+tripUpdate.getTrip()+"--------------");
+                    	applied = handleScheduledTrip(tripUpdate, agencyId, serviceDate);
+//                        applied = handleUnscheduledTrip(tripUpdate, agencyId, serviceDate);
                         break;
                     case CANCELED:
                         applied = handleCanceledTrip(tripUpdate, agencyId, serviceDate);
@@ -181,6 +193,7 @@ public class TimetableSnapshotSource {
         } else {
             getTimetableSnapshot();
         }
+         
     }
 
     protected boolean handleScheduledTrip(TripUpdate tripUpdate, String agencyId,
@@ -198,9 +211,11 @@ public class TimetableSnapshotSource {
             LOG.warn("TripUpdate contains no updates, skipping.");
             return false;
         }
-
+      
         // we have a message we actually want to apply
-        return buffer.update(pattern, tripUpdate, agencyId, timeZone, serviceDate);
+	    return buffer.update(pattern, tripUpdate, agencyId, timeZone, serviceDate);
+	    
+
     }
 
     protected boolean handleAddedTrip(TripUpdate tripUpdate, String agencyId,

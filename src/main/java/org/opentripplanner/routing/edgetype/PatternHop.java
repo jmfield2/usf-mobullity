@@ -100,7 +100,7 @@ public class PatternHop extends TablePatternEdge implements OnboardEdge, HopEdge
                 return null;
             }
         }
-        
+        //System.out.println("\n PatternHop edge+ get running time!");
         TripTimes tripTimes = s0.getTripTimes();
         int runningTime = tripTimes.getRunningTime(stopIndex);
         StateEditor s1 = s0.edit(this);
