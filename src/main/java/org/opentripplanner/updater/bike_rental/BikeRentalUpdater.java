@@ -101,8 +101,12 @@ public class BikeRentalUpdater extends PollingGraphUpdater {
                 source = new OVFietsKMLDataSource();
             } else if (sourceType.equals("city-bikes")) {
                 source = new CityBikesBikeRentalDataSource();
-            }
-        }
+        	} else if (sourceType.equals("local-file")) {
+        		source = new LocalFileBikeRentalDataSource();    
+    		} else if (sourceType.equals("csv-file")) {
+    			source = new CsvBikeRentalDataSource();
+    		}                        
+        }        
 
         if (source == null) {
             throw new IllegalArgumentException("Unknown bike rental source type: " + sourceType);
@@ -166,20 +170,24 @@ public class BikeRentalUpdater extends PollingGraphUpdater {
             // Apply stations to graph
             Set<BikeRentalStation> stationSet = new HashSet<BikeRentalStation>();
             Set<String> networks = new HashSet<String>(Arrays.asList(network));
+            
             /* add any new stations and update bike counts for existing stations */
             for (BikeRentalStation station : stations) {
+            	
                 service.addStation(station);
                 stationSet.add(station);
                 BikeRentalStationVertex vertex = verticesByStation.get(station);
+                               
                 if (vertex == null) {
                     vertex = new BikeRentalStationVertex(graph, station);
-                    LinkRequest request = networkLinkerLibrary.connectVertexToStreets(vertex);
+                    LinkRequest request = networkLinkerLibrary.connectVertexToStreets(vertex);                    
+                    
                     for (Edge e : request.getEdgesAdded()) {
                         graph.addTemporaryEdge(e);
                     }
                     verticesByStation.put(station, vertex);
                     new RentABikeOnEdge(vertex, vertex, networks);
-                    new RentABikeOffEdge(vertex, vertex, networks);
+                    new RentABikeOffEdge(vertex, vertex, networks);                    
                 } else {
                     vertex.setBikesAvailable(station.bikesAvailable);
                     vertex.setSpacesAvailable(station.spacesAvailable);

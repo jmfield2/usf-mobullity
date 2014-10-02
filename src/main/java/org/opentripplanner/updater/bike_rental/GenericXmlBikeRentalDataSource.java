@@ -15,6 +15,7 @@ package org.opentripplanner.updater.bike_rental;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public abstract class GenericXmlBikeRentalDataSource implements BikeRentalDataSo
 
     private static final Logger log = LoggerFactory.getLogger(BixiBikeRentalDataSource.class);
 
-    private String url;
+    protected String url;
 
     ArrayList<BikeRentalStation> stations = new ArrayList<BikeRentalStation>();
 
@@ -84,7 +85,7 @@ public abstract class GenericXmlBikeRentalDataSource implements BikeRentalDataSo
         return true;
     }
 
-    private void parseXML(InputStream data) throws ParserConfigurationException, SAXException,
+    protected void parseXML(InputStream data) throws ParserConfigurationException, SAXException,
             IOException {
         ArrayList<BikeRentalStation> out = new ArrayList<BikeRentalStation>();
 
@@ -92,7 +93,7 @@ public abstract class GenericXmlBikeRentalDataSource implements BikeRentalDataSo
         factory.setNamespaceAware(true); // never forget this!
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(data);
-
+        
         NodeList nodes;
         try {
             Object result = xpathExpr.evaluate(doc, XPathConstants.NODESET);
