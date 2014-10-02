@@ -176,8 +176,10 @@ otp.config = {
 
     geocoders : [
         {
-            name: 'OTP built-in geocoder',
-            className: 'otp.core.GeocoderBuiltin'
+            name: 'Geocoder',
+            className: 'otp.core.Geocoder',
+            url: 'otp/routers/default/geocoder',
+            addressParam: 'address',
             // URL and query parameter do not need to be set for built-in geocoder.
         }
   //              {
