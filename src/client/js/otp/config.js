@@ -199,10 +199,6 @@ otp.config = {
     },
 
     infoWidgets: [
-        {
-        	title: 'Live Map',
-        	content: '<p> Live map option is coming soon...</p>',
-        },
 
         {
     	title: 'Icon Legend',
