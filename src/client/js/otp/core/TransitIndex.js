@@ -65,18 +65,18 @@ otp.core.TransitIndex = otp.Class({
         
         var url = otp.config.hostname + '/' + otp.config.restService + '/index/routes';
         $.ajax(url, {
-            dataType:   'jsonp',
+            dataType:   'json',
             
             data: {
                 extended: 'true',
             },
                 
             success: function(data) {
-                if(!_.has(data, 'routes')) {
+                if(data.length <= 0) {
                     console.log("Error: routes call returned no route data. OTP Message: "+data.message);
                     return;
                 }
-                var sortedRoutes = data.routes;
+                var sortedRoutes = data;
                 sortedRoutes.sort(function(a,b) {
                     a = a.routeShortName || a.routeLongName;
                     b = b.routeShortName || b.routeLongName;

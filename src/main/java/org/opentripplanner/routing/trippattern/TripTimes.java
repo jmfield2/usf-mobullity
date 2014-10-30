@@ -14,6 +14,7 @@
 package org.opentripplanner.routing.trippattern;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;

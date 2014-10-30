@@ -50,6 +50,10 @@ otp.layers.StopsLayer =
         this.stopsLookup = {};
         
         this.module.addLayer("stops", this);
+        
+        stopsLayer = { "BullRunner" : this };
+        L.control.layers(stopsLayer).addTo(this.module);
+        
         this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
 
     },
@@ -126,7 +130,7 @@ otp.layers.StopsLayer =
             }
 
            
-            if(stop.agency == "USFBullRunner" && otp.config.showBullRunnerStops == true){
+            if(stop.agency == "USF Bull Runner" && otp.config.showBullRunnerStops == true){
             	//only want to display USF BullRunner stops in this layer
             	L.marker([stop.lat, stop.lon], {
             		icon : bullIcon,

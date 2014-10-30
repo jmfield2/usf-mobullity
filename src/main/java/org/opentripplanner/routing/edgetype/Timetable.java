@@ -389,7 +389,7 @@ public class Timetable implements Serializable {
                 int numStops = newTimes.getNumStops()-1;
                 Integer delay = null;
                 //System.out.println("numStops = "+ (int)(numStops-1));
-                 
+                
                 boolean foundMatch = false;
                 for (int i = 0; i < numStops; i++) {
                  	
@@ -397,13 +397,15 @@ public class Timetable implements Serializable {
                     if (update != null) {
                         if (update.hasStopSequence()) {
                             match = update.getStopSequence() == newTimes.getStopSequence(i);
-                        } else if (update.hasStopId()) {
-                            match = pattern.getStop(i).getId().getId().equals(update.getStopId());
+                        } 
+                        else if (update.hasStopId()) {                        	
+                            match = match || pattern.getStop(i).getId().getId().equals(update.getStopId());                            
                         }
                     } 
                      
 
                     if (match) {
+                    	
                     	noStopsWithRealtimeUpdate = i;
                     	if (foundMatch ==false ){
                     		firstNzIndex = i;

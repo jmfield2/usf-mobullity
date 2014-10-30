@@ -35,7 +35,7 @@ otp.modules.multimodal.MultimodalPlannerModule =
     activate : function() {
         if(this.activated) return;
         otp.modules.planner.PlannerModule.prototype.activate.apply(this);
-
+        
         // set up options widget
                 
         var optionsWidgetConfig = {
@@ -46,7 +46,7 @@ otp.modules.multimodal.MultimodalPlannerModule =
                 minimizable : true,
                 draggable : false,
                 resizable : false,
-                persistOnClose: true,
+                persistOnClose: true,				
         };
         
         if(typeof this.tripOptionsWidgetCssClass !== 'undefined') {
@@ -88,7 +88,16 @@ otp.modules.multimodal.MultimodalPlannerModule =
         };
         if(otp.config.showBusPositions){
         	this.busLayers = new otp.layers.BusPositionsLayer(this);
-        }
+        }		
+        
+        if(otp.config.showBikeStations){
+        	this.bikeLayers = new otp.layers.BikeStationsLayer(this);
+        }		
+        
+        // Layer Selector		
+		this.layerWidget = new otp.widgets.LayersWidget('otp-'+this.id+'-layersWidget', this);		
+
+		this.optionsWidget.minimize();
     },
     
     routesLoaded : function() {
