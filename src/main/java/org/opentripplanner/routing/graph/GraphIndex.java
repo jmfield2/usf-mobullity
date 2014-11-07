@@ -339,17 +339,12 @@ public class GraphIndex {
             int sidx = 0;
             for (Stop currStop : table.pattern.stopPattern.stops) {
                 if (currStop != stop) continue;
-                
-                LOG.info("pattern {} table {}", pattern, table);
-                
-                LOG.info("stop {} sidx {}", currStop, sidx);
-                
+                                
                 for (ServiceDay sd : req.rctx.serviceDays) {
                 	
                    		TripTimes tt = table.getNextTrip(state, sd, sidx, true);
                    
                 		if (tt != null) {  
-                			LOG.info(" time {} ", tt.getArrivalTime(sidx));
                     		
                             times.times.add(new TripTimeShort(tt, sidx, stop));
                             
