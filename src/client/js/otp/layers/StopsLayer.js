@@ -47,8 +47,21 @@ otp.layers.StopsLayer =
 
         this.stopsLookup = {};
         
-        this.module.addLayer("stops", this);
+        this.stopsLayer = this.module.addLayer("stops", this);
         this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
+        
+        $.ajax({
+        	url: '/otp/routers/default/bike_lanes', 
+        	webapp: this.module.webapp,
+        	dataType: 'json',
+        	success: function(data) {        
+        		for (x in data) {
+        			row = JSON.parse(data[x]);
+        			var p = L.polyline([new L.LatLng(row.lat1, row.lon1), new L.LatLng(row.lat2, row.lon2)], {color: 'red'});
+        			p.addTo(this.webapp.map.lmap);        		
+        		}
+        	},
+        });
         
     },
     
