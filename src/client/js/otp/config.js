@@ -91,11 +91,12 @@ otp.config = {
     showLogo            : true,
     showTitle           : true,
     showModuleSelector  : true,
-    metric              : false,
-    
+    metric              : false,    
     showBullRunnerStops	: true,
     showHartBusStops	: false,
     showBusPositions	: true,
+    showBikeStations	: true,
+    showBikeLanes		: true,
 
 
     /**
