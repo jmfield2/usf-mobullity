@@ -49,10 +49,10 @@ otp.layers.StopsLayer =
         
         this.stopsLookup = {};
         
-        this.module.addLayer("stops", this);
+        this.stopsLayer = this.module.addLayer("stops", this);
         
         this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
-
+        
     },
     
     refresh : function() {

@@ -90,7 +90,7 @@ otp.core.Webapp = otp.Class({
                 linkHref : otp.config.siteURL,
                 wrapDiv : true,
                 divId : 'logo'
-            })).appendTo('#branding');
+            })).appendTo('#branding .logo');
             //console.log(img);
             //$(img).appendTo('#branding');
             /*$(Mustache.render(otp.templates.div, { id : 'logo' }))
@@ -102,7 +102,7 @@ otp.core.Webapp = otp.Class({
         if(otp.config.siteName !== undefined) {
             document.title = otp.config.siteName;
             if(otp.config.showTitle) {
-                $("<div id='site-title'><a href='"+otp.config.siteURL+"'>"+otp.config.siteName+"</a></div>").appendTo('#branding');
+                $("<div id='site-title'><a href='"+otp.config.siteURL+"'>"+otp.config.siteName+"</a></div>").appendTo('#branding .logo');
             }
         }
         

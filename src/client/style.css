@@ -807,7 +807,7 @@ z-index: 9002;
     font-weight: none; 
     color: #fff;
     background-color: #9CCB3B;
-    margin-bottom: 5px;
+   /* margin-bottom: 5px; */
     overflow: hidden;   
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1069,6 +1069,63 @@ p#splash-text span {
 }
 
 
+
+.otp-layerView { 
+	width:260px;
+	min-height:100px;
+	background-color: white; /*#F3F3F3;*/
+	border: 0px solid #9CCB3B;
+	color: black;	
+	padding:0px;
+}
+
+.otp-layerView-header { text-align:center; }
+
+.otp-layerView-inner {
+	min-height:100px;
+	border:none;
+	font-family: Stencil;	
+	text-align:left;
+	padding:10px;
+	border: 1px solid #9CCB3B;
+	border-top: none;	
+}
+
+.otp-layerView-inner .routes input[type=checkbox] {
+	height: 15px; width: 15px;
+	border: 1px solid #b0acac;
+	border-radius: 3px;
+	background-color:white;	
+}
+.otp-layerView-inner .routes input[type=checkbox]:checked {
+	background-color: black;
+}
+.otp-layerView-inner .routes input#usf_A:checked {
+	background-color: #00573c;
+}
+.otp-layerView-inner .routes input#usf_B:checked {
+	background-color: #0077d1;
+}
+.otp-layerView-inner .routes input#usf_C:checked {
+	background-color: #ac49d0;
+}
+.otp-layerView-inner .routes input#usf_D:checked {
+	background-color: #f70505;
+}
+.otp-layerView-inner .routes input#usf_E:checked {
+	background-color: #d4ba13;
+}
+.otp-layerView-inner .routes input#usf_F:checked {
+	background-color: #8f6a51;
+}
+
+.otp-layerView-inner fieldset { border-top:1px solid #9CCB3B; }
+.otp-layerView-inner fieldset legend { text-align:center; }
+
+.layerView .bus, .layerView .bikes, .layerView .parking { padding: 5px; text-align:left; }
+/* .layerView .bus li { } */
+.layerView .bikes li { }
+.layerView .parking li { }
 
 
 /* Media Queries for Responsive Layout
