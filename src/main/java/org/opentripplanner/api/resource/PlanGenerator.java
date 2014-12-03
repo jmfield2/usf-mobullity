@@ -459,6 +459,7 @@ public class PlanGenerator {
     }
 
     private void addFrequencyFields(State[] states, Leg leg) {
+    	leg.isNonExactFrequency = states[0].isNonExactFrequency();
         /* TODO adapt to new frequency handling.
         if (states[0].getBackEdge() instanceof FrequencyBoard) {
             State preBoardState = states[0].getBackState();
@@ -678,7 +679,6 @@ public class PlanGenerator {
             Route route = trip.getRoute();
             Agency agency = route.getAgency();
             ServiceDay serviceDay = states[states.length - 1].getServiceDay();
-
             leg.agencyId = agency.getId();
             leg.agencyName = agency.getName();
             leg.agencyUrl = agency.getUrl();
@@ -797,12 +797,13 @@ public class PlanGenerator {
      */
     private void addRealTimeData(Leg leg, State[] states) {
         TripTimes tripTimes = states[states.length - 1].getTripTimes();
-
+        
         if (tripTimes != null && !tripTimes.isScheduled()) {
             leg.realTime = true;
             if (leg.from.stopIndex != null) {
                 leg.departureDelay = tripTimes.getDepartureDelay(leg.from.stopIndex);
             }
+             
             leg.arrivalDelay = tripTimes.getArrivalDelay(leg.to.stopIndex);
         }
     }

@@ -145,7 +145,8 @@ public class TripPattern implements Serializable {
 
     /** Used by the MapBuilder (and should be exposed by the Index API). */
     public LineString geometry = null;
-
+    
+    public int noTrips = 0;
     /**
      * An ordered list of PatternHop edges associated with this pattern. All trips in a pattern have
      * the same stops and a PatternHop apply to all those trips, so this array apply to every trip
@@ -167,7 +168,7 @@ public class TripPattern implements Serializable {
      */
     // TODO MOVE codes INTO Timetable or TripTimes
     BitSet services;
-
+    
     public TripPattern(Route route, StopPattern stopPattern) {
         this.route = route;
         this.mode = GtfsLibrary.getTraverseMode(this.route);
@@ -326,6 +327,8 @@ public class TripPattern implements Serializable {
     public void add(FrequencyEntry freq) {
         trips.add(freq.tripTimes.trip);
         scheduledTimetable.addFrequencyEntry(freq);
+        scheduledTimetable.addTripTimes(freq.tripTimes);
+        noTrips = scheduledTimetable.tripTimes.size();
         if (this.route != freq.tripTimes.trip.getRoute()) {
             LOG.warn("The trip {} is on a different route than its stop pattern, which is on {}.", freq.tripTimes.trip, route);
         }
