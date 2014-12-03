@@ -150,12 +150,12 @@ otp.config = {
      */
 
     geocoders : [
-       /* {
-        'name': 'geocoder',
-        'className': 'otp.core.Geocoder',
-        'url': 'http://localhost:8080/otp-geocoder/geocode',
-        'addressParam': 'address'
-        }*/
+        {
+            'name': 'geocoder',
+            'className': 'otp.core.MapQuestGeocoder',
+            'url': 'http://open.mapquestapi.com/nominatim/v1/search.php',
+            'addressParam': 'q'
+        }
     ],
 
     
