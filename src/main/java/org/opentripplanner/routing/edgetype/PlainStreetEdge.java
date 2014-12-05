@@ -310,6 +310,7 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
         } else if (traverseMode.equals(TraverseMode.BICYCLE)) {
             time = elevationProfileSegment.getSlopeSpeedEffectiveLength() / speed;
             switch (options.optimize) {
+            // case BICYCLE_LANE:
             case SAFE:
                 weight = elevationProfileSegment.getBicycleSafetyEffectiveLength() / speed;
                 break;

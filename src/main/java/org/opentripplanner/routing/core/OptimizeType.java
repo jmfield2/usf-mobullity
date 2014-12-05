@@ -14,6 +14,7 @@
 package org.opentripplanner.routing.core;
 
 public enum OptimizeType {
+	BICYCLE_LANE, /* Prefer streets with cycleway=lane */
     QUICK, /* the fastest trip */
     SAFE,
     FLAT, /* needs a rewrite */
