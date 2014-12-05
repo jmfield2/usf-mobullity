@@ -42,6 +42,7 @@ otp.core.Map = otp.Class({
             var layerProps = { };
             if(layerConfig.attribution) layerProps['attribution'] = layerConfig.attribution;
             if(layerConfig.subdomains) layerProps['subdomains'] = layerConfig.subdomains;
+            if(layerConfig.maxZoom) layerProps['maxZoom'] = layerConfig.maxZoom;
 
             var layer = new L.TileLayer(layerConfig.tileUrl, layerProps);
 
@@ -65,7 +66,18 @@ otp.core.Map = otp.Class({
 
         this.lmap = new L.Map('map', mapProps);
 
-        L.control.layers(this.baseLayers).addTo(this.lmap);
+        //Added OVERLAYS
+        var mbcycleLayer = L.tileLayer('http://mysentry.duckdns.org:8080/mb_cycle/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>. Tiles courtesy of MaBu'
+        });
+        var marpromTransportOverlay = L.tileLayer('http://mysentry.duckdns.org:8080/marprom_overlay/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>. Tiles courtesy of <a href="https://github.com/codeforamerica/Transit-Map-in-TileMill">Transit Map in TileMill</a> & MaBu'
+        });
+        //END ADDED overlays
+
+        L.control.layers(this.baseLayers, {"Marprom transport": marpromTransportOverlay, "Maribor cycle": mbcycleLayer}).addTo(this.lmap);
         L.control.zoom({ position : 'topright' }).addTo(this.lmap);
         //this.lmap.addControl(new L.Control.Zoom({ position : 'topright' }));
         

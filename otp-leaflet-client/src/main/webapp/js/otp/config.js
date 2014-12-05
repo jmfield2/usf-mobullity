@@ -67,6 +67,25 @@ otp.config = {
             attribution : 'Data, imagery and map information provided by <a href="http://open.mapquest.com" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
         },
         {
+            name: 'Public transport map',
+            tileUrl: 'http://a.tile.thunderforest.com/transport/{z}/{x}/{y}.png',
+            subdomains: ['a', 'b', 'c'],
+            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>. Tiles courtesy of <a href="http://www.thunderforest.com/">Andy Allan</a>'
+        },
+        {
+            name: 'Bicycle Map',
+            tileUrl: 'http://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png',
+            subdomains: ['a', 'b', 'c'],
+            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>. Tiles courtesy of <a href="http://www.thunderforest.com/">Andy Allan</a>'
+        },
+        {
+            name: "Marprom transport",
+            tileUrl:'http://mysentry.duckdns.org:8080/marprom/{z}/{x}/{y}.png', 
+            maxZoom: 17,
+            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>. Tiles courtesy of <a href="https://github.com/codeforamerica/Transit-Map-in-TileMill">Transit Map in TileMill</a> & MaBu'
+        },
+
+        {
             name: 'MapQuest Aerial',
             tileUrl: 'http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png',
             subdomains : ['otile1','otile2','otile3','otile4'],
