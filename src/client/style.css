@@ -1091,32 +1091,30 @@ p#splash-text span {
 	border-top: none;	
 }
 
-.otp-layerView-inner .routes input[type=checkbox] {
+.routes input[type=checkbox] {
 	height: 15px; width: 15px;
 	border: 1px solid #b0acac;
 	border-radius: 3px;
 	background-color:white;	
 }
-.otp-layerView-inner .routes input[type=checkbox]:checked {
-	background-color: black;
+
+.routes label[for=usf_A] {
+	color: #00573c;
 }
-.otp-layerView-inner .routes input#usf_A:checked {
-	background-color: #00573c;
+.routes label[for=usf_B] {
+	color: #0077d1;
 }
-.otp-layerView-inner .routes input#usf_B:checked {
-	background-color: #0077d1;
+.routes label[for=usf_C] {
+	color: #ac49d0;
 }
-.otp-layerView-inner .routes input#usf_C:checked {
-	background-color: #ac49d0;
+.routes label[for=usf_D] {
+	color: #f70505; 
 }
-.otp-layerView-inner .routes input#usf_D:checked {
-	background-color: #f70505;
+.routes label[for=usf_E] {
+	color: #d4ba13;
 }
-.otp-layerView-inner .routes input#usf_E:checked {
-	background-color: #d4ba13;
-}
-.otp-layerView-inner .routes input#usf_F:checked {
-	background-color: #8f6a51;
+.routes label[for=usf_F] {
+	color: #8f6a51;
 }
 
 .otp-layerView-inner fieldset { border-top:1px solid #9CCB3B; }

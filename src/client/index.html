@@ -145,6 +145,7 @@
 <script src="js/otp/widgets/InfoWidget.js?v=1"></script>
 <script src="js/otp/widgets/tripoptions/RoutesSelectorWidget.js?v=1"></script>
 <script src="js/otp/widgets/tripoptions/TripOptionsWidget.js?v=1"></script>
+<script src="js/otp/widgets/tripoptions/LayersWidget.js?v=1"></script>
 <script src="js/otp/widgets/tripoptions/BikeTrianglePanel.js?v=1"></script>
 <link rel="stylesheet" href="js/otp/widgets/tripoptions/tripoptions-style.css?v=1" />
 
@@ -157,6 +158,7 @@
 <script src="js/otp/layers/StopsLayer.js?v=1"></script>
 <script src="js/otp/layers/HartStopsLayer.js?v=1"></script>
 <script src="js/otp/layers/BusPositionsLayer.js?v=1"></script>
+<script src="js/otp/layers/BikeStationsLayer.js?v=1"></script>
 
 
 
@@ -207,9 +209,9 @@ $(document).ready(function() {
 	<div class=logo></div>
 	
 	<nav id="main-menu" role="article"><ul>
-	<li><a href="#">Trip Planner</a></li>
+	<li><a href="javascript:otp.modules.multimodal.MultimodalPlannerModule.optionsWidget.unminimize(); otp.modules.multimodal.MultimodalPlannerModule.layerWidget.minimize();">Trip Planner</a></li>
   
-    <li><a href="#">Layers</a></li>
+    <li><a href="javascript:otp.modules.multimodal.MultimodalPlannerModule.layerWidget.unminimize(); otp.modules.multimodal.MultimodalPlannerModule.optionsWidget.minimize();">Layers</a></li>
     </ul></nav>
     
 </header><!-- #branding -->
