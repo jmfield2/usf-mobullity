@@ -655,7 +655,8 @@ public class TransitIndexBuilder implements GraphBuilderWithGtfsDao {
     }
 
     private String getName(Stop stop) {
-        return stop.getName() + " (" + stop.getId() + ")";
+        //Stop ID is useless in Maribor
+        return stop.getName(); // + " (" + stop.getId() + ")";
     }
 
     private RouteVariant addTripToVariant(Trip trip) {
