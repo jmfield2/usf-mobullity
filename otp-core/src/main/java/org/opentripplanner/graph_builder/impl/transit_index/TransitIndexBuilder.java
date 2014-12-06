@@ -538,18 +538,18 @@ public class TransitIndexBuilder implements GraphBuilderWithGtfsDao {
                 String firstStop = getName(stops.get(0));
                 if (starts.get(firstStop).size() == 1) {
                     // this is the only route with this start
-                    String name = routeName + " from " + firstStop;
+                    String name = routeName + " {{from}} " + firstStop;
                     variant.setName(name);
                 } else {
                     String lastStop = getName(stops.get(stops.size() - 1));
                     if (ends.get(lastStop).size() == 1) {
-                        String name = routeName + " to " + lastStop;
+                        String name = routeName + " {{to}} " + lastStop;
                         variant.setName(name);
                     } else {
                         for (Stop stop : stops) {
                             String viaStop = getName(stop);
                             if (vias.get(viaStop).size() == 1) {
-                                String name = routeName + " via " + viaStop;
+                                String name = routeName + " {{via}} " + viaStop;
                                 variant.setName(name);
                                 break;
                             }
@@ -603,7 +603,7 @@ public class TransitIndexBuilder implements GraphBuilderWithGtfsDao {
                 // take the intersection
                 remainingVariants.retainAll(ends.get(lastStop));
                 if (remainingVariants.size() == 1) {
-                    String name = routeName + " from " + firstStop + " to " + lastStop;
+                    String name = routeName + " {{from}} " + firstStop + " {{to}} " + lastStop;
                     variant.setName(name);
                     continue;
                 }
@@ -627,8 +627,8 @@ public class TransitIndexBuilder implements GraphBuilderWithGtfsDao {
                         }
                     }
                     if (found && !bad) {
-                        String name = routeName + " from " + firstStop + " to " + lastStop
-                                + " via " + getName(stop);
+                        String name = routeName + " {{from}} " + firstStop + " {{to}} " + lastStop
+                                + " {{via}} " + getName(stop);
                         variant.setName(name);
                         break;
                     }
@@ -640,12 +640,12 @@ public class TransitIndexBuilder implements GraphBuilderWithGtfsDao {
                         // we know that this one must be a subset of the other, because it
                         // has no unique via. So, it is the express
 
-                        String name = routeName + " from " + firstStop + " to " + lastStop
-                                + " express";
+                        String name = routeName + " {{from}} " + firstStop + " {{to}} " + lastStop
+                                + " {{express}}";
                         variant.setName(name);
                     } else {
                         // the final fallback
-                        variant.setName(routeName + " like " + variant.getTrips().get(0).getId());
+                        variant.setName(routeName + " {{like}} " + variant.getTrips().get(0).getId());
                     }
                 }
             }

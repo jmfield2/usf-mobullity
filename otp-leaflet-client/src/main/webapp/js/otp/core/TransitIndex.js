@@ -23,6 +23,19 @@ otp.core.TransitIndex = otp.Class({
     
     initialize : function(webapp) {
         this.webapp = webapp;
+
+        this.variant_translations = {
+            //TRANSLATORS: route number from stop [to stop]. Used in route variants
+            from : _tr('from'),
+            //TRANSLATORS: route number from stop [to stop]. Used in route variants
+            to : _tr('to'),
+            //TRANSLATORS: route number from stop [to stop] via stop. Used in route variants
+            via : _tr('via'),
+            //TRANSLATORS: route number from stop [to stop] express. Used in route variants
+            express: _tr('express'),
+            //TRANSLATORS: route number like trip_id. Used in route variants
+            like: _tr('like'),
+        };
     },
 
     loadAgencies : function(callbackTarget, callback) {
@@ -128,6 +141,11 @@ otp.core.TransitIndex = otp.Class({
                 //console.log(data);
                 route.variants = {};
                 for(var i=0; i<data.routeData[0].variants.length; i++) {
+                    //Route variant names is translated with help of mustache
+                    //{{from}} firstStop {{to}} last stop etc.
+                    //frm/to/via/like/express are translated with normal
+                    //translating mechanism
+                    data.routeData[0].variants[i].name = Mustache.render(data.routeData[0].variants[i].name, this_.variant_translations);
                     route.variants[data.routeData[0].variants[i].name] = data.routeData[0].variants[i];
                     data.routeData[0].variants[i].index = i;
                 }
