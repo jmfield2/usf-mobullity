@@ -356,7 +356,9 @@ otp.layers.BusPositionsLayer =
 		module : null,
 
 		minimumZoomForStops : 14,
-
+		
+		visible : [], // Bus Layers that are visible
+		
 		initialize : function(module) {
 			L.LayerGroup.prototype.initialize.apply(this);
 			this.module = module;
@@ -750,12 +752,13 @@ otp.layers.BusPositionsLayer =
 					console.log("Error no route available: " + route);
 				}
 			}
-				L.layerGroup(a).addTo(this_);
-				L.layerGroup(b).addTo(this_);
-				L.layerGroup(c).addTo(this_);
-				L.layerGroup(d).addTo(this_);
-				L.layerGroup(e).addTo(this_);
-				L.layerGroup(f).addTo(this_);
+			
+			if (this.visible.indexOf('A') != -1) L.layerGroup(a).addTo(this_);
+			if (this.visible.indexOf('B') != -1) L.layerGroup(b).addTo(this_);
+			if (this.visible.indexOf('C') != -1) L.layerGroup(c).addTo(this_);
+			if (this.visible.indexOf('D') != -1) L.layerGroup(d).addTo(this_);
+			if (this.visible.indexOf('E') != -1) L.layerGroup(e).addTo(this_);
+			if (this.visible.indexOf('F') != -1) L.layerGroup(f).addTo(this_);
 		},
 		
 		setRoutes : function(){			
@@ -768,8 +771,6 @@ otp.layers.BusPositionsLayer =
 				var latlng = L.latLng(lat, lng);
 				routeA.push(latlng);
 			}
-			//console.log(routeA);
-			L.polyline(routeA, {color: 'green'}).addTo(this);
 			
 			//for route B:
 			var routeB = new Array();
@@ -779,7 +780,6 @@ otp.layers.BusPositionsLayer =
 				var latlng = L.latLng(lat, lng);
 				routeB.push(latlng);
 			}
-			L.polyline(routeB, {color: 'blue'}).addTo(this);
 			
 			//for route C:
 			var routeC = new Array();
@@ -789,8 +789,6 @@ otp.layers.BusPositionsLayer =
 				var latlng = L.latLng(lat, lng);
 				routeC.push(latlng);
 			}
-			//console.log(routeA);
-			L.polyline(routeC, {color: 'purple'}).addTo(this);
 			
 			//for route D:
 			var routeD = new Array();
@@ -799,8 +797,7 @@ otp.layers.BusPositionsLayer =
 				var lng = stopsD[d].lon;
 				var latlng = L.latLng(lat, lng);
 				routeD.push(latlng);
-			}
-			L.polyline(routeD, {color: 'red'}).addTo(this);
+			}			
 			
 			//for route E:
 			var routeE = new Array();
@@ -810,8 +807,7 @@ otp.layers.BusPositionsLayer =
 				var latlng = L.latLng(lat, lng);
 				routeE.push(latlng);
 			}
-			L.polyline(routeE, {color: 'yellow'}).addTo(this);
-			
+						
 			//for route F:
 			var routeF = new Array();
 			for (var f = 0; f < stopsF.length; f++){
@@ -820,7 +816,13 @@ otp.layers.BusPositionsLayer =
 				var latlng = L.latLng(lat, lng);
 				routeF.push(latlng);
 			}
-			L.polyline(routeF, {color: 'brown'}).addTo(this);
+
+			if (this.visible.indexOf('A') != -1) L.polyline(routeA, {color: 'green'}).addTo(this);
+			if (this.visible.indexOf('B') != -1) L.polyline(routeB, {color: 'blue'}).addTo(this);			
+			if (this.visible.indexOf('C') != -1) L.polyline(routeC, {color: 'purple'}).addTo(this);			
+			if (this.visible.indexOf('D') != -1) L.polyline(routeD, {color: 'red'}).addTo(this);
+			if (this.visible.indexOf('E') != -1) L.polyline(routeE, {color: 'yellow'}).addTo(this);
+			if (this.visible.indexOf('F') != -1) L.polyline(routeF, {color: 'brown'}).addTo(this);
 
 		},
 	});

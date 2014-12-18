@@ -15,14 +15,15 @@ otp.layers.BikeStationsLayer =
 			
 			this.module.addLayer("bikes", this);
 			this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
+			
+			this.liveMap();
 		},
 
 		refresh : function() {
 			this.clearLayers();
 			var lmap = this.module.webapp.map.lmap;
 			if(lmap.getZoom() >= this.minimumZoomForStops) {
-				this.liveMap();
-				this.setRoutes();
+				this.setMarkers();
 			}
 		},
 
@@ -40,7 +41,6 @@ otp.layers.BikeStationsLayer =
 //					console.log("Vehicle "+x+": id:"+data.vehicles[x].id+" route:"+data.vehicles[x].routeId+" lat:"+data.vehicles[x].lat.toFixed(3)+" lon:"+data.vehicles[x].lon.toFixed(3)+" dir:"+data.vehicles[x].bearing);
 //					}
 					this_.stations = data.stations;
-					this_.setMarkers();
 				}
 			});
 //			console.log(this_.vehicles);
@@ -51,19 +51,21 @@ otp.layers.BikeStationsLayer =
 			this.clearLayers();
 			var a = new Array();
 			var v;
+			var lmap = this.module.webapp.map.lmap;
+			
 			for(v=0; v < this_.stations.length; v++){
-				var coord = L.latLng(this_.stations[v].x,this_.stations[v].y);
+				var coord = L.latLng(this_.stations[v].y,this_.stations[v].x);
 				var marker;
 				
 				marker =  L.marker(coord, {icon: this.module.icons.getSmall(this_.stations[v])} ).bindPopup('Bike Rack: ' + this_.stations[v].id + " Bikes Available: " + this_.stations[v].spacesAvailable + " Spaces: " + this_.stations[v].bikesAvailable);
 				marker.on('mouseover', marker.openPopup.bind(marker));
 				
-				marker.addTo(this_);
-				//a.push(marker);
+				a.push(marker);
 				
 			}
 			
-			//L.layerGroup(a).addTo(this_);
+			this.addLayer(L.layerGroup(a)).addTo(lmap);
+
 		},
 		
 		setRoutes : function(){

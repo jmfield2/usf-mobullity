@@ -19,6 +19,22 @@ otp.widgets.LayersWidget =
 
     module : null,
     
+    toggle_bus_layer : function(rte) {
+    	
+    	var id = L.stamp( this.module.busLayers );
+    	var obj = this.module.busLayers;
+    	        	
+    	if (obj.visible.indexOf(rte) != -1) { 
+    		obj.visible.splice(obj.visible.indexOf(rte), 1);
+    		$('#usf_'+rte+' .box').removeClass('active');
+    	}
+    	else {
+    		obj.visible.push(rte);
+    		$("#usf_"+rte+" .box").addClass('active');
+    	}
+    	
+    	obj.refresh();        	
+    },
         
     initialize : function(id, module) {
     
@@ -47,15 +63,37 @@ otp.widgets.LayersWidget =
         if (this.module.bikeLayers == undefined) $('.otp-layerView-inner .bikes').remove();
         
         // Layer group toggle code
-                        
+        
+        $('#usf_A').bind('click', {'this_': this}, function(ev) {
+        	this_.toggle_bus_layer("A");        	        
+        });
+        $('#usf_B').bind('click', {'this_': this}, function(ev) {
+        	this_.toggle_bus_layer("B");        	        
+        });
+        $('#usf_C').bind('click', {'this_': this}, function(ev) {
+        	this_.toggle_bus_layer("C");        	        
+        });
+        $('#usf_D').bind('click', {'this_': this}, function(ev) {
+        	this_.toggle_bus_layer("D");        	        
+        });
+        $('#usf_E').bind('click', {'this_': this}, function(ev) {
+        	this_.toggle_bus_layer("E");        	        
+        });
+        $('#usf_F').bind('click', {'this_': this}, function(ev) {
+        	this_.toggle_bus_layer("F");        	        
+        });
+        
+        // Toggle entire bus layer
         $('#bus_usf').bind('click', {'module': this.module}, function(ev) {
         	
-        	var id = L.stamp( ev.data.module.stopsLayer );
-        	        	
-        	if (ev.data.module.stopsLayer._map != null) 
-        		ev.data.module.webapp.map.lmap.removeLayer( ev.data.module.stopsLayer );
-        	else
-        		ev.data.module.webapp.map.lmap.addLayer( ev.data.module.stopsLayer );
+        	var id = L.stamp( ev.data.module.busLayers );
+        	
+        	if (ev.data.module.busLayers._map != null) {
+        		ev.data.module.webapp.map.lmap.removeLayer( ev.data.module.busLayers );
+        	}
+        	else {
+        		ev.data.module.webapp.map.lmap.addLayer( ev.data.module.busLayers );        		
+        	}
         	        	
         });
 
@@ -70,10 +108,10 @@ otp.widgets.LayersWidget =
         	        	
         });
         
-        $('#bike_racks').bind('click', {'module': this.module}, function(ev) {
+        $('#bike_stations').bind('click', {'module': this.module}, function(ev) {
 
         	var id = L.stamp( ev.data.module.bikeLayers );
-        	
+        	                	
         	if (ev.data.module.bikeLayers._map != null) 
         		ev.data.module.webapp.map.lmap.removeLayer( ev.data.module.bikeLayers );
         	else

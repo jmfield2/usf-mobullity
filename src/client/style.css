@@ -1091,30 +1091,39 @@ p#splash-text span {
 	border-top: none;	
 }
 
-.routes input[type=checkbox] {
-	height: 15px; width: 15px;
+.routes div .box {
 	border: 1px solid #b0acac;
 	border-radius: 3px;
+	height: 15px; width: 15px;
 	background-color:white;	
+	width: 15px;
+	height: 15px;
+	float:left;
+}
+.routes div .name {
+	color: black;
+	float:left;
+	padding-left: 5px;
 }
 
-.routes label[for=usf_A] {
-	color: #00573c;
+.routes div#usf_A .box.active { 
+	background-color: #00573C;
 }
-.routes label[for=usf_B] {
-	color: #0077d1;
+
+.routes div#usf_B .box.active {
+	background-color: #0077d1;
 }
-.routes label[for=usf_C] {
-	color: #ac49d0;
+.routes div#usf_C .box.active {
+	background-color: #ac49d0;
 }
-.routes label[for=usf_D] {
-	color: #f70505; 
+.routes div#usf_D .box.active {
+	background-color: #f70505; 
 }
-.routes label[for=usf_E] {
-	color: #d4ba13;
+.routes div#usf_E .box.active {
+	background-color: #d4ba13;
 }
-.routes label[for=usf_F] {
-	color: #8f6a51;
+.routes div#usf_F .box.active {
+	background-color: #8f6a51;
 }
 
 .otp-layerView-inner fieldset { border-top:1px solid #9CCB3B; }

@@ -175,6 +175,7 @@
 <!-- load ICH templates and create the webapp at startup -->
 <script type="text/javascript" language="javascript">
 
+var webapp = null;
 
 $(document).ready(function() {
     var templateUrls = [ //new Array(
@@ -193,7 +194,7 @@ $(document).ready(function() {
             loadedTemplates++;
             if(loadedTemplates == templateUrls.length) {
                 ich.grabTemplates();                   
-                new otp.core.Webapp();
+                webapp = new otp.core.Webapp();
             }
         });
     }
@@ -210,9 +211,9 @@ $(document).ready(function() {
 	<div class=logo></div>
 	
 	<nav id="main-menu" role="article"><ul>
-	<li><a href="javascript:otp.modules.multimodal.MultimodalPlannerModule.optionsWidget.unminimize(); otp.modules.multimodal.MultimodalPlannerModule.layerWidget.minimize();">Trip Planner</a></li>
+	<li><a href="javascript:webapp.modules[0].optionsWidget.unminimize(); webapp.modules[0].layerWidget.minimize();">Trip Planner</a></li>
   
-    <li><a href="javascript:otp.modules.multimodal.MultimodalPlannerModule.layerWidget.unminimize(); otp.modules.multimodal.MultimodalPlannerModule.optionsWidget.minimize();">Layers</a></li>
+    <li><a href="javascript:webapp.modules[0].layerWidget.unminimize(); webapp.modules[0].optionsWidget.minimize();">Layers</a></li>
     </ul></nav>
     
 </header><!-- #branding -->
