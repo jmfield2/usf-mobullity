@@ -141,6 +141,12 @@ otp.core.TransitIndex = otp.Class({
                 //console.log(data);
                 route.variants = {};
                 for(var i=0; i<data.routeData[0].variants.length; i++) {
+                    //QUICKFIX: for showing translated routeVariants in current
+                    //trip
+                    //TODO: This needs to be solved in server & client side. To
+                    //key on id not on name probably. Should be fixed in Index
+                    //API rewrite
+                    route.variants[data.routeData[0].variants[i].name] = data.routeData[0].variants[i];
                     //Route variant names is translated with help of mustache
                     //{{from}} firstStop {{to}} last stop etc.
                     //frm/to/via/like/express are translated with normal
