@@ -13,6 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package org.opentripplanner.index;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,7 @@ import org.opentripplanner.index.model.TripShort;
 import org.opentripplanner.index.model.TripTimeShort;
 import org.opentripplanner.model.StopPattern;
 import org.opentripplanner.profile.StopCluster;
+import org.opentripplanner.routing.edgetype.PatternHop;
 import org.opentripplanner.routing.edgetype.TripPattern;
 import org.opentripplanner.routing.edgetype.Timetable;
 import org.opentripplanner.routing.graph.Graph;
@@ -57,6 +59,8 @@ import org.opentripplanner.routing.services.StreetVertexIndexService;
 import org.opentripplanner.routing.trippattern.TripTimes;
 import org.opentripplanner.routing.vertextype.TransitStop;
 import org.opentripplanner.standalone.OTPServer;
+import org.opentripplanner.util.PolylineEncoder;
+import org.opentripplanner.util.model.EncodedPolylineBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -398,11 +402,42 @@ public class IndexAPI {
        }
    }
 
+   /** Return geometries for each leg of the trip as packed coordinate sequences */
+   @GET
+   @Path("/trips/{tripId}/geometries")
+   public Response getGeometryForTrip (@PathParam("tripId") String tripIdString) {
+        AgencyAndId tripId = GtfsLibrary.convertIdFromString(tripIdString);
+        Trip trip = index.tripForId.get(tripId);
+        if (trip != null) {
+            TripPattern tripPattern = index.patternForTrip.get(trip);
+            return getGeometryForPattern(tripPattern.getCode());
+        } else {
+            return Response.status(Status.NOT_FOUND).entity(MSG_404).build();
+        }
+   }
+
    @GET
    @Path("/patterns")
    public Response getPatterns () {
        Collection<TripPattern> patterns = index.patternForId.values();
        return Response.status(Status.OK).entity(PatternShort.list(patterns)).build();
+   }
+
+   /** Return geometries for each leg of the pattern as packed coordinate sequences */
+   @GET
+   @Path("/patterns/{patternId}/geometries")
+   public Response getGeometryForPattern (@PathParam("patternId") String patternIdString) {
+        TripPattern pattern = index.patternForId.get(patternIdString);
+        if (pattern != null) {
+            Collection<EncodedPolylineBean> geometries = new ArrayList<>();
+            for (PatternHop edge : pattern.hopEdges) {
+		if (edge == null) continue;
+                geometries.add(PolylineEncoder.createEncodings(edge.getGeometry()));
+            }
+            return Response.status(Status.OK).entity(geometries).build();
+        } else {
+            return Response.status(Status.NOT_FOUND).entity(MSG_404).build();
+        }
    }
 
    @GET

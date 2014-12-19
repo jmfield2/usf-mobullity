@@ -358,7 +358,10 @@ otp.layers.BusPositionsLayer =
 		minimumZoomForStops : 14,
 		
 		visible : [], // Bus Layers that are visible
-		
+	
+		route_polylines : [],
+		routes: ['A', 'B', 'C', 'D', 'E', 'F'],
+	
 		initialize : function(module) {
 			L.LayerGroup.prototype.initialize.apply(this);
 			this.module = module;
@@ -372,7 +375,21 @@ otp.layers.BusPositionsLayer =
 			stopsD = this.module.webapp.transitIndex.getTripRoute('USF Bull Runner_8');
 			stopsE = this.module.webapp.transitIndex.getTripRoute('USF Bull Runner_11');
 			stopsF = this.module.webapp.transitIndex.getTripRoute('USF Bull Runner_13');
-			
+
+			for (var x=0; x < this.routes.length; x++) {
+				route = this.routes[x];
+
+			        $.ajax({
+                		url: '/otp/routers/default/index/patterns/USF Bull Runner_'+route+'_01/geometries',
+                		this_: this,
+				rte: route,
+		                dataType: 'json',
+                		success: function(data) {
+					this.this_.route_polylines[this.rte] = data;
+				},
+				});
+			}
+
 			//set map to refresh vehicle positions every 5 seconds and every map movement..
 			this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
 			setInterval($.proxy(this.refresh,this),5000);
@@ -817,12 +834,26 @@ otp.layers.BusPositionsLayer =
 				routeF.push(latlng);
 			}
 
-			if (this.visible.indexOf('A') != -1) L.polyline(routeA, {color: 'green'}).addTo(this);
-			if (this.visible.indexOf('B') != -1) L.polyline(routeB, {color: 'blue'}).addTo(this);			
-			if (this.visible.indexOf('C') != -1) L.polyline(routeC, {color: 'purple'}).addTo(this);			
-			if (this.visible.indexOf('D') != -1) L.polyline(routeD, {color: 'red'}).addTo(this);
-			if (this.visible.indexOf('E') != -1) L.polyline(routeE, {color: 'yellow'}).addTo(this);
-			if (this.visible.indexOf('F') != -1) L.polyline(routeF, {color: 'brown'}).addTo(this);
+			if (this.visible.indexOf('A') != -1) this.drawRoutePolyline(this.route_polylines['A'], {color: 'green'} );
+
+			if (this.visible.indexOf('B') != -1) this.drawRoutePolyline(this.route_polylines['B'], {color: 'blue'} );
+
+			if (this.visible.indexOf('C') != -1) this.drawRoutePolyline(this.route_polylines['C'], {color: 'purple'} );
+
+			if (this.visible.indexOf('D') != -1) this.drawRoutePolyline(this.route_polylines['D'], {color: 'red'} );
+
+			if (this.visible.indexOf('E') != -1) this.drawRoutePolyline(this.route_polylines['E'], {color: 'yellow'} );
+
+			if (this.visible.indexOf('F') != -1) this.drawRoutePolyline(this.route_polylines['F'], {color: 'brown'} );
 
 		},
+
+		drawRoutePolyline : function(route, opts) {
+
+			for (x in route) {
+				line = route[x]
+				L.polyline(otp.util.Geo.decodePolyline(line['points']), opts).addTo(this);
+			}
+		},
+
 	});
