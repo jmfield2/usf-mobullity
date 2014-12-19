@@ -54,7 +54,7 @@ otp.locale.English = {
     infoWidgets : [
             {
                 title: 'About',
-                content: '<p>About this site</p>',
+                content: '<p>About this site</p><p>Produced using Copernicus data and information funded by the European Union - EU-DEM layers.</p>',
                 //cssClass: 'otp-contactWidget',
             },
             {

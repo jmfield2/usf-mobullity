@@ -59,7 +59,8 @@ otp.locale.Slovenian = {
                 '<p>Dodane so vse vožnje avtobusov:</p>' +
                 '<p><strong>Vsi postanki bi morali ustrezati dejanskemu stanju</strong></p>' +
                 '<p>Če je le možno so dodane tudi aktualne spremembe voženj objavljene na strani marprom.si</p>' +
-                '<p>Temelji na <a href="http://www.opentripplanner.org/">OpenTripPlanner</a>-ju</p>',
+                '<p>Temelji na <a href="http://www.opentripplanner.org/">OpenTripPlanner</a>-ju</p>' +
+                '<p>Izdelano z uporabo podatkov in informacij, ki jih financira Evropska unija Kopernik - plast EU-DEM.</p>'
                 //cssClass: 'otp-contactWidget',
             },
             /*{
