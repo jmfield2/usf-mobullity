@@ -376,9 +376,11 @@ otp.layers.BusPositionsLayer =
 			stopsE = this.module.webapp.transitIndex.getTripRoute('USF Bull Runner_11');
 			stopsF = this.module.webapp.transitIndex.getTripRoute('USF Bull Runner_13');
 
+			//Use patterns API to load geometries
 			for (var x=0; x < this.routes.length; x++) {
 				route = this.routes[x];
 
+				// XXX use defined agency and detect the tripid (01) ?
 			        $.ajax({
                 		url: '/otp/routers/default/index/patterns/USF Bull Runner_'+route+'_01/geometries',
                 		this_: this,
