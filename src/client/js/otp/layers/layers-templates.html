@@ -3,7 +3,7 @@
     <div>
         <div style="font-weight: bold; font-size: 16px;">
             {{#titleLink}}<a href="{{titleLink}}" target="_blank">{{/titleLink}}
-            {{stopName}}
+            {{name}}
             {{#titleLink}}</a>{{/titleLink}}
         </div>
         <div style="font-style: italic; font-size: 11px;">{{stopDesc}}</div>
@@ -82,7 +82,13 @@
 <fieldset>
 <legend>Bus Stops</legend>
 <div class=stops>
-<input type=checkbox id="bus_hart" /> <label for=bus_hart>HART</label><br>
+
+<div id="bus_hart" class="route-menu-item selected">
+<div class="box"></div><div class="color"></div>
+<div class="name">HART</div>
+</div>
+<div style="clear:left;"></div>
+
 </div>
 </fieldset>
 
@@ -98,8 +104,19 @@
 <fieldset>
 <legend>Bike Rentals</legend>
 <div class=bikes>
-<input type=checkbox id="bike_stations" /> <label for=bike_stations>Bike Stations</label> <br>
-<input type=checkbox id="bike_lanes" /> <label for=bike_lanes>Bike Lanes</label> <br>
+
+<div id="bike_stations" class="route-menu-item selected">
+<div class="box"></div><div class="color"></div>
+<div class="name">Bike Stations</div>
+</div>
+<div style="clear:left;"></div>
+
+<div id="bike_lanes" class="route-menu-item selected">
+<div class="box"></div><div class="color"></div>
+<div class="name">Bike Lanes</div>
+</div>
+<div style="clear:left;"></div>
+
 </div>
 </fieldset>
 

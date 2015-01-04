@@ -33,7 +33,10 @@ otp.widgets.LayersWidget =
     		$("#usf_"+rte+" .box").addClass('active');
     	}
     	
-    	obj.refresh();        	
+	// refresh the buslayer, and the stoplayer
+    	obj.refresh();        
+	webapp.modules[0].stopsLayer.refresh();
+
     },
         
     initialize : function(id, module) {
@@ -64,6 +67,7 @@ otp.widgets.LayersWidget =
         
         // Layer group toggle code
         
+	// Bullrunner bus stops+routes
         $('#usf_A').bind('click', {'this_': this}, function(ev) {
         	this_.toggle_bus_layer("A");        	        
         });
@@ -82,58 +86,43 @@ otp.widgets.LayersWidget =
         $('#usf_F').bind('click', {'this_': this}, function(ev) {
         	this_.toggle_bus_layer("F");        	        
         });
-        
-        // Toggle entire bus layer
-        $('#bus_usf').bind('click', {'module': this.module}, function(ev) {
-        	
-        	var id = L.stamp( ev.data.module.busLayers );
-        	
-        	if (ev.data.module.busLayers._map != null) {
-        		ev.data.module.webapp.map.lmap.removeLayer( ev.data.module.busLayers );
-        	}
-        	else {
-        		ev.data.module.webapp.map.lmap.addLayer( ev.data.module.busLayers );        		
-        	}
-        	        	
-        });
+      
+	// HART bus stops
+	$('#bus_hart').bind('click', {'this_': this}, function(ev) {
 
-        $('#bus_positions').bind('click', {'module': this.module}, function(ev) {
-
-        	var id = L.stamp( ev.data.module.busLayers );
-        	
-        	if (ev.data.module.busLayers._map != null) 
-        		ev.data.module.webapp.map.lmap.removeLayer( ev.data.module.busLayers );
-        	else
-        		ev.data.module.webapp.map.lmap.addLayer( ev.data.module.busLayers );
-        	        	
-        });
-        
+	});
+  
+	// Bike rental layers
         $('#bike_stations').bind('click', {'module': this.module}, function(ev) {
 
         	var id = L.stamp( ev.data.module.bikeLayers );
         	                	
-        	if (ev.data.module.bikeLayers._map != null) 
+        	if (ev.data.module.bikeLayers._map != null) {
         		ev.data.module.webapp.map.lmap.removeLayer( ev.data.module.bikeLayers );
-        	else
+			$("#bike_stations .box").removeClass('active');
+		}
+        	else {
         		ev.data.module.webapp.map.lmap.addLayer( ev.data.module.bikeLayers );
+			$("#bike_stations .box").addClass('active');
+		}
         	
         });
 
         $('#bike_lanes').bind('click', {'module': this.module}, function(ev) {
-        
-           	var id = L.stamp( ev.data.module.bikeLanes );
-               	
-           	if (ev.data.module.bikeLanes._map != null) 
-           		ev.data.module.webapp.map.lmap.removeLayer( ev.data.module.bikeLanes );
-           	else
-           		ev.data.module.webapp.map.lmap.addLayer( ev.data.module.bikeLanes );        	
-               	
-        });
-        
-        $('#park_garages').bind('click', {'module': this.module}, function(ev) {
-        	        
-        });
+       
+		if (ev.data.module.bikeLanes.visible) {
+			ev.data.module.bikeLanes.visible = false;
+			$("#bike_lanes .box").removeClass('active');
+		}
+		else { 
+			ev.data.module.bikeLanes.visible = true;
+			$("#bike_lanes .box").addClass('active');
+		}
 
+		ev.data.module.bikeLanes.refresh(); 
+               	
+        });
+        
     },
     
 });

@@ -117,13 +117,34 @@ otp.core.Webapp = otp.Class({
                 $("<div id='site-title'><a href='"+otp.config.siteURL+"'>"+otp.config.siteName+"</a></div>").appendTo('#branding .logo');
             }
         }
+
         
         // create the Webapp-owned objects
             
-            this.map = new otp.core.Map(this);
+        this.map = new otp.core.Map(this);
         this.transitIndex = new otp.core.TransitIndex(this);
         this.widgetManager = new otp.widgets.WidgetManager();
         
+        // create the info widgets and links along header bar
+        if(otp.config.infoWidgets !== undefined && otp.config.infoWidgets.length > 0) {
+            var nav = $('<nav id="main-menu" role="article">').appendTo('#branding');
+            var ul = $('<ul>').appendTo(nav);
+
+            for(var i=0; i<otp.config.infoWidgets.length; i++) {
+
+                if(otp.config.infoWidgets[i] == undefined) continue;
+
+                var id = "otp-infoWidget-"+i;
+
+                var options = {};
+                if(_.has(otp.config.infoWidgets[i], 'title')) options.title = otp.config.infoWidgets[i].title;
+                if(_.has(otp.config.infoWidgets[i], 'cssClass')) options.cssClass = otp.config.infoWidgets[i].cssClass;
+
+                this.infoWidgets[id] = new otp.widgets.InfoWidget(otp.config.infoWidgets[i].styleId,
+                                                                  this, options, otp.config.infoWidgets[i].content);
+
+            }
+        }
         
         if(otp.config.geocoders) {
             for(var i=0; i<otp.config.geocoders.length; i++) {
