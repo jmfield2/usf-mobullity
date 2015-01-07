@@ -52,6 +52,8 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.index.SpatialIndex;
 import com.vividsolutions.jts.index.quadtree.Quadtree;
 import com.vividsolutions.jts.index.strtree.STRtree;
+import org.opentripplanner.util.I18NString;
+import org.opentripplanner.util.LocalizedString;
 import org.opentripplanner.util.NonLocalizedString;
 import org.opentripplanner.util.ResourceBundleSingleton;
 
@@ -191,7 +193,16 @@ public class StreetVertexIndexServiceImpl implements StreetVertexIndexService {
         // first, check for intersections very close by
         Coordinate coord = location.getCoordinate();
         StreetVertex intersection = getIntersectionAt(coord, MAX_CORNER_DISTANCE);
-        String calculatedName = location.getName();
+        Locale locale;
+        if (options == null) {
+            locale = new Locale("en");
+        } else {
+            locale = options.getLocale();
+        }
+        I18NString calculatedName = null;
+        if (location.getName() != null) {
+            calculatedName = new NonLocalizedString(location.getName());
+        }
         if (intersection != null) {
             // We have an intersection vertex. Check that this vertex has edges we can traverse.
             boolean canEscape = false; 
@@ -214,12 +225,6 @@ public class StreetVertexIndexServiceImpl implements StreetVertexIndexService {
                     LOG.debug("found intersection {}. not splitting.", intersection);
                     // generate names for corners when no name was given
                     Set<String> uniqueNameSet = new HashSet<String>();
-                    Locale locale;
-                    if (options == null) {
-                        locale = new Locale("en");
-                    } else {
-                        locale = options.getLocale(); 
-                    }
                     for (Edge e : intersection.getOutgoing()) {
                         if (e instanceof StreetEdge) {
                             uniqueNameSet.add(e.getName(locale));
@@ -227,18 +232,19 @@ public class StreetVertexIndexServiceImpl implements StreetVertexIndexService {
                     }
                     List<String> uniqueNames = new ArrayList<String>(uniqueNameSet);
                     
+                    //TODO: move corner making with parameter to Localized string
                     String fmt = ResourceBundleSingleton.INSTANCE.localize("corner", locale);
                     if (uniqueNames.size() > 1) {
-                        calculatedName = String.format(fmt, uniqueNames.get(0),
-                                uniqueNames.get(1));
+                        calculatedName = new NonLocalizedString(String.format(fmt, uniqueNames.get(0),
+                                uniqueNames.get(1)));
                     } else if (uniqueNames.size() == 1) {
-                        calculatedName = uniqueNames.get(0);
+                        calculatedName = new NonLocalizedString(uniqueNames.get(0));
                     } else {
-                        calculatedName = ResourceBundleSingleton.INSTANCE.localize("unnamedStreet", locale);
+                        calculatedName = new LocalizedString("unnamedStreed", (String[]) null); //params) NonLocalizedString(ResourceBundleSingleton.INSTANCE.localize("unnamedStreet", locale));
                     }
                 }
                 StreetLocation closest = new StreetLocation(graph, "corner " + Math.random(), coord,
-                        new NonLocalizedString(calculatedName));
+                        calculatedName);
                 FreeEdge e = new FreeEdge(closest, intersection);
                 closest.getExtra().add(e);
                 e = new FreeEdge(intersection, closest);
@@ -274,12 +280,12 @@ public class StreetVertexIndexServiceImpl implements StreetVertexIndexService {
             Coordinate nearestPoint = candidate.nearestPointOnEdge;
             closestStreetDistance = distanceLibrary.distance(coord, nearestPoint);
             LOG.debug("best street: {} dist: {}", bestStreet.toString(), closestStreetDistance);
-            if (calculatedName == null || "".equals(calculatedName)) {
-                calculatedName = bestStreet.getName();
+            if (calculatedName == null || "".equals(calculatedName.toString(locale))) {
+                calculatedName = new NonLocalizedString(bestStreet.getName(locale));
             }
-            //TODO: where is this used. localize this.
-            String closestName = String.format("%s_%s", bestStreet.getName(), location.toString());
-            closestStreet = StreetLocation.createStreetLocation(graph, closestName, new NonLocalizedString(calculatedName),
+            //TODO: Where is this closestName actually used?
+            String closestName = String.format("%s_%s", calculatedName.toString(locale), location.toString());
+            closestStreet = StreetLocation.createStreetLocation(graph, closestName, calculatedName,
                     bundle.toEdgeList(), nearestPoint, coord);
         }
 
