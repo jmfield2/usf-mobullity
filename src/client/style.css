@@ -1091,7 +1091,9 @@ p#splash-text span {
 	border-top: none;	
 }
 
-.routes div .box {
+.routes div .box,
+.bikes div .box,
+.stops div .box {
 	border: 1px solid #b0acac;
 	border-radius: 3px;
 	height: 15px; width: 15px;
@@ -1100,7 +1102,9 @@ p#splash-text span {
 	height: 15px;
 	float:left;
 }
-.routes div .name {
+.routes div .name,
+.bikes div .name,
+.stops div .name {
 	color: black;
 	float:left;
 	padding-left: 5px;
@@ -1124,6 +1128,18 @@ p#splash-text span {
 }
 .routes div#usf_F .box.active {
 	background-color: #8f6a51;
+}
+
+.bikes div#bike_stations .box.active {
+	background-color: green;
+}
+
+.bikes div#bike_lanes .box.active {
+	background-color: green;
+}
+
+.stops div#bus_hart .box.active {
+	background-color: green;
 }
 
 .otp-layerView-inner fieldset { border-top:1px solid #9CCB3B; }
