@@ -20,7 +20,9 @@ otp.layers.BikeLanesLayer =
     module : null,
     
     minimumZoomForStops : 15,
-    
+   
+    visible: false,
+ 
     initialize : function(module) {
         L.LayerGroup.prototype.initialize.apply(this);
         this.module = module;
@@ -50,7 +52,7 @@ otp.layers.BikeLanesLayer =
     refresh : function() {
         this.clearLayers();                
         var lmap = this.module.webapp.map.lmap;
-        if(lmap.getZoom() >= this.minimumZoomForStops) {
+        if(lmap.getZoom() >= this.minimumZoomForStops && this.visible) {
         	for (p in this.bikeLanes) {
 
     			ret=L.polyline(this.bikeLanes[p], {color: 'red'});    			

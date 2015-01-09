@@ -38,6 +38,7 @@ import org.opentripplanner.routing.util.ElevationProfileSegment;
 import org.opentripplanner.routing.util.ElevationUtils;
 import org.opentripplanner.routing.vertextype.IntersectionVertex;
 import org.opentripplanner.routing.vertextype.StreetVertex;
+import org.opentripplanner.routing.core.TraverseMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -364,6 +365,9 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
                 */
             }
         }
+
+	if ((traverseMode.equals(TraverseMode.BICYCLE)) && permission.allows(StreetTraversalPermission.BICYCLE_LANE)) 
+		weight *= 0.66; // weight is time...so lower is better?
 
         if (isStairs()) {
             weight *= options.stairsReluctance;
