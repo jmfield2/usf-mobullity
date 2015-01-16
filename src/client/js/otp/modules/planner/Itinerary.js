@@ -315,7 +315,7 @@ otp.modules.planner.Itinerary = otp.Class({
     },
     
     getTextNarrative : function(itinLink) {
-        var text = ''
+        var text = '';
 
         //TRANSLATORS: Start: location at [time date] (Used in print itinerary
         //when do you start your trip)

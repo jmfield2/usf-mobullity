@@ -14,11 +14,21 @@
 
 otp.namespace("otp.layers");
 
-var StopIcon20 = L.Icon.extend({
+var bullrunnerStopIcon = L.Icon.extend({
+    options: {
+        iconUrl: resourcePath + 'images/busStopButton.png',
+        shadowUrl: null,
+        iconSize: new L.Point(8,8),
+        iconAnchor: new L.Point(10, 10),
+        popupAnchor: new L.Point(0, -5)
+    }
+});
+
+var hartStopIcon = L.Icon.extend({
     options: {
         iconUrl: resourcePath + 'images/stop20.png',
         shadowUrl: null,
-        iconSize: new L.Point(20, 20),
+        iconSize: new L.Point(8,8),
         iconAnchor: new L.Point(10, 10),
         popupAnchor: new L.Point(0, -5)
     }
@@ -35,21 +45,25 @@ otp.layers.StopsLayer =
         L.LayerGroup.prototype.initialize.apply(this);
         this.module = module;
 
+        this.module.stopViewerWidget = new otp.widgets.transit.StopViewerWidget('otp-'+this.id+'-StopViewerWidget', this.module);
+        
         this.stopsLookup = {};
         
         this.module.addLayer("stops", this);
+        
         this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
+
     },
     
     refresh : function() {
         this.clearLayers();                
         var lmap = this.module.webapp.map.lmap;
         if(lmap.getZoom() >= this.minimumZoomForStops) {
-            this.module.webapp.transitIndex.loadStopsInRectangle(null, lmap.getBounds(), this, function(data) {
+            this.module.webapp.transitIndex.loadStopsInRadius(null, lmap.getCenter(), this, function(data) {
                 this.stopsLookup = {};
-                for(var i = 0; i < data.stops.length; i++) {
-                    var agencyAndId = data.stops[i].id.agencyId + "_" + data.stops[i].id.id;
-                    this.stopsLookup[agencyAndId] = data.stops[i];
+                for(var i = 0; i < data.length; i++) {
+                    var agencyAndId = data[i].agency + "_" + data[i].id;
+                    this.stopsLookup[agencyAndId] = data[i];
                 }
                 this.updateStops();
             });
@@ -59,6 +73,7 @@ otp.layers.StopsLayer =
     updateStops : function(stops) {
         var stops = _.values(this.stopsLookup);
         var this_ = this;
+        var routeData = this.module.webapp.transitIndex.routes;
         var stop_viewer_trans = _tr('Stop Viewer');
         //TRANSLATORS: Plan Trip [From Stop| To Stop] Used in stoplayer popup
         var plan_trip_trans = _tr('Plan Trip');
@@ -75,12 +90,14 @@ otp.layers.StopsLayer =
             stop.lon = stop.lon || stop.stopLon;
 
             // temporary TriMet specific code
-            if(stop.stopUrl && stop.stopUrl.indexOf("http://trimet.org") === 0) {
-                stop.titleLink = 'http://www.trimet.org/go/cgi-bin/cstops.pl?action=entry&resptype=U&lang=en&noCat=Landmark&Loc=' + stop.id.id;
-            }
-            //console.log(stop);
+
+//            if(stop.stopUrl.indexOf("http://trimet.org") === 0) {
+//                stop.titleLink = 'http://www.trimet.org/go/cgi-bin/cstops.pl?action=entry&resptype=U&lang=en&noCat=Landmark&Loc=' + stop.id.id;
+//            }
+//            console.log(stop);
             
-            var icon = new StopIcon20();
+            var bullIcon = new bullrunnerStopIcon();
+            var hartIcon = new hartStopIcon();
             
             var context = _.clone(stop);
             context.agencyStopLinkText = otp.config.agencyStopLinkText || "Agency Stop URL";
@@ -93,9 +110,10 @@ otp.layers.StopsLayer =
 
             popupContent.find('.stopViewerLink').data('stop', stop).click(function() {
                 var thisStop = $(this).data('stop');
+                              
                 this_.module.stopViewerWidget.show();
                 this_.module.stopViewerWidget.setActiveTime(moment().add("hours", -otp.config.timeOffset).unix()*1000);
-                this_.module.stopViewerWidget.setStop(thisStop.id.agencyId, thisStop.id.id, thisStop.stopName);
+                this_.module.stopViewerWidget.setStop(thisStop.agency, thisStop.id, thisStop.name);
                 this_.module.stopViewerWidget.bringToFront();
             });
             
@@ -110,22 +128,34 @@ otp.layers.StopsLayer =
                 this_.module.setEndPoint(new L.LatLng(thisStop.lat, thisStop.lon), false, thisStop.stopName);
                 this_.module.webapp.map.lmap.closePopup();
             });
-
+            
             if(stop.routes) {
                 var routeList = popupContent.find('.routeList');
                 for(var r = 0; r < stop.routes.length; r++) {
-                    var agencyAndId = stop.routes[r].agencyId + '_' + stop.routes[r].id;
-                    var routeData = this.module.webapp.transitIndex.routes[agencyAndId].routeData;
+                    var agencyAndId = stop.routes[r].agency.id + '_' + stop.routes[r].id;
+                    var routeData = {"routeShortName":stop.routes[r].shortName, "routeLongName":stop.routes[r].longName};
                     ich['otp-stopsLayer-popupRoute'](routeData).appendTo(routeList);
                     // TODO: click opens RouteViewer
                     //routeList.append('<div>'+agencyAndId+'</div>');
                 }
             }
-                    
-            L.marker([stop.lat, stop.lon], {
-                icon : icon,
-            }).addTo(this)
-            .bindPopup(popupContent.get(0));
+
+           
+            if(stop.agency == "USF Bull Runner" && otp.config.showBullRunnerStops == true){
+            	//only want to display USF BullRunner stops in this layer
+            	L.marker([stop.lat, stop.lon], {
+            		icon : bullIcon,
+            	}).addTo(this_)
+            	.bindPopup(popupContent.get(0));
+            }
+            
+            else if(stop.agency == "Hillsborough Area Regional Transit" && otp.config.showHartBusStops == true){
+            	//only want to display Hart stops in this layer
+            	L.marker([stop.lat, stop.lon], {
+            		icon : hartIcon,
+            	}).addTo(this_)
+            	.bindPopup(popupContent.get(0));
+            }
             
         }
     },

@@ -22,9 +22,9 @@ otp.modules.planner.defaultQueryParams = {
     arriveBy                        : false,
     wheelchair                      : false,
     mode                            : "TRANSIT,WALK",
-    maxWalkDistance                 : 804.672, // 1/2 mi.
+    maxWalkDistance                 : 1609.34, // 1 mile
     metricDefaultMaxWalkDistance    : 750, // meters
-    imperialDefaultMaxWalkDistance  : 804.672, // 0.5 mile
+    imperialDefaultMaxWalkDistance  : 1609.34, // 1 mile
     preferredRoutes                 : null,
     otherThanPreferredRoutesPenalty : 300,
     bannedTrips                     : null,
@@ -50,6 +50,8 @@ otp.modules.planner.PlannerModule =
     tipWidget       : null,
     noTripWidget    : null,
     tipStep         : 0,
+    
+    welcomeWidget	: null,
     
     currentRequest  : null,
     currentHash : null,
@@ -81,6 +83,7 @@ otp.modules.planner.PlannerModule =
     endName         : null,
     startLatLng     : null,
     endLatLng       : null,
+    
 
     // the defaults params, as modified in the module-specific config
     defaultQueryParams  : null,
@@ -146,6 +149,29 @@ otp.modules.planner.PlannerModule =
         _.extend(this, _.clone(otp.modules.planner.defaultQueryParams));    
     },
     
+	getCookie : function()
+    {
+		var value = document.cookie.split(';');
+		return value[0];
+    },
+    
+    
+    checkCookie : function() {
+    	var test = this.getCookie();
+    	if(test != "true"){
+    		document.cookie = "true";
+            //Set Pop up Menu to give user info on how to use the app when the page firsts loads
+            this.WelcomeWidget = this.createWidget("otp-WelcomeWidget", "<font color=red>Do NOT use this application while driving a vehicle!</font><br><br>" +
+            		"<li>View Current Live Bull Runner Bus Feed by<br>" +
+            		"clicking Live Map at the top and selecting a route.</li>" +
+            		"<li>Plan a trip by using the menu on the left.</li>" +
+            		"Click the Help button for more information.", this);
+            this.WelcomeWidget.center();
+            this.WelcomeWidget.setTitle("Welcome!");
+            this.addWidget(this.WelcomeWidget);
+    	}
+    },
+	
     activate : function() {
         if(this.activated) return;
         var this_ = this;
@@ -167,6 +193,11 @@ otp.modules.planner.PlannerModule =
         });
         
         this.activated = true;
+        
+         //This is where it will check and set a cookie for the user 
+        //to decide whether the welcome popup should be displayed or not
+        this.checkCookie();
+        
         
         // set up primary widgets (TODO: move to bike planner module)
         /*this.tipWidget = this.createWidget("otp-tipWidget", "", this);
@@ -209,6 +240,7 @@ otp.modules.planner.PlannerModule =
         	this.setEndPoint(new L.LatLng(event.latlng.lat, event.latlng.lng), true);
         }
     },
+   
     
     setStartPoint : function(latlng, update, name) {
         this.startName = (typeof name !== 'undefined') ? name : null;
@@ -240,6 +272,7 @@ otp.modules.planner.PlannerModule =
             }
         }
     },
+   
     
     setEndPoint : function(latlng, update, name) {
         this.endName = (typeof name !== 'undefined') ? name : null;
@@ -270,6 +303,7 @@ otp.modules.planner.PlannerModule =
             }
         }
     },
+    
     
     getStartOTPString : function() {
         return (this.startName !== null ? this.startName + "::" : "")
@@ -321,7 +355,7 @@ otp.modules.planner.PlannerModule =
         else
         {
             if(this.startLatLng == null || this.endLatLng == null) {
-                // TODO: alert user
+                alert("Please select a start and end location!");
                 return;
             }
             
@@ -472,7 +506,11 @@ otp.modules.planner.PlannerModule =
             // draw the polyline
             var polyline = new L.Polyline(otp.util.Geo.decodePolyline(leg.legGeometry.points));
             var weight = 8;
-            polyline.setStyle({ color : this.getModeColor(leg.mode), weight: weight});
+            // Added specific code for the HART bus line so that the hart bus line route will be highlighted in blue
+            // Any other route will be highlighted in the default color which is green.
+            if(leg.agencyId == "Hillsborough Area Regional Transit"){polyline.setStyle({ color : '#0000FF', weight: weight});}
+            if(leg.agencyId == "USF Bull Runner"){polyline.setStyle({color: '#080', weight: weight});}
+            else{polyline.setStyle({ color : this.getModeColor(leg.mode), weight: weight});}
             this.pathLayer.addLayer(polyline);
             polyline.leg = leg;
             polyline.bindPopup("("+leg.routeShortName+") "+leg.routeLongName);
@@ -580,10 +618,10 @@ otp.modules.planner.PlannerModule =
     
     getModeColor : function(mode) {
         if(mode === "WALK") return '#444';
-        if(mode === "BICYCLE") return '#0073e5';
+        if(mode === "BICYCLE") return '#9944DD';
         if(mode === "SUBWAY") return '#f00';
         if(mode === "RAIL") return '#b00';
-        if(mode === "BUS") return '#080';
+        if(mode === "BUS") return '#FF7700';
         if(mode === "TRAM") return '#800';
         if(mode === "CAR") return '#444';
         return '#aaa';
@@ -650,4 +688,3 @@ otp.modules.planner.PlannerModule =
     
     CLASS_NAME : "otp.modules.planner.PlannerModule"
 });
-

@@ -99,11 +99,17 @@ otp.widgets.transit.StopViewerWidget =
         var startTime = moment(this.datePicker.val(), otp.config.locale.time.date_format).add("hours", -otp.config.timeOffset).unix();
         this.module.webapp.transitIndex.runStopTimesQuery(this.agencyId, this.stopId, startTime+10800, startTime+97200, this, function(data) {
             this_.times = [];
-            for(var i=0; i < data.stopTimes.length; i++) {
-                var time = data.stopTimes[i];
-                if(time.phase == "departure") {
-                    this_.times.push(time);
-                }
+            var d = new Date();
+            for(var i=0; i < data.length; i++) {
+            	for(var t=0; t < data[i].times.length; t++) {
+            		// Find time object given seconds since midnight
+            		var time = moment([d.getYear()-100, d.getMonth(), d.getDate()]);
+            		
+            		time.add({"seconds": data[i].times[t].scheduledArrival});
+            		
+            		var time = {'arrival':time, 'trip':{'short':data[i].pattern.desc, 'long':data[i].pattern.id}};
+            		this_.times.push(time);
+            	}
             }
             this_.updateTimes();
         });        
@@ -120,14 +126,15 @@ otp.widgets.transit.StopViewerWidget =
         var block_trans = _tr('Block');
 
         for(var i = 0; i < this.times.length; i++) {
-            var time = this.times[i];
-            time.formattedTime = otp.util.Time.formatItinTime(time.time*1000, otp.config.locale.time.time_format);
+            var time = this.times[i];            
+            time.formattedTime = time.arrival.format(otp.config.timeFormat);
             //FIXME: There is probably a better way to translate to and block
             //then in each call separately
             time.to = to_trans;
             time.block = block_trans;
             ich['otp-stopViewer-timeListItem'](time).appendTo(this.timeList);
-            var diff = Math.abs(this.activeTime - time.time*1000);
+            console.log(time);
+            var diff = Math.abs(this.activeTime - time.arrival.unix()*1000);
             if(diff < minDiff) {
                 minDiff = diff;
                 bestIndex = i;

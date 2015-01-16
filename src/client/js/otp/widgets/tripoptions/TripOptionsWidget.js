@@ -31,8 +31,9 @@ otp.widgets.tripoptions.TripOptionsWidget =
         //TRANSLATORS: Widget title
         if(!_.has(options, 'title')) options['title'] = _tr("Travel Options");
         if(!_.has(options, 'cssClass')) options['cssClass'] = 'otp-defaultTripWidget';
+        
         otp.widgets.Widget.prototype.initialize.call(this, id, module, options);
-
+        
         this.mainDiv.addClass('otp-tripOptionsWidget');
         
         //this.planTripCallback = planTripCallback;
@@ -57,10 +58,12 @@ otp.widgets.tripoptions.TripOptionsWidget =
     
     initScrollPanel : function() {
         this.scrollPanel = $('<div id="'+this.id+'-scollPanel" class="notDraggable" style="overflow: auto;"></div>').appendTo(this.$());
-        this.$().resizable({
-            minHeight: 80,
-            alsoResize: this.scrollPanel
-        });
+        	if(this.resizable){
+	        	this.$().resizable({
+	            minHeight: 80,
+	            alsoResize: this.scrollPanel
+	        	}); 
+	        };
     },
     
     addSeparator : function(scrollable) {
@@ -210,7 +213,7 @@ otp.widgets.tripoptions.LocationsSelector =
         $("#"+this.id+"-endDropdown").click($.proxy(function() {
             $("#"+this.id+"-end").autocomplete("widget").show();
         }, this));
-                
+                        
 
         $("#"+this.id+"-reverseButton").click($.proxy(function() {
             var module = this.tripWidget.module;
@@ -250,9 +253,12 @@ otp.widgets.tripoptions.LocationsSelector =
                 this_.tripWidget.inputChanged();
             },
         })
-        .dblclick(function() {
-            $(this).select();
+        .change(function() {
+        	$(this).select();
         });
+//        .dblclick(function() {
+//            $(this).select();
+//        });
         return input;
     },
     
@@ -459,12 +465,22 @@ otp.widgets.tripoptions.ModeSelector =
     
     id           :  null,
 
-    modes        : otp.config.modes,
+    modes        : { "TRANSIT,WALK" : "Bus &amp; Walk", 
+                     "TRANSIT,BICYCLE" : "Bus &amp; Bicycle",
+                     //"TRANSIT" : "Bus Only", 
+                    // "TRAINISH,WALK" : "Rail Only", 
+                     "BICYCLE" : 'Bicycle Only',
+                     "WALK" : 'Walk Only',
+                     "CAR" : 'Drive Only',
+                   },
     
+
     optionLookup : null,
     modeControls : null,
            
-    initialize : function(tripWidget) {
+    
+    
+     initialize : function(tripWidget) {
         otp.widgets.tripoptions.TripOptionsWidgetControl.prototype.initialize.apply(this, arguments);
         this.id = tripWidget.id+"-modeSelector";
         this.modeControls = [];
@@ -476,12 +492,14 @@ otp.widgets.tripoptions.ModeSelector =
         _.each(this.modes, function(text, key) {
             html += '<option>'+text+'</option>';            
         });
-        html += '</select>';
+        html += '</select>';        
+        
         html += '<div id="'+this.id+'-widgets" style="overflow: hidden;"></div>';
         html += "</div>";
-        
         $(html).appendTo(this.$());
+        
         //this.setContent(content);
+        
     },
 
     doAfterLayout : function() {
@@ -1103,6 +1121,32 @@ otp.widgets.tripoptions.Submit =
         });
     }
 });
+
+//** Start Location **//
+
+otp.widgets.tripoptions.StartLocation =
+	otp.Class(otp.widgets.tripoptions.TripOptionsWidgetControl, {
+		
+	initialize : function(tripWidget) {
+		opt.widgets.tripoptions.TripOptionsWidgetControl.prototype.initialize.apply(this, arguments);
+		this.id = tripWidget.id+"-StartLocation";
+	
+		label = "I WANT TO GO FROM: ";
+		var html = '<div class="notDraggable">'+label+'<input id="'+this.id+'-value" type="text" style="width:50px;" value="my location" />';
+		html += "</div>";
+	
+		$(html).appendTo(this.$());
+	}
+	
+	
+	
+	
+	});
+	
+	
+	
+
+
 
 //** Group Trip **//
 

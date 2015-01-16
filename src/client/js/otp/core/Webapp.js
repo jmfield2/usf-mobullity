@@ -15,8 +15,7 @@
 otp.namespace("otp.core");
 
 otp.core.Webapp = otp.Class({
-
-    map     : null,
+        map     : null,
     
     modules : [ ],
     moduleMenu : null,
@@ -33,8 +32,7 @@ otp.core.Webapp = otp.Class({
     urlParams : null,
 
     initialize : function() {
-
-
+            
         // misc. housekeeping
         
         if(typeof console == 'undefined') console = { log: function(str) {} };
@@ -121,8 +119,8 @@ otp.core.Webapp = otp.Class({
         }
         
         // create the Webapp-owned objects
-        
-        this.map = new otp.core.Map(this);        
+            
+            this.map = new otp.core.Map(this);
         this.transitIndex = new otp.core.TransitIndex(this);
         this.widgetManager = new otp.widgets.WidgetManager();
         
@@ -150,22 +148,34 @@ otp.core.Webapp = otp.Class({
             addThisHtml += 'addthis:url="'+otp.config.siteURL+'"\n';
             addThisHtml += 'addthis:title="'+otp.config.addThisTitle+'"\n';
             addThisHtml += 'addthis:description="'+otp.config.siteDescription+'">\n';
-            addThisHtml += '<a class="addthis_button_twitter"></a>\n';
             addThisHtml += '<a class="addthis_button_facebook"></a>\n';
-            addThisHtml += '<a class="addthis_button_google_plusone_share"></a>\n';
+            addThisHtml += '<a class="addthis_button_twitter"></a>\n';
             addThisHtml += '<a class="addthis_button_preferred_1"></a>\n';
             addThisHtml += '<a class="addthis_button_compact"></a>\n';
-            addThisHtml += '<a class="addthis_counter addthis_bubble_style"></a>\n';
             addThisHtml += '</div>';
             
             $(addThisHtml).appendTo('#branding');
             
             addthis_config = {
-		         pubid: otp.config.addThisPubId,
-		         data_track_clickback: false
-		    };
-		    $.getScript("http://s7.addthis.com/js/250/addthis_widget.js#pubid="+otp.config.addThisPubId);
-        }		
+                         pubid: otp.config.addThisPubId,
+                         data_track_clickback: true
+                    };
+                    $.getScript("http://s7.addthis.com/js/250/addthis_widget.js#pubid="+otp.config.addThisPubId);
+        }                
+        
+        
+        //add locator button
+        if(otp.config.locatorSwitch){
+                var locatorHTML = '<div class="onoffswitch">';
+                locatorHTML += '<input type="checkbox" id ="myonoffswitch" name="onoffswitch" class="onoffswitch-checkbox" checked>';
+                locatorHTML += '<label class="onoffswitch-label" for="myonoffswitch">';
+                locatorHTML += '<div class="onoffswitch-inner"></div>';
+                locatorHTML += '<div class="onoffswitch-switch"></div>';
+                locatorHTML += '</label>';
+                locatorHTML += '</div>';
+                $(locatorHTML).appendTo('#branding');
+        }
+        
         
         // create the widget manager menu & icon
         
@@ -302,11 +312,10 @@ otp.core.Webapp = otp.Class({
         }));
                 
         // retrieve a saved trip, if applicable
-		//if(window.location.hash !== "")
-		//	otp.util.DataStorage.retrieve(window.location.hash.replace("#", ""), this.activeModule);
-			
-		
-    },
+                //if(window.location.hash !== "")
+                //        otp.util.DataStorage.retrieve(window.location.hash.replace("#", ""), this.activeModule);
+        
+     }, //end of initialize module
     
     addModule : function(module) {
         makeActive = typeof makeActive !== 'undefined' ? makeActive : false;
@@ -387,15 +396,15 @@ otp.core.Webapp = otp.Class({
           
           
     hideSplash : function() {
-    	$("#splash-text").hide();
-    	for(widgetId in this.infoWidgets) {
-        	this.infoWidgets[widgetId].hide();
-    	}
+            $("#splash-text").hide();
+            for(widgetId in this.infoWidgets) {
+                this.infoWidgets[widgetId].hide();
+            }
     },
         
     setBounds : function(bounds)
     {
-    	this.map.lmap.fitBounds(bounds);
+            this.map.lmap.fitBounds(bounds);
     },
         
    
@@ -437,4 +446,3 @@ otp.core.Webapp = otp.Class({
 
     CLASS_NAME : "otp.core.Webapp"
 });
-

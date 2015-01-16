@@ -1,7 +1,9 @@
 package org.opentripplanner.routing.graph;
 
 import java.util.BitSet;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -295,7 +297,22 @@ public class GraphIndex {
      */
     public Collection<StopTimesInPattern> stopTimesForStop(Stop stop) {
         List<StopTimesInPattern> ret = Lists.newArrayList();
+
         RoutingRequest req = new RoutingRequest();
+
+        Calendar dt = Calendar.getInstance();
+        dt.setTime(new Date());
+        
+        /*
+        dt.set(Calendar.HOUR_OF_DAY, 0);
+        dt.set(Calendar.MINUTE, 0);
+        dt.set(Calendar.SECOND, 0);       
+        
+        req.setDateTime(dt.getTime()); // Set State to midnight so we receive ALL of the scheduled trips like we used to
+        */
+        
+        dt.add(Calendar.SECOND, 1);
+        
         req.setRoutingContext(graph, (Vertex)null, (Vertex)null);
         State state = new State(req);
         for (TripPattern pattern : patternsForStop.get(stop)) {
@@ -306,15 +323,23 @@ public class GraphIndex {
             int sidx = 0;
             for (Stop currStop : table.pattern.stopPattern.stops) {
                 if (currStop != stop) continue;
+                                
                 for (ServiceDay sd : req.rctx.serviceDays) {
-                    TripTimes tt = table.getNextTrip(state, sd, sidx, true);
-                    if (tt != null) {
-                        times.times.add(new TripTimeShort(tt, sidx, stop));
-                    }
+                	
+                   		TripTimes tt = table.getNextTrip(state, sd, sidx, true);
+                   
+                		if (tt != null) {  
+                    		
+                            times.times.add(new TripTimeShort(tt, sidx, stop));
+                            
+                		}
+              		               		
                 }
-                sidx++;
+                
+                if ( ! times.times.isEmpty()) ret.add(times);
+                
             }
-            if ( ! times.times.isEmpty()) ret.add(times);
+    		                       
         }
         return ret;
     }
