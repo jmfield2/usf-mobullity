@@ -230,7 +230,7 @@ public class CandidateEdge {
             myScore -= CAR_PREFERENCE;
         }
         
-        if (mode.getDriving()) {
+        if (modes.getDriving()) {
         	// apply strong preference to car edges and to platforms for the specified modes 
         	if (edge.getPermission().allows(StreetTraversalPermission.CAR)
         			|| (edge.getStreetClass() & platform) != 0) {
@@ -239,7 +239,7 @@ public class CandidateEdge {
         		// case it's a Pedway or other weird and unlikely starting location.
         		//myScore -= CAR_PREFERENCE;
         	}
-        } else if (mode.getBicycle()) {
+        } else if (modes.getBicycle()) {
         	if (edge.getPermission().allows(StreetTraversalPermission.BICYCLE))
         		myScore -= CAR_PREFERENCE;        	   
         }                

@@ -31,7 +31,6 @@ import org.opentripplanner.updater.example.ExampleGraphUpdater;
 import org.opentripplanner.updater.example.ExamplePollingGraphUpdater;
 import org.opentripplanner.updater.stoptime.PollingStoptimeUpdater;
 import org.opentripplanner.updater.stoptime.WebsocketGtfsRealtimeUpdater;
-import org.opentripplanner.updater.vehiclepositions.PollingVehiclePositionsUpdater;
 import org.opentripplanner.updater.street_notes.WinkkiPollingGraphUpdater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,9 +123,6 @@ public class GraphUpdaterConfigurator {
                         }
                         else if (type.equals("websocket-gtfs-rt-updater")) {
                             updater = new WebsocketGtfsRealtimeUpdater();
-                        }
-                        else if (type.equals("vehicle-position-updater")){
-                        	updater = new PollingVehiclePositionsUpdater();
                         }
                         else if (type.equals("real-time-alerts")) {
                             updater = new GtfsRealtimeAlertsUpdater();
