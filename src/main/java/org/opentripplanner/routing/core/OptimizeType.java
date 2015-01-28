@@ -17,6 +17,7 @@ public enum OptimizeType {
 	BICYCLE_LANE, /* Prefer streets with cycleway=lane */
     QUICK, /* the fastest trip */
     SAFE,
+    SAFE_LANES, /* Prefer bicycle lanes when renting */
     FLAT, /* needs a rewrite */
     GREENWAYS,
     TRIANGLE, /* not yet supported */

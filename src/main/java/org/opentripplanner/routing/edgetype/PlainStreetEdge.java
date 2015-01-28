@@ -311,9 +311,17 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
         } else if (traverseMode.equals(TraverseMode.BICYCLE)) {
             time = elevationProfileSegment.getSlopeSpeedEffectiveLength() / speed;
             switch (options.optimize) {
-            // case BICYCLE_LANE:
             case SAFE:
                 weight = elevationProfileSegment.getBicycleSafetyEffectiveLength() / speed;
+
+		break;
+	    case SAFE_LANES:
+		weight = elevationProfileSegment.getSlopeSpeedEffectiveLength() / speed;
+	
+	        if ((traverseMode.equals(TraverseMode.BICYCLE)) && permission.allows(StreetTraversalPermission.BICYCLE_LANE))
+			weight *= 0.66; 
+	
+		
                 break;
             case GREENWAYS:
                 weight = elevationProfileSegment.getBicycleSafetyEffectiveLength() / speed;
@@ -336,6 +344,7 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
                 weight = quick * options.getTriangleTimeFactor() + slope
                         * options.getTriangleSlopeFactor() + safety
                         * options.getTriangleSafetyFactor();
+
                 weight /= speed;
                 break;
             default:
@@ -365,9 +374,6 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
                 */
             }
         }
-
-	if ((traverseMode.equals(TraverseMode.BICYCLE)) && permission.allows(StreetTraversalPermission.BICYCLE_LANE)) 
-		weight *= 0.66; // weight is time...so lower is better?
 
         if (isStairs()) {
             weight *= options.stairsReluctance;
