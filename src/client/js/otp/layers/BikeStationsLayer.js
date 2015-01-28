@@ -6,7 +6,8 @@ otp.layers.BikeStationsLayer =
 	otp.Class(L.LayerGroup, {
 
 		module : null,
-
+	 	visible : false,
+	
 		minimumZoomForStops : 14,
 
 		initialize : function(module) {
@@ -63,8 +64,9 @@ otp.layers.BikeStationsLayer =
 				a.push(marker);
 				
 			}
-			
-			this.addLayer(L.layerGroup(a)).addTo(lmap);
+		
+			if (this.visible)	
+				this.addLayer(L.layerGroup(a)).addTo(lmap);
 
 		},
 		

@@ -90,6 +90,17 @@ otp.widgets.LayersWidget =
 	// HART bus stops
 	$('#bus_hart').bind('click', {'this_': this}, function(ev) {
 
+		if (otp.config.showHartBusStops) {
+			otp.config.showHartBusStops = false;
+                        $("#bus_hart .box").removeClass('active');
+		}
+		else {
+			otp.config.showHartBusStops = true;
+			$("#bus_hart .box").addClass('active');
+		}
+
+		ev.data.this_.module.busLayers.refresh();
+
 	});
   
 	// Bike rental layers
@@ -97,14 +108,16 @@ otp.widgets.LayersWidget =
 
         	var id = L.stamp( ev.data.module.bikeLayers );
         	                	
-        	if (ev.data.module.bikeLayers._map != null) {
-        		ev.data.module.webapp.map.lmap.removeLayer( ev.data.module.bikeLayers );
+        	if (ev.data.module.bikeLayers.visible) {
+        		ev.data.module.bikeLayers.visible = false;
 			$("#bike_stations .box").removeClass('active');
 		}
         	else {
-        		ev.data.module.webapp.map.lmap.addLayer( ev.data.module.bikeLayers );
+        		ev.data.module.bikeLayers.visible = true;
 			$("#bike_stations .box").addClass('active');
 		}
+		
+		ev.data.module.bikeLayers.setMarkers(); // refresh
         	
         });
 
