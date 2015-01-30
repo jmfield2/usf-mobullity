@@ -189,9 +189,9 @@ public class Graph implements Serializable {
     @Getter
     private final Date buildTime = new Date();
 
-    private ArrayList<EncodedPolylineBean> bikeLanesStr;
+    private ArrayList<ArrayList<EncodedPolylineBean>> bikeLanesStr;
 
-    public ArrayList<EncodedPolylineBean> getBikeLanesStr() {
+    public ArrayList<ArrayList<EncodedPolylineBean>> getBikeLanesStr() {
     	return bikeLanesStr;
     }   
 
@@ -641,30 +641,58 @@ public class Graph implements Serializable {
             // Generate bike lane polyline string for use by UI later
             // XXX regenerate this if graph is reloaded?
             // XXX a better way to intelligently split different segments?
-    		graph.bikeLanesStr = new ArrayList<EncodedPolylineBean>();
-    		
+
+	    // [0] -> lane both ways, [1] -> lane one way
+            graph.bikeLanesStr = new ArrayList<ArrayList<EncodedPolylineBean>>();
+	    graph.bikeLanesStr.add(new ArrayList<EncodedPolylineBean>());
+            graph.bikeLanesStr.add(new ArrayList<EncodedPolylineBean>());
+    	
+	    ArrayList<Edge> tmp_edges = new ArrayList<Edge>();	
             ArrayList<Coordinate> pts = new ArrayList<Coordinate>();
             double lat[] = {0,0};
             double lon[] = {0,0};
-    		for (Edge e : graph.getEdges()) {					
+
+ 	    for (Edge e : graph.getEdges()) {					
     			if (e.getClass() == PlainStreetEdge.class) {
     				if (((PlainStreetEdge) e).getPermission().allows(StreetTraversalPermission.BICYCLE_LANE)) {
-    							
-    					//pts.add( new Coordinate(e.getFromVertex().getLon(), e.getFromVertex().getLat()) );
-    					//pts.add( new Coordinate(e.getToVertex().getLon(), e.getToVertex().getLat()) );
+				
+					// XXX BAD
+					// Check if we visited this edge already and if this is a backedge
+					// Because if it is, forward/back edges will have permission, 
+					// If only one edge does, the lane is one-way
+					Edge rev = null;
+					for (Edge e2 : tmp_edges) {
+						if (e.isReverseOf(e2)) {
+							rev = e2;
+							break;
+						}
+					}
+					if (rev == null) {
+						tmp_edges.add( e );
+						continue;
+					}
+					
+					tmp_edges.remove(rev);
+
     					lon[0] = e.getToVertex().getLon();
     					lon[1] = e.getFromVertex().getLon();
     					lat[0] = e.getToVertex().getLat();
     					lat[1] = e.getFromVertex().getLat();
-    					graph.bikeLanesStr.add( PolylineEncoder.createEncodings( lat, lon ) );						
+
+    					graph.bikeLanesStr.get(0).add( PolylineEncoder.createEncodings( lat, lon ) );						
     				}								
     				
     			}				
-    		}		
-    		LOG.info("bikelane=" + graph.bikeLanesStr.size() );
-    		
-            //graph.bikeLanesStr = PolylineEncoder.createEncodings(pts, -1);            
-            
+    	    }	
+	    // Add one-way edges into separate polyline array	
+    	    for (Edge e : tmp_edges) {
+                lon[0] = e.getToVertex().getLon();
+                lon[1] = e.getFromVertex().getLon();
+                lat[0] = e.getToVertex().getLat();
+                lat[1] = e.getFromVertex().getLat();		
+		graph.bikeLanesStr.get(1).add( PolylineEncoder.createEncodings( lat, lon ) );
+	    }
+
             if (level == LoadLevel.FULL) {
                 return graph;
             }

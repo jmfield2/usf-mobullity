@@ -1553,11 +1553,11 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                 StreetTraversalPermission permissions = getPermissionsForWay(way,
                         wayData.getPermission());
 
-                if (way.getTag("cycleway") != null && way.getTag("highway") != null) {
+                if ((way.getTag("cycleway") != null && way.getTag("highway") != null) || 
+			way.getTag("cycleway:left") != null || way.getTag("cycleway:right") != null) {
                 	permissions = permissions.add(StreetTraversalPermission.BICYCLE_LANE);
-                	System.out.println(permissions);
                 }
-                
+
                 if (!isWayRoutable(way) || permissions.allowsNothing())
                     continue;
 
@@ -1681,6 +1681,11 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                     PlainStreetEdge street = streets.getFirst();
                     PlainStreetEdge backStreet = streets.getSecond();
                     applyWayProperties(street, backStreet, wayData, way);
+
+		    // If cycleway was only left or right, be sure to remove permission on the back edge
+	            if ( (way.getTag("cycleway:left") != null || way.getTag("cycleway:right") != null) && permissions.allows(StreetTraversalPermission.BICYCLE_LANE)) {
+                        backStreet.setPermission(permissions.remove(StreetTraversalPermission.BICYCLE_LANE));
+        	    }
 
                     applyEdgesToTurnRestrictions(way, startNode, endNode, street, backStreet);
                     startNode = endNode;

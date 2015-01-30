@@ -40,11 +40,25 @@ public class BikeLanes {
 			Graph g = graphService.getGraph(routerId);
 			if (g == null) return null;
 			
-			for (EncodedPolylineBean s : g.getBikeLanesStr())
+			for (EncodedPolylineBean s : g.getBikeLanesStr().get(0))
 				tmp.add(s.getPoints());
-			//tmp.add(g.getBikeLanesStr().getPoints());
 			
 			return tmp;
 		}
+
+                @GET @Path("/one_way")
+                @Produces({ MediaType.APPLICATION_JSON })
+                public ArrayList<String> getOneWayBikeLanes(@PathParam("routerId") String routerId) {
+                        ArrayList<String> tmp = new ArrayList<String>();
+
+                        Graph g = graphService.getGraph(routerId);
+                        if (g == null) return null;
+
+                        for (EncodedPolylineBean s : g.getBikeLanesStr().get(1))
+                                tmp.add(s.getPoints());
+
+                        return tmp;
+                }
+
 	
 }
