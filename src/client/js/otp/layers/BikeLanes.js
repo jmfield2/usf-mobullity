@@ -27,7 +27,7 @@ otp.layers.BikeLanesLayer =
         L.LayerGroup.prototype.initialize.apply(this);
         this.module = module;
         
-        this.bikeLanes = []
+        this.bikeLanes = {"both":[], "oneway":[]}
         this.module.addLayer("bikelanes", this);        
         this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
         
@@ -42,25 +42,46 @@ otp.layers.BikeLanesLayer =
         			
         			var p = otp.util.Geo.decodePolyline(row);
         			
-        			this.this_.bikeLanes.push( p );        			        			        	
+        			this.this_.bikeLanes['both'].push( p );        			        			        	
         		}
         	},
         });
-        
+       
+        $.ajax({
+                url: '/otp/routers/default/bike_lanes/one_way',
+                webapp: this.module.webapp,
+                this_: this,
+                dataType: 'json',
+                success: function(data) {
+                        for (x in data) {
+                                row = data[x];
+
+                                var p = otp.util.Geo.decodePolyline(row);
+
+                                this.this_.bikeLanes['oneway'].push( p );                                                                    
+                        }
+                },
+        });
+
     },
     
     refresh : function() {
         this.clearLayers();                
         var lmap = this.module.webapp.map.lmap;
         if(lmap.getZoom() >= this.minimumZoomForStops && this.visible) {
-        	for (p in this.bikeLanes) {
+        	for (p in this.bikeLanes['both']) {
 
-    			ret=L.polyline(this.bikeLanes[p], {color: 'red'});    			
+    			ret=L.polyline(this.bikeLanes['both'][p], {color: 'red'});    			
 
-    			this.addLayer(ret).addTo(lmap);
-    			
-            		
+    			this.addLayer(ret).addTo(lmap);    			            		
         	}
+
+                for (p in this.bikeLanes['oneway']) {
+
+                        ret=L.polyline(this.bikeLanes['oneway'][p], {dashArray: "5,5", color: 'red'});
+
+                        this.addLayer(ret).addTo(lmap);
+                }
         }
     },
     

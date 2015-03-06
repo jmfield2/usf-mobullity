@@ -1553,6 +1553,15 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                 StreetTraversalPermission permissions = getPermissionsForWay(way,
                         wayData.getPermission());
 
+		// Handle pedestrian-only walkway vs shared used path
+		if ((way.getTag("est_width") == null || !way.getTag("est_width").equalsIgnoreCase("8ft")) && permissions.allows(StreetTraversalPermission.BICYCLE)) {
+			permissions = permissions.remove(StreetTraversalPermission.BICYCLE);
+		}
+		else if (way.getTag("est_width") != null && way.getTag("est_width").equalsIgnoreCase("8ft") && !permissions.allows(StreetTraversalPermission.BICYCLE)) {
+                        permissions = permissions.add(StreetTraversalPermission.BICYCLE);
+		}
+
+		// Handle roads with bike lanes
                 if ((way.getTag("cycleway") != null && way.getTag("highway") != null) || 
 			way.getTag("cycleway:left") != null || way.getTag("cycleway:right") != null) {
                 	permissions = permissions.add(StreetTraversalPermission.BICYCLE_LANE);
