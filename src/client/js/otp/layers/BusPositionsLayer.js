@@ -489,287 +489,200 @@ otp.layers.BusPositionsLayer =
 				var iconFSE = new bullRunnerIconFSE();
 				var iconFSW = new bullRunnerIconFSW();
 				
-				
+				marker =  L.marker(coord).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route + " Occupancy: " + this_.vehicles[v].occupancyStatus );
+				marker.on('mouseover', marker.openPopup.bind(marker));
+
 				switch (route){
 				case 'A':
 					switch(bearing){
 					case 0:
-						marker =  L.marker(coord,{icon : iconAN,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						a.push(marker);
+						marker.setIcon( iconAN );
 						break;
 					case 45:
-						marker=L.marker(coord,{icon : iconANE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						a.push(marker);
+						marker.setIcon( iconANE );
 						break;
 					case 90:
-						marker = L.marker(coord,{icon : iconAE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						a.push(marker);
+						marker.setIcon( iconAE );
 						break;
 					case 135:
-						marker = L.marker(coord,{icon : iconASE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						a.push(marker);
+						marker.setIcon( iconASE );
 						break;
 					case 180:
-						marker = L.marker(coord,{icon : iconAS,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						a.push(marker);
+						marker.setIcon( iconAS );
 						break;
 					case 225:
-						marker = L.marker(coord,{icon : iconASW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						a.push(marker);
+						marker.setIcon( iconASW );
 						break;
 					case 270:
-						marker = L.marker(coord,{icon : iconAW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						a.push(marker);
+						marker.setIcon( iconAW );
 						break;
 					case 315:
-						marker = L.marker(coord,{icon : iconANW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						a.push(marker);
+						marker.setIcon( iconANW );
 						break;
 					default:
 						console.log("Error no dir available: " + route);
 					}
+					a.push(marker);
 					break;
 				case 'B':
 					switch(bearing){
 					case 0:
-						marker =  L.marker(coord,{icon : iconBN,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						b.push(marker);
+						marker.setIcon( iconBN );
 						break;
 					case 45:
-						marker=L.marker(coord,{icon : iconBNE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						b.push(marker);
+						marker.setIcon( iconBNE );
 						break;
 					case 90:
-						marker = L.marker(coord,{icon : iconBE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						b.push(marker);
+						marker.setIcon( iconBE );
 						break;
 					case 135:
-						marker = L.marker(coord,{icon : iconBSE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						b.push(marker);
+						marker.setIcon( iconBSE );
 						break;
 					case 180:
-						marker = L.marker(coord,{icon : iconBS,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						b.push(marker);
+						marker.setIcon( iconBS );
 						break;
 					case 225:
-						marker = L.marker(coord,{icon : iconBSW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						b.push(marker);
+						marker.setIcon( iconBSW );
 						break;
 					case 270:
-						marker = L.marker(coord,{icon : iconBW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						b.push(marker);
+						marker.setIcon( iconBW );
 						break;
 					case 315:
-						marker = L.marker(coord,{icon : iconBNW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						b.push(marker);
+						marker.setIcon( iconBNW );
 						break;
 					default:
 						console.log("Error no dir available: " + route);
 					}
+					b.push(marker);
 					break;
 				case 'C':
 					switch(bearing){
 					case 0:
-						marker =  L.marker(coord,{icon : iconCN,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						c.push(marker);
+						marker.setIcon( iconCN );
 						break;
 					case 45:
-						marker=L.marker(coord,{icon : iconCNE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						c.push(marker);
+						marker.setIcon( iconCNE );
 						break;
 					case 90:
-						marker = L.marker(coord,{icon : iconCE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						c.push(marker);
+						marker.setIcon( iconCE );
 						break;
 					case 135:
-						marker = L.marker(coord,{icon : iconCSE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						c.push(marker);
+						marker.setIcon( iconCSE );
 						break;
 					case 180:
-						marker = L.marker(coord,{icon : iconCS,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						c.push(marker);
+						marker.setIcon( iconCS );
 						break;
 					case 225:
-						marker = L.marker(coord,{icon : iconCSW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						c.push(marker);
+						marker.setIcon( iconCSW );
 						break;
 					case 270:
-						marker = L.marker(coord,{icon : iconCW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						c.push(marker);
+						marker.setIcon( iconCW );
 						break;
 					case 315:
-						marker = L.marker(coord,{icon : iconCNW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						c.push(marker);
+						marker.setIcon( iconCNW );
 						break;
 					default:
 						console.log("Error no dir available: " + route);
 					}
+					c.push(marker);
 					break;
 				case 'D':
 					switch(bearing){
 					case 0:
-						marker =  L.marker(coord,{icon : iconDN,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						d.push(marker);
+						marker.setIcon( iconDN );
 						break;
 					case 45:
-						marker=L.marker(coord,{icon : iconDNE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						d.push(marker);
+						marker.setIcon( iconDNE );
 						break;
 					case 90:
-						marker = L.marker(coord,{icon : iconDE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						d.push(marker);
+						marker.setIcon( iconDE );
 						break;
 					case 135:
-						marker = L.marker(coord,{icon : iconDSE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						d.push(marker);
+						marker.setIcon( iconDSE );
 						break;
 					case 180:
-						marker = L.marker(coord,{icon : iconDS,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						d.push(marker);
+						marker.setIcon( iconDS );
 						break;
 					case 225:
-						marker = L.marker(coord,{icon : iconDSW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						d.push(marker);
+						marker.setIcon( iconDSW );
 						break;
 					case 270:
-						marker = L.marker(coord,{icon : iconDW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						d.push(marker);
+						marker.setIcon( iconDW );
 						break;
 					case 315:
-						marker = L.marker(coord,{icon : iconDNW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						d.push(marker);
+						marker.setIcon( iconDNW );
 						break;
 					default:
 						console.log("Error no dir available: " + route);
 					}
+					d.push(marker);
 					break;
 				case 'E':
 					switch(bearing){
 					case 0:
-						marker =  L.marker(coord,{icon : iconEN,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						e.push(marker);
+						marker.setIcon( iconEN );
 						break;
 					case 45:
-						marker=L.marker(coord,{icon : iconENE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						e.push(marker);
+						marker.setIcon( iconENE );
 						break;
 					case 90:
-						marker = L.marker(coord,{icon : iconEE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						e.push(marker);
+						marker.setIcon( iconEE );
 						break;
 					case 135:
-						marker = L.marker(coord,{icon : iconESE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						e.push(marker);
+						marker.setIcon( iconESE );
 						break;
 					case 180:
-						marker = L.marker(coord,{icon : iconES,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						e.push(marker);
+						marker.setIcon( iconES );
 						break;
 					case 225:
-						marker = L.marker(coord,{icon : iconESW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						e.push(marker);
+						marker.setIcon( iconESW );
 						break;
 					case 270:
-						marker = L.marker(coord,{icon : iconW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						e.push(marker);
+						marker.setIcon( iconEW );
 						break;
 					case 315:
-						marker = L.marker(coord,{icon : iconNW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						e.push(marker);
+						marker.setIcon( iconENW );
 						break;
 					default:
 						console.log("Error no dir available: " + route);
 					}
+					e.push(marker);
 					break;
 				case 'F':
 					switch(bearing){
 					case 0:
-						marker =  L.marker(coord,{icon : iconFN,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						f.push(marker);
+						marker.setIcon( iconFN );
 						break;
 					case 45:
-						marker=L.marker(coord,{icon : iconFNE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						f.push(marker);
+						marker.setIcon( iconFNE );
 						break;
 					case 90:
-						marker = L.marker(coord,{icon : iconFE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						f.push(marker);
+						marker.setIcon( iconFE );
 						break;
 					case 135:
-						marker = L.marker(coord,{icon : iconFSE,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						f.push(marker);
+						marker.setIcon( iconFSE );
 						break;
 					case 180:
-						marker = L.marker(coord,{icon : iconFS,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						f.push(marker);
+						marker.setIcon( iconFS );
 						break;
 					case 225:
-						marker = L.marker(coord,{icon : iconFSW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						f.push(marker);
+						marker.setIcon( iconFSW );
 						break;
 					case 270:
-						marker = L.marker(coord,{icon : iconFW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						f.push(marker);
+						marker.setIcon( iconFW );
 						break;
 					case 315:
-						marker = L.marker(coord,{icon : iconFNW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
-						marker.on('mouseover', marker.openPopup.bind(marker));
-						f.push(marker);
+						marker.setIcon( iconFNW );
 						break;
 					default:
 						console.log("Error no dir available: " + route);
 					}
+					f.push(marker);
 					break;
 				default:
 					console.log("Error no route available: " + route);
 				}
+
 			}
 			
 			if (this.visible.indexOf('A') != -1) L.layerGroup(a).addTo(this_);

@@ -90,17 +90,17 @@ public class DefaultWayPropertySetSource implements WayPropertySetSource {
         /* ALL */
         setProperties(props, "highway=living_street", StreetTraversalPermission.ALL, 0.90, 0.90);
         setProperties(props, "highway=unclassified", StreetTraversalPermission.ALL, 1, 1);
-        setProperties(props, "highway=road", StreetTraversalPermission.ALL, 1, 1);
+        setProperties(props, "highway=road", StreetTraversalPermission.BICYCLE_AND_DRIVING, 1, 1);
         setProperties(props, "highway=byway", StreetTraversalPermission.ALL, 1.3, 1.3);
         setProperties(props, "highway=track", StreetTraversalPermission.ALL, 1.3, 1.3);
-        setProperties(props, "highway=service", StreetTraversalPermission.ALL, 1.1, 1.1);
-        setProperties(props, "highway=residential", StreetTraversalPermission.ALL, 0.98, 0.98);
+        setProperties(props, "highway=service", StreetTraversalPermission.BICYCLE_AND_DRIVING, 1.1, 1.1);
+        setProperties(props, "highway=residential", StreetTraversalPermission.BICYCLE_AND_DRIVING, 0.98, 0.98);
         setProperties(props, "highway=residential_link", StreetTraversalPermission.ALL, 0.98, 0.98);
-        setProperties(props, "highway=tertiary", StreetTraversalPermission.ALL, 1, 1);
+        setProperties(props, "highway=tertiary", StreetTraversalPermission.BICYCLE_AND_DRIVING, 1, 1);
         setProperties(props, "highway=tertiary_link", StreetTraversalPermission.ALL, 1, 1);
-        setProperties(props, "highway=secondary", StreetTraversalPermission.ALL, 1.5, 1.5);
+        setProperties(props, "highway=secondary", StreetTraversalPermission.BICYCLE_AND_DRIVING, 1.5, 1.5);
         setProperties(props, "highway=secondary_link", StreetTraversalPermission.ALL, 1.5, 1.5);
-        setProperties(props, "highway=primary", StreetTraversalPermission.ALL, 2.06, 2.06);
+        setProperties(props, "highway=primary", StreetTraversalPermission.BICYCLE_AND_DRIVING, 2.06, 2.06);
         setProperties(props, "highway=primary_link", StreetTraversalPermission.ALL, 2.06, 2.06);
 
         /* DRIVING ONLY */
@@ -115,22 +115,22 @@ public class DefaultWayPropertySetSource implements WayPropertySetSource {
 
         /* cycleway=lane */
         setProperties(props, "highway=*;cycleway=lane",
-                StreetTraversalPermission.PEDESTRIAN_AND_BICYCLE, 0.87, 0.87);
-        setProperties(props, "highway=service;cycleway=lane", StreetTraversalPermission.ALL, 0.77,
+                StreetTraversalPermission.BICYCLE_AND_DRIVING, 0.87, 0.87);
+        setProperties(props, "highway=service;cycleway=lane", StreetTraversalPermission.BICYCLE_AND_DRIVING, 0.77,
                 0.77);
-        setProperties(props, "highway=residential;cycleway=lane", StreetTraversalPermission.ALL,
+        setProperties(props, "highway=residential;cycleway=lane", StreetTraversalPermission.BICYCLE_AND_DRIVING,
                 0.77, 0.77);
         setProperties(props, "highway=residential_link;cycleway=lane",
                 StreetTraversalPermission.ALL, 0.77, 0.77);
-        setProperties(props, "highway=tertiary;cycleway=lane", StreetTraversalPermission.ALL, 0.87,
+        setProperties(props, "highway=tertiary;cycleway=lane", StreetTraversalPermission.BICYCLE_AND_DRIVING, 0.87,
                 0.87);
         setProperties(props, "highway=tertiary_link;cycleway=lane", StreetTraversalPermission.ALL,
                 0.87, 0.87);
-        setProperties(props, "highway=secondary;cycleway=lane", StreetTraversalPermission.ALL,
+        setProperties(props, "highway=secondary;cycleway=lane", StreetTraversalPermission.BICYCLE_AND_DRIVING,
                 0.96, 0.96);
         setProperties(props, "highway=secondary_link;cycleway=lane", StreetTraversalPermission.ALL,
                 0.96, 0.96);
-        setProperties(props, "highway=primary;cycleway=lane", StreetTraversalPermission.ALL, 1.15,
+        setProperties(props, "highway=primary;cycleway=lane", StreetTraversalPermission.BICYCLE_AND_DRIVING, 1.15,
                 1.15);
         setProperties(props, "highway=primary_link;cycleway=lane", StreetTraversalPermission.ALL,
                 1.15, 1.15);

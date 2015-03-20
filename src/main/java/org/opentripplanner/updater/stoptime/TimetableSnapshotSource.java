@@ -152,9 +152,11 @@ public class TimetableSnapshotSource {
                     case CANCELED:
                         applied = handleCanceledTrip(tripUpdate, agencyId, serviceDate);
                         break;
+		    /* removed from spec
                     case REPLACEMENT:
                         applied = handleReplacementTrip(tripUpdate, agencyId, serviceDate);
                         break;
+		    */
                 }
             } else {
                 // Default
