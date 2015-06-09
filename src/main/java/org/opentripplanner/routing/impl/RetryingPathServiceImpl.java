@@ -21,6 +21,7 @@ import java.util.Queue;
 
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.opentripplanner.routing.core.RoutingRequest;
+import org.opentripplanner.routing.core.RoutingContext;
 import org.opentripplanner.routing.pathparser.BasicPathParser;
 import org.opentripplanner.routing.pathparser.NoThruTrafficPathParser;
 import org.opentripplanner.routing.pathparser.PathParser;
@@ -29,8 +30,13 @@ import org.opentripplanner.routing.services.PathService;
 import org.opentripplanner.routing.services.SPTService;
 import org.opentripplanner.routing.spt.GraphPath;
 import org.opentripplanner.routing.spt.ShortestPathTree;
+import org.opentripplanner.routing.graph.Graph;
+import org.opentripplanner.common.model.GenericLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.opentripplanner.routing.graph.Vertex;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import javax.ws.rs.core.Context;
 
@@ -100,6 +106,22 @@ public class RetryingPathServiceImpl implements PathService {
         // itineraries
         Queue<RoutingRequest> optionQueue = new LinkedList<RoutingRequest>();
         optionQueue.add(options);
+
+	// Try to find nearest traversable edge from/to for i.e: car routing to closest within a large walking area
+	if (options.modes.getCar()) {	
+		Graph g = graphService.getGraph(options.getRouterId());
+
+		RoutingRequest r = options.clone();
+		r.modes.setWalk( false );
+		Vertex tmp_from =  g.streetIndex.getVertexForLocation( options.from, r );
+		Vertex tmp_to =  g.streetIndex.getVertexForLocation( options.to, r );
+		r.setFrom( new GenericLocation( new Coordinate( tmp_from.getX(), tmp_from.getY() ) ) );
+                r.setTo( new GenericLocation( new Coordinate( tmp_to.getX(), tmp_to.getY() ) ) );
+	
+		r.rctx = new RoutingContext(r, g, tmp_from, tmp_to);
+
+		optionQueue.add( r );
+	}
 
         double maxWeight = Double.MAX_VALUE;
         double maxWalk = options.getMaxWalkDistance();
