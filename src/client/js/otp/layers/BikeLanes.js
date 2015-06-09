@@ -29,7 +29,7 @@ otp.layers.BikeLanesLayer =
         
         this.bikeLanes = {"both":[], "oneway":[]}
         this.module.addLayer("bikelanes", this);        
-        this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
+//        this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
         
         $.ajax({
         	url: '/otp/routers/default/bike_lanes', 
@@ -73,15 +73,17 @@ otp.layers.BikeLanesLayer =
 
     			ret=L.polyline(this.bikeLanes['both'][p], {color: 'red'});    			
 
-    			this.addLayer(ret).addTo(lmap);    			            		
+    			this.addLayer(ret);
         	}
 
                 for (p in this.bikeLanes['oneway']) {
 
                         ret=L.polyline(this.bikeLanes['oneway'][p], {dashArray: "5,5", color: 'red'});
 
-                        this.addLayer(ret).addTo(lmap);
+                        this.addLayer(ret);
                 }
+
+		this.addTo(lmap);
         }
     },
     
