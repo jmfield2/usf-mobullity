@@ -176,6 +176,7 @@
 <script src="js/otp/widgets/InfoWidget.js?v=1"></script>
 <script src="js/otp/widgets/tripoptions/RoutesSelectorWidget.js?v=1"></script>
 <script src="js/otp/widgets/tripoptions/TripOptionsWidget.js?v=1"></script>
+<script src="js/otp/widgets/tripoptions/LayersWidget.js?v=1"></script>
 <script src="js/otp/widgets/tripoptions/BikeTrianglePanel.js?v=1"></script>
 
 <script src="js/otp/widgets/transit/RouteBasedWidget.js?v=1"></script>
@@ -184,7 +185,11 @@
 <script src="js/otp/widgets/transit/TripViewerWidget.js?v=1"></script>
 
 <script src="js/otp/layers/StopsLayer.js?v=1"></script>
+<script src="js/otp/layers/HartStopsLayer.js?v=1"></script>
+<script src="js/otp/layers/BusPositionsLayer.js?v=1"></script>
+<script src="js/otp/layers/BikeStationsLayer.js?v=1"></script>
 
+<script src="js/otp/layers/BikeLanes.js?v=1"></script>
 <!-- make legacy Internet Explorer play nice(r) -->
 <!--[if lt IE 9]>
   <script src="//cdn.jsdelivr.net/html5shiv/3.7.0/html5shiv.js"></script>
@@ -195,6 +200,7 @@
 <!-- load ICH templates and create the webapp at startup -->
 <script type="text/javascript" language="javascript">
 
+var webapp = null;
 
 $(document).ready(function() {
 	//Sets datepicker language based on selected/detected language in config.js
@@ -215,14 +221,12 @@ $(document).ready(function() {
             loadedTemplates++;
             if(loadedTemplates == templateUrls.length) {
                 ich.grabTemplates();
-                new otp.core.Webapp();
+                webapp = new otp.core.Webapp();
             }
         });
     }
 
 });
-
-
 
 </script>
 
@@ -231,21 +235,14 @@ $(document).ready(function() {
 
 <header id="branding" role="banner" class="clearfix">
 
-  <!--<hgroup id="logo">
-    <div class="ribbon">
-      <h1 id="site-title"><span><a href="/" title="cibi.me" rel="home">cibi.me</a></span></h1>
-      <h2 id="site-description">Where can you bike to?</h2>
-    </div>
-  </hgroup>-->
+	<div class=logo></div>
+	
+	<nav id="main-menu" role="article"><ul>
+	<li><a href="javascript:webapp.modules[0].optionsWidget.unminimize(); webapp.modules[0].layerWidget.minimize();">Trip Planner</a></li>
+  
+    <li><a href="javascript:webapp.modules[0].layerWidget.unminimize(); webapp.modules[0].optionsWidget.minimize();">Layers</a></li>
+    </ul></nav>
 
-  <!--<p id="splash-text"><span>Bike share is coming to NYC this summer!</span> <span>How will you use it to get around?</span></p>-->
-
- <!--
-  <div class="search">
-
-    <input type="text" name="location_search" placeholder="Search for a location&hellip;" />
-  </div>
- -->
 </header><!-- #branding -->
 
 <div id="map"></div>

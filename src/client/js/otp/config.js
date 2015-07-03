@@ -6,13 +6,12 @@ otp.config = {
     //debugging
     //Can be also enabled in URL parameters as ?debug_layers=true
     debug_layers: false,
-
     //This is default locale when wanted locale isn't found
     //Locale language is set based on wanted language in url >
     //user cookie > language set in browser (Not accept-language) 
     locale: otp.locale.English,
-
-    //All avalible locales
+    
+    //All available locales
     //key is translation name. Must be the same as po file or .json file
     //value is name of settings file for localization in locale subfolder
     //File should be loaded in index.html
@@ -47,10 +46,11 @@ otp.config = {
     hostname : "",
     //municoderHostname : "http://localhost:8080",
     //datastoreUrl : 'http://localhost:9000',
-    // In the 0.10.x API the base path is "otp-rest-servlet/ws"
+	   // In the 0.10.x API the base path is "otp-rest-servlet/ws"
     // From 0.11.x onward the routerId is a required part of the base path.
     // If using a servlet container, the OTP WAR should be deployed to context path /otp
     restService: "otp/routers/default",
+
 
     /**
      * Base layers: the base map tile layers available for use by all modules.
@@ -96,24 +96,29 @@ otp.config = {
     /**
      * Map start location and zoom settings: by default, the client uses the
      * OTP metadata API call to center and zoom the map. The following
-     * properties, when set, override that behavioir.
+     * properties, when set, override that behavior.
      */
-     
-    // initLatLng : new L.LatLng(<lat>, <lng>),
-    // initZoom : 14,
-    // minZoom : 10,
-    // maxZoom : 20,
+    
+    //set init lat lng in map.js with geolocation
+    geoLocation: true,
+    //if user does not allow location finding default location set
+    initLatLng : new L.LatLng(28.058499, -82.416945), 
+	mapBoundary: false,
+    initZoom : 15,
+    minZoom : 8,
+    maxZoom : 20,
     
     /* Whether the map should be moved to contain the full itinerary when a result is received. */
     zoomToFitResults    : false,
 
+    	  
     /**
      * Site name / description / branding display options
      */
 
-    siteName            : "My OTP Instance",
-    siteDescription     : "An OpenTripPlanner deployment.",
-    logoGraphic         : 'images/otp_logo_darkbg_40px.png',
+    siteName            : "MoBullity",
+    siteDescription     : "An OpenTripPlanner deployment for USF.",
+    logoGraphic         : 'images/USF-v-green.png',
     // bikeshareName    : "",
     //Enable this if you want to show frontend language chooser
     showLanguageChooser : true,
@@ -122,7 +127,12 @@ otp.config = {
     showTitle           : true,
     showModuleSelector  : true,
     metric              : false,
-
+    
+    showBullRunnerStops	: true,
+    showHartBusStops	: false,
+    showBusPositions	: true,
+    showBikeStations	: true,
+    showBikeLanes		: true,
 
     /**
      * Modules: a list of the client modules to be loaded at startup. Expressed
@@ -143,10 +153,10 @@ otp.config = {
             defaultBaseLayer : 'MapQuest OSM',
             isDefault: true
         },
-        {
-            id : 'analyst',
-            className : 'otp.modules.analyst.AnalystModule'
-        }
+//       {
+//            id : 'analyst',
+//            className : 'otp.modules.analyst.AnalystModule',
+//        }
     ],
     
     
@@ -163,10 +173,18 @@ otp.config = {
 
     geocoders : [
         {
-            name: 'OTP built-in geocoder',
-            className: 'otp.core.GeocoderBuiltin'
+            name: 'Geocoder',
+            className: 'otp.core.Geocoder',
+            //hardcoded url into otp.core.Geocoder
+            addressParam: 'address',
             // URL and query parameter do not need to be set for built-in geocoder.
         }
+  //              {
+  //              	 name: "Geocoder",
+  //              	 className: "otp.core.Geocoder",
+  //              	 url: "/otp-geocoder/geocode",
+  //              	 addressParam: "address",
+  //               }
     ],
 
     
@@ -176,15 +194,30 @@ otp.config = {
         title: '<img src="/images/language_icon.svg" onerror="this.onerror=\'\';this.src=\'/images/language_icon.png\'" width="30px" height="30px"/>', 
         languages: true
     },
+    infoWidgets: [
+	{
+	title: 'Icon Legend',
+    	content: '<p><img src="images/locationSpot.svg" height="15" width="15"> : Current Location<br>\
+    		<img src="images/busStopButton.png" height="15" width="15"> : BullRunner Bus Stop<br>\    		    
+     		<img src="images/stop20.png" height="15" width="15"> : HART Bus Stop<br>'      	
+	},
+        {	
+	title: 'Contact',
+	content: '<p> Contact information for questions or comments:</p>\
+		<p>Sean Barbeau: barbeau@cutr.usf.edu</p>'
+        },
+
     
     
     /**
      * Support for the "AddThis" display for sharing to social media sites, etc.
      */
      
-    showAddThis     : false,
-    //addThisPubId    : 'your-addthis-id',
-    //addThisTitle    : 'Your title for AddThis sharing messages',
+    showAddThis     : true,
+    siteURL			: 'http://mobullity.forest.usf.edu/index.html',
+    addThisTitle    : 'Check out the MoBullity Webapp!',
+    siteDescription : 'OpenTripPlanner for USF',
+    addThisPubId    : 'ra-525818cf0207df3a',
 
 
     /**
@@ -193,8 +226,8 @@ otp.config = {
      
     timeFormat  : "h:mma",
     dateFormat  : "MMM Do YYYY"
-
-};
+    	
+}
 var options = {
 	resGetPath: 'js/otp/locale/__lng__.json',
 	fallbackLng: 'en',

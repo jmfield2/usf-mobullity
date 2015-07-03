@@ -15,8 +15,7 @@
 otp.namespace("otp.core");
 
 otp.core.Webapp = otp.Class({
-
-    map     : null,
+        map     : null,
 
     modules : [ ],
     moduleMenu : null,
@@ -33,8 +32,7 @@ otp.core.Webapp = otp.Class({
     urlParams : null,
 
     initialize : function() {
-
-
+            
         // misc. housekeeping
 
         if(typeof console == 'undefined') console = { log: function(str) {} };
@@ -119,7 +117,7 @@ otp.core.Webapp = otp.Class({
                 linkHref : otp.config.siteUrl,
                 wrapDiv : true,
                 divId : 'logo'
-            })).appendTo('#branding');
+            })).appendTo('#branding .logo');
             //console.log(img);
             //$(img).appendTo('#branding');
             /*$(Mustache.render(otp.templates.div, { id : 'logo' }))
@@ -131,16 +129,37 @@ otp.core.Webapp = otp.Class({
         if(otp.config.siteName !== undefined) {
             document.title = otp.config.siteName;
             if(otp.config.showTitle) {
-                $("<div id='site-title'><a href='"+otp.config.siteUrl+"'>"+otp.config.siteName+"</a></div>").appendTo('#branding');
+                $("<div id='site-title'><a href='"+otp.config.siteURL+"'>"+otp.config.siteName+"</a></div>").appendTo('#branding .logo');
             }
         }
 
+        
         // create the Webapp-owned objects
-
+        
         this.map = new otp.core.Map(this);
         this.indexApi = new otp.core.IndexApi(this);
         this.widgetManager = new otp.widgets.WidgetManager();
 
+        // create the info widgets and links along header bar
+        if(otp.config.infoWidgets !== undefined && otp.config.infoWidgets.length > 0) {
+            var nav = $('<nav id="main-menu" role="article">').appendTo('#branding');
+            var ul = $('<ul>').appendTo(nav);
+
+            for(var i=0; i<otp.config.infoWidgets.length; i++) {
+
+                if(otp.config.infoWidgets[i] == undefined) continue;
+
+                var id = "otp-infoWidget-"+i;
+
+                var options = {};
+                if(_.has(otp.config.infoWidgets[i], 'title')) options.title = otp.config.infoWidgets[i].title;
+                if(_.has(otp.config.infoWidgets[i], 'cssClass')) options.cssClass = otp.config.infoWidgets[i].cssClass;
+
+                this.infoWidgets[id] = new otp.widgets.InfoWidget(otp.config.infoWidgets[i].styleId,
+                                                                  this, options, otp.config.infoWidgets[i].content);
+
+            }
+        }
 
         if(otp.config.geocoders) {
             for(var i=0; i<otp.config.geocoders.length; i++) {
@@ -165,23 +184,35 @@ otp.core.Webapp = otp.Class({
             addThisHtml += 'addthis:url="'+otp.config.siteUrl+'"\n';
             addThisHtml += 'addthis:title="'+otp.config.addThisTitle+'"\n';
             addThisHtml += 'addthis:description="'+otp.config.siteDescription+'">\n';
-            addThisHtml += '<a class="addthis_button_twitter"></a>\n';
             addThisHtml += '<a class="addthis_button_facebook"></a>\n';
-            addThisHtml += '<a class="addthis_button_google_plusone_share"></a>\n';
+            addThisHtml += '<a class="addthis_button_twitter"></a>\n';
             addThisHtml += '<a class="addthis_button_preferred_1"></a>\n';
             addThisHtml += '<a class="addthis_button_compact"></a>\n';
-            addThisHtml += '<a class="addthis_counter addthis_bubble_style"></a>\n';
             addThisHtml += '</div>';
 
             $(addThisHtml).appendTo('#branding');
 
             addthis_config = {
-		         pubid: otp.config.addThisPubId,
-		         data_track_clickback: false
-		    };
-		    $.getScript("http://s7.addthis.com/js/250/addthis_widget.js#pubid="+otp.config.addThisPubId);
-        }
+                         pubid: otp.config.addThisPubId,
+                         data_track_clickback: true
+                    };
+                    $.getScript("http://s7.addthis.com/js/250/addthis_widget.js#pubid="+otp.config.addThisPubId);
+        }                
 
+        
+        //add locator button
+        if(otp.config.locatorSwitch){
+                var locatorHTML = '<div class="onoffswitch">';
+                locatorHTML += '<input type="checkbox" id ="myonoffswitch" name="onoffswitch" class="onoffswitch-checkbox" checked>';
+                locatorHTML += '<label class="onoffswitch-label" for="myonoffswitch">';
+                locatorHTML += '<div class="onoffswitch-inner"></div>';
+                locatorHTML += '<div class="onoffswitch-switch"></div>';
+                locatorHTML += '</label>';
+                locatorHTML += '</div>';
+                $(locatorHTML).appendTo('#branding');
+        }
+        
+        
         // create the widget manager menu & icon
 
         this.widgetManagerMenu = new otp.core.WidgetManagerMenu(this);
@@ -193,42 +224,11 @@ otp.core.Webapp = otp.Class({
         });
 
 
-        // create the info widgets and links along header bar
-
-        if(otp.config.infoWidgets !== undefined && otp.config.infoWidgets.length > 0) {
-            var nav = $('<nav id="main-menu" role="article">').appendTo('#branding');
-            var ul = $('<ul>').appendTo(nav);
-
-            for(var i=0; i<otp.config.infoWidgets.length; i++) {
-
-                if(otp.config.infoWidgets[i] == undefined) continue;
-
-                var id = "otp-infoWidget-"+i;
-
-                var options = {};
-                if(_.has(otp.config.infoWidgets[i], 'title')) options.title = otp.config.infoWidgets[i].title;
-                if(_.has(otp.config.infoWidgets[i], 'cssClass')) options.cssClass = otp.config.infoWidgets[i].cssClass;
                 //Creates frontend language chooser
                 if(_.has(otp.config.infoWidgets[i], 'languages')) {
                    options.content = otp.config.languageChooser();
                    otp.config.infoWidgets[i].content = options.content;
                 }
-
-                this.infoWidgets[id] = new otp.widgets.InfoWidget(otp.config.infoWidgets[i].styleId,
-                                                                  this, options, otp.config.infoWidgets[i].content);
-
-                $("<li id='"+id+"'><a href='#'>"+otp.config.infoWidgets[i].title+"</a></li>").appendTo(ul).click(function(e) {
-                    e.preventDefault();
-                    var widget = this_.infoWidgets[this.id];
-                    if(!widget.isOpen) widget.show();
-                    widget.bringToFront();
-                });
-
-            }
-        }
-
-
-
         // create the module selector
 
         if(otp.config.showModuleSelector && otp.config.modules.length > 1) {
@@ -317,11 +317,10 @@ otp.core.Webapp = otp.Class({
         }));
 
         // retrieve a saved trip, if applicable
-		//if(window.location.hash !== "")
-		//	otp.util.DataStorage.retrieve(window.location.hash.replace("#", ""), this.activeModule);
-
-
-    },
+                //if(window.location.hash !== "")
+                //        otp.util.DataStorage.retrieve(window.location.hash.replace("#", ""), this.activeModule);
+        
+     }, //end of initialize module
 
     addModule : function(module) {
         makeActive = typeof makeActive !== 'undefined' ? makeActive : false;
@@ -402,15 +401,15 @@ otp.core.Webapp = otp.Class({
 
 
     hideSplash : function() {
-    	$("#splash-text").hide();
-    	for(widgetId in this.infoWidgets) {
-        	this.infoWidgets[widgetId].hide();
-    	}
+            $("#splash-text").hide();
+            for(widgetId in this.infoWidgets) {
+                this.infoWidgets[widgetId].hide();
+            }
     },
 
     setBounds : function(bounds)
     {
-    	this.map.lmap.fitBounds(bounds);
+            this.map.lmap.fitBounds(bounds);
     },
 
 

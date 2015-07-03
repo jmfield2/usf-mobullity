@@ -17,16 +17,15 @@ otp.namespace("otp.core");
 
 otp.core.Geocoder = otp.Class({
     
-    url : null,
+    url : 'http://mobullity.forest.usf.edu:8181/otp-geocoder/geocode',
     addressParam : null,
     
     initialize : function(url, addressParam) {
-        this.url = url;
+        //this.url = url;
         this.addressParam = addressParam;
     },
     
     geocode : function(address, setResultsCallback) {
-    
         var params = { }; 
         params[this.addressParam] = address;
         
