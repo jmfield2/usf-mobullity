@@ -207,7 +207,7 @@ public class CandidateEdge {
         return out;
     }
 
-    /** Internal calculator for the score. Assumes that edge, platform and distance are initialized. */
+    /** Internal calculator for the score. Assumes that edge, platform and distance are initialized. 
     private double calcScore(TraverseModeSet modes) {
         /** Whether point is located at a platform. */
         int platform = calcPlatform(modes);
@@ -215,24 +215,41 @@ public class CandidateEdge {
         // why is this being scaled by 1/360th of the radius of the earth?
         myScore = distance * SphericalDistanceLibrary.RADIUS_OF_EARTH_IN_M / 360.0;
         myScore /= preference;
-        if ((edge.getStreetClass() & platform) != 0) {
-            // this a hack, but there's not really a better way to do it
-            myScore /= PLATFORM_PREFERENCE;
-        }
+        
         if (edge.getName().contains("sidewalk")) {
             // this is a hack, but there's not really a better way to do it
             myScore /= SIDEWALK_PREFERENCE;
         }
+
+        if (mode.isTransit()) {
+        	if ((edge.getStreetClass() & platform) != 0) {
+        		// this a hack, but there's not really a better way to do it
+        		myScore /= PLATFORM_PREFERENCE;
+
+        		// apply strong preference to platforms for the specified modes 
+        			// we're subtracting here because no matter how close we are to a
+       	            // good non-car non-platform edge, we really want to avoid it in
+        	        // case it's a Pedway or other weird and unlikely starting location.
+        	        myScore -= CAR_PREFERENCE;
+        	}       
+        	
+        }
+        
+        if (mode.getDriving()) {
         // apply strong preference to car edges and to platforms for the specified modes
         // only apply for car modes -- TODO Check this.
         if (modes.getCar() && edge.getPermission().allows(StreetTraversalPermission.CAR)
-                || (edge.getStreetClass() & platform) != 0) {
-            // we're subtracting here because no matter how close we are to a
-            // good non-car non-platform edge, we really want to avoid it in
-            // case it's a Pedway or other weird and unlikely starting location.
-            myScore -= CAR_PREFERENCE;
-        }
-
+        			|| (edge.getStreetClass() & platform) != 0) {
+        		// we're subtracting here because no matter how close we are to a
+        		// good non-car non-platform edge, we really want to avoid it in
+        		// case it's a Pedway or other weird and unlikely starting location.
+        		//myScore -= CAR_PREFERENCE;
+        	}
+        } else if (mode.getBicycle()) {
+        	if (edge.getPermission().allows(StreetTraversalPermission.BICYCLE))
+        		myScore -= CAR_PREFERENCE;        	   
+        }                
+        
         // Consider the heading in the score if it is available.
         if (heading != null) {
             // If you are moving along the edge, score is not penalized.

@@ -14,10 +14,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package org.opentripplanner.index;
 
 import com.beust.jcommander.internal.Lists;
+import java.util.ArrayList;
 import com.beust.jcommander.internal.Sets;
 import com.google.common.base.Function;
+import java.util.HashMap;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import java.util.Map;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import org.onebusaway.gtfs.model.Agency;
@@ -37,6 +40,7 @@ import org.opentripplanner.index.model.StopTimesInPattern;
 import org.opentripplanner.index.model.TripShort;
 import org.opentripplanner.index.model.TripTimeShort;
 import org.opentripplanner.profile.StopCluster;
+import org.opentripplanner.routing.edgetype.PatternHop;
 import org.opentripplanner.routing.edgetype.SimpleTransfer;
 import org.opentripplanner.routing.edgetype.Timetable;
 import org.opentripplanner.routing.edgetype.TripPattern;
@@ -164,10 +168,46 @@ public class IndexAPI {
            @QueryParam("lon")    Double lon,
            @QueryParam("radius") Double radius) {
 
+	   class StopShortRoutes {
+    	   public String agency;
+    	   public String id;
+    	   public String name;
+    	   public Double lat;
+    	   public Double lon;
+    	   public Set<Route> routes;
+    	   
+    	   public StopShortRoutes(StopShort s) {
+    		   agency = s.agency;
+    		   id = s.id;
+    		   name = s.name;
+    		   lat = s.lat;
+    		   lon = s.lon;
+    		   routes = Sets.newHashSet();        		   
+    	   }
+    	   
+    	   public StopShortRoutes(Stop s) {
+    	        agency = s.getId().getAgencyId();
+    	        id = s.getId().getId();
+    	        name = s.getName();
+    	        lat = s.getLat();
+    	        lon = s.getLon();
+    	        routes = Sets.newHashSet();
+    	   }
+       }
+       
+	   
        /* When no parameters are supplied, return all stops. */
        if (uriInfo.getQueryParameters().isEmpty()) {
            Collection<Stop> stops = index.stopForId.values();
-           return Response.status(Status.OK).entity(StopShort.list(stops)).build();
+           List<StopShortRoutes> stopsRoutes = Lists.newArrayList();
+           for (Stop s : stops) {
+        	  StopShortRoutes sr = new StopShortRoutes(s);
+              for (TripPattern pattern : index.patternsForStop.get(s)) {
+                  sr.routes.add(pattern.route);
+              }                           	  
+        	  stopsRoutes.add(sr);
+           }
+           return Response.status(Status.OK).entity(stopsRoutes).build();
        }
        /* If any of the circle parameters are specified, expect a circle not a box. */
        boolean expectCircle = (lat != null || lon != null || radius != null);
@@ -178,15 +218,22 @@ public class IndexAPI {
            if (radius > MAX_STOP_SEARCH_RADIUS){
                radius = MAX_STOP_SEARCH_RADIUS;
            }
-           List<StopShort> stops = Lists.newArrayList(); 
+                    
+           List<StopShortRoutes> stops = Lists.newArrayList();
+           
            Coordinate coord = new Coordinate(lon, lat);
            for (TransitStop stopVertex : streetIndex.getNearbyTransitStops(
                     new Coordinate(lon, lat), radius)) {
                double distance = SphericalDistanceLibrary.fastDistance(stopVertex.getCoordinate(), coord);
                if (distance < radius) {
-                   stops.add(new StopShort(stopVertex.getStop(), (int) distance));
+                   StopShortRoutes sr = new StopShortRoutes(new StopShort(stopVertex.getStop(), (int) distance));
+                   for (TripPattern pattern : index.patternsForStop.get(stopVertex.getStop())) {
+                       sr.routes.add(pattern.route);
+                   }                   
+                   stops.add(sr);
                }
            }
+           
            return Response.status(Status.OK).entity(stops).build();
        } else {
            /* We're not circle mode, we must be in box mode. */
@@ -462,6 +509,23 @@ public class IndexAPI {
    public Response getPatterns () {
        Collection<TripPattern> patterns = index.patternForId.values();
        return Response.status(Status.OK).entity(PatternShort.list(patterns)).build();
+   }
+
+   /** Return geometries for each leg of the pattern as packed coordinate sequences */
+   @GET
+   @Path("/patterns/{patternId}/geometries")
+   public Response getGeometryForPattern (@PathParam("patternId") String patternIdString) {
+        TripPattern pattern = index.patternForId.get(patternIdString);
+        if (pattern != null) {
+            Collection<EncodedPolylineBean> geometries = new ArrayList<>();
+            for (PatternHop edge : pattern.hopEdges) {
+		if (edge == null) continue;
+                geometries.add(PolylineEncoder.createEncodings(edge.getGeometry()));
+            }
+            return Response.status(Status.OK).entity(geometries).build();
+        } else {
+            return Response.status(Status.NOT_FOUND).entity(MSG_404).build();
+        }
    }
 
    @GET

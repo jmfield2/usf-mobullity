@@ -65,6 +65,7 @@ import org.opentripplanner.routing.core.MortonVertexComparatorFactory;
 import org.opentripplanner.routing.core.TransferTable;
 import org.opentripplanner.routing.edgetype.EdgeWithCleanup;
 import org.opentripplanner.routing.edgetype.StreetEdge;
+import org.opentripplanner.routing.edgetype.StreetTraversalPermission;
 import org.opentripplanner.routing.edgetype.TripPattern;
 import org.opentripplanner.routing.impl.DefaultStreetVertexIndexFactory;
 import org.opentripplanner.routing.services.StreetVertexIndexFactory;
@@ -76,6 +77,8 @@ import org.opentripplanner.routing.vertextype.TransitStop;
 import org.opentripplanner.updater.GraphUpdaterConfigurator;
 import org.opentripplanner.updater.GraphUpdaterManager;
 import org.opentripplanner.updater.stoptime.TimetableSnapshotSource;
+import org.opentripplanner.util.PolylineEncoder;
+import org.opentripplanner.util.model.EncodedPolylineBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -204,6 +207,12 @@ public class Graph implements Serializable {
 
     /** True if schedule-based services exist in this Graph (including GTFS frequencies with exact_times = 1). */
     public boolean hasScheduledService = false;
+
+    private ArrayList<EncodedPolylineBean> bikeLanesStr;
+
+    public ArrayList<EncodedPolylineBean> getBikeLanesStr() {
+    	return bikeLanesStr;
+    }   
 
     public Graph(Graph basedOn) {
         this();
@@ -740,6 +749,33 @@ public class Graph implements Serializable {
             LOG.info("Main graph read. |V|={} |E|={}", graph.countVertices(), graph.countEdges());
             graph.index(indexFactory);
 
+            // Generate bike lane polyline string for use by UI later
+            // XXX regenerate this if graph is reloaded?
+            // XXX a better way to intelligently split different segments?
+    		graph.bikeLanesStr = new ArrayList<EncodedPolylineBean>();
+    		
+            ArrayList<Coordinate> pts = new ArrayList<Coordinate>();
+            double lat[] = {0,0};
+            double lon[] = {0,0};
+    		for (Edge e : graph.getEdges()) {					
+    			if (e.getClass() == PlainStreetEdge.class) {
+    				if (((PlainStreetEdge) e).getPermission().allows(StreetTraversalPermission.BICYCLE_LANE)) {
+    							
+    					//pts.add( new Coordinate(e.getFromVertex().getLon(), e.getFromVertex().getLat()) );
+    					//pts.add( new Coordinate(e.getToVertex().getLon(), e.getToVertex().getLat()) );
+    					lon[0] = e.getToVertex().getLon();
+    					lon[1] = e.getFromVertex().getLon();
+    					lat[0] = e.getToVertex().getLat();
+    					lat[1] = e.getFromVertex().getLat();
+    					graph.bikeLanesStr.add( PolylineEncoder.createEncodings( lat, lon ) );						
+    				}								
+    				
+    			}				
+    		}		
+    		LOG.info("bikelane=" + graph.bikeLanesStr.size() );
+    		
+            //graph.bikeLanesStr = PolylineEncoder.createEncodings(pts, -1);            
+            
             if (level == LoadLevel.FULL) {
                 return graph;
             }

@@ -30,7 +30,7 @@ public abstract class GenericXmlBikeRentalDataSource implements BikeRentalDataSo
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericXmlBikeRentalDataSource.class);
 
-    private String url;
+    protected String url;
 
     List<BikeRentalStation> stations = new ArrayList<BikeRentalStation>();
 

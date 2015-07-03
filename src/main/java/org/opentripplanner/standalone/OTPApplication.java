@@ -12,6 +12,8 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.opentripplanner.api.common.OTPExceptionMapper;
 import org.opentripplanner.api.model.JSONObjectMapperProvider;
 import org.opentripplanner.api.resource.*;
+import org.opentripplanner.api.resource.BikeLanes;
+import org.opentripplanner.api.resource.VehiclePositions;
 import org.opentripplanner.index.GeocoderResource;
 import org.opentripplanner.index.IndexAPI;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -75,6 +77,7 @@ public class OTPApplication extends Application {
             GeocoderResource.class,
             SimpleIsochrone.class,
             TileService.class,
+            BikeLanes.class,
             BikeRental.class,
             LIsochrone.class,
             ExternalGeocoderResource.class,
@@ -98,6 +101,9 @@ public class OTPApplication extends Application {
             RepeatedRaptorTestResource.class,
             /* Features and Filters: extend Jersey, manipulate requests and responses. */
             CorsFilter.class,
+            /* Enforce roles annotations defined by JSR-250 */
+            RolesAllowedDynamicFeature.class,
+            VehiclePositions.class,
             MultiPartFeature.class
         ));
         

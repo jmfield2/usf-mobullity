@@ -98,10 +98,12 @@ public class CityBikesBikeRentalDataSource implements BikeRentalDataSource, Json
             brStation.name = new NonLocalizedString(stationNode.get("name").textValue());
             brStation.bikesAvailable = stationNode.get("bikes").intValue();
             brStation.spacesAvailable = stationNode.get("free").intValue();
+            
             if (brStation != null && brStation.id != null) {
-                out.add(brStation);
-            }
+            	out.add(brStation);
+            }            
         }
+                
         synchronized (this) {
             stations = out;
         }
