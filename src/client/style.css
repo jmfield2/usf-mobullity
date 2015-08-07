@@ -1135,7 +1135,7 @@ p#splash-text span {
 }
 
 .bikes div#bike_lanes .box.active {
-	background-color: green;
+	background-color: red;
 }
 
 .stops div#bus_hart .box.active {
