@@ -234,6 +234,15 @@ otp.widgets.tripoptions.LocationsSelector =
         
     initInput : function(input, setterFunction) {
         var this_ = this;
+		$(this).data('selected-item', result);
+		// First pan the map to the new position
+		this.module.tripWidget.module.webapp.map.lmap.panTo(latlng);		
+
+		// This calls setStartPoint and setEndPoint in modules/planner/PlannerModule.js
+		// to setup the relevant leaflet markers
+		// It also triggers the 'startChanged' and 'endChanged' events that this class listens 
+		// to in order to set the actual #start values used by the trip planner format: (lat, lng)
+		
         input.autocomplete({
 	    autoFocus: true,
             source: function(request, response) {
@@ -253,6 +262,48 @@ otp.widgets.tripoptions.LocationsSelector =
         })
         .change(function() {
         	$(this).select();
+		// If the results didn't load yet, we can't do anything until the user attempts to plan a trip
+		// Get the keys of the results array so that we can quickly verify
+		// If current destination value is 'in' the list of results
+		// *and* the selected-item result == the .val() from results
+		if (keys.indexOf( $(this).val() ) != -1 && results[$(this).val()] == $(this).data('selected-item')) return;
+		if ($(this)[0].id == this.id + "-start") {
+			planner_name = this_.tripWidget.module.startName;
+			planner_value = this_.tripWidget.module.startLatLng;
+		}
+		else if ($(this)[0].id == this.id + "-end") {
+			planner_name = this_.tripWidget.module.endName;
+			planner_value = this_.tripWidget.module.endLatLng;
+		}
+		else {
+			planner_name = null;
+			planner_value = null;
+		}
+
+		dropdown_value = $(this).val();
+		console.log( dropdown_value );
+		console.log( planner_name );
+		console.log( planner_value );
+
+		// If the input doesn't exactly match, check if it is the (abbreviation)
+		if (keys.indexOf( dropdown_value ) == -1) {
+			for (i=0; i < keys.length; i++) {
+				if (keys[i].indexOf("(" + dropdown_value.toUpperCase() + ")") == 0) {
+					dropdown_value = keys[i];
+					break;
+				}
+			}
+		}
+
+		// If the value in the text box is in the result set		
+		if (keys.indexOf( dropdown_value ) != -1) {
+			result = results[ dropdown_value ];
+		
+			latlng = "(" + parseFloat(result.lat).toFixed(5) + ', ' + parseFloat(result.lng).toFixed(5) + ")";
+	
+			// If the planner_value does NOT match what it should based on the result, and the input box, force it because the user switched fields w/o selecting
+			if (planner_value != latlng) $(this)[0].selectItem( keys[dropdown_value] );
+		}
         });
 //        .dblclick(function() {
 //            $(this).select();

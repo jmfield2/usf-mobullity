@@ -303,11 +303,121 @@ otp.modules.planner.PlannerModule =
       	this.endLatLng = otp.util.Geo.stringToLatLng(otp.util.Itin.getLocationPlace(queryParams.toPlace));
     	this.setEndPoint(this.endLatLng, false);
     },
-    
-    planTrip : function(existingQueryParams, apiMethod) {
+   
+    planTrip : function(existingQueryParams, apiMethod, geocode_verified) {
     
         if(typeof this.planTripStart == 'function') this.planTripStart();
-        
+   
+	// CHECK START/END AGAINST AUTOCOMPLETE RESULTS
+	widget_id = -1;
+   	for (i=0; i < this.widgets.length; i++) {
+		if (this.widgets[i].id == "otp-planner-optionsWidget") widget_id = i;
+	} 
+
+	if (widget_id > -1) {
+		startInput = this.widgets[widget_id].controls.locations.startInput;
+		endInput = this.widgets[widget_id].controls.locations.endInput;
+		
+		start_result = {'pos': undefined, 'result': startInput.data('results') || {}};
+		end_result = {'pos': undefined, 'result': endInput.data('results') || {}};
+
+		// Perform geocoder ajax to verify start/endpoints iff:
+		// 1) The inputs are non-empty AND,
+		// 2) Both autocomplete results are not available
+
+		// Verify the endpoints by checking:
+		// 1) The names are within the list of results,
+		// 2) The latlng matches what it should
+		// If either does not match, check geocoder again and then tell the user
+
+		for (var key in start_result['result']) {
+			tmp = key;
+			if (key == startInput.val() ||
+				key.indexOf( "(" + startInput.val().toUpperCase() + ")" ) == 0) {
+
+	                        latlng = "(" + parseFloat(start_result['result'][key].lat).toFixed(5) + ', ' + parseFloat(start_result['result'][key].lng).toFixed(5) + ")";
+
+				// Name matches, but latlng doesn't. Update the result
+				if (this.startLatLng != latlng) startInput[0].selectItem( key );
+
+				start_result['pos'] = latlng;
+			}
+                        else if (tmp.toLowerCase().indexOf( startInput.val().toLowerCase() ) != -1 && Object.keys(start_result['result']).length == 1) {
+                                // The input is somewhere in the key && results.length == 1
+                                startInput[0].selectItem( key );
+                                start_result['pos'] = latlng;
+                        }
+			// XXX Input is in the key AND results.length > 1 (maybe more than 1 match) ... ask
+
+		}
+
+		for (var key in end_result['result']) {
+			tmp = key;
+                        if (key == endInput.val() ||
+                                key.indexOf( "(" + endInput.val().toUpperCase() + ")" ) == 0) {
+				
+                                latlng = "(" + parseFloat(end_result['result'][key].lat).toFixed(5) + ', ' + parseFloat(end_result['result'][key].lng).toFixed(5) + ")";
+
+				// Name matches, but latlng doesn't. Update the result
+                                if (this.endLatLng != latlng) endInput[0].selectItem( key );
+
+				// Always add this locally since it matched the entire name or some part of it
+                                end_result['pos'] = latlng;
+                        }
+			else if (tmp.toLowerCase().indexOf( endInput.val().toLowerCase() ) != -1 && Object.keys(end_result['result']).length == 1) {
+				// The input is somewhere in the key && results.length == 1
+				endInput[0].selectItem( key );
+				end_result['pos'] = latlng;
+			}
+                        // XXX Input is in the key AND results.length > 1 (maybe more than 1 match) ... ask
+
+		}
+
+		// Handle case when latlng manually set
+		if (startInput.val()[0] == '(' && start_result['pos'] == undefined && this.startLatLng != null && this.startName == null) 
+			start_result['pos'] = this.startLatLng; 
+
+                if (endInput.val()[0] == '(' && end_result['pos'] == undefined && this.endLatLng != null && this.endName == null)
+                        end_result['pos'] = this.endLatLng;
+
+		var that = {'this': this, 'widget_id': widget_id, 'existingQueryParams': existingQueryParams, 'apiMethod': apiMethod, 'geocode_verified': geocode_verified};
+
+		// If input is only representing a map or gps location, ignore .. assume user knows what they are doing
+		if (startInput.val().length > 0 && start_result['pos'] == undefined && (geocode_verified == undefined || geocode_verified.indexOf('start') == -1) ) {
+                        this.webapp.geocoders[0].geocode(startInput.val(), function(results) {
+	
+				ctrl = that.this.widgets[that.widget_id].controls.locations.startInput;
+
+				ctrl.data('results', ctrl[0].module.getResultLookup(results) );
+
+				if (that.geocode_verified == undefined) that.geocode_verified = [];
+				that.geocode_verified.push('start');
+
+				that.this.planTripFunction(that.existingQueryParams, that.apiMethod, that.geocode_verified);		
+                        });
+			return;
+		}
+		else if (endInput.val().length > 0 && end_result['pos'] == undefined && (geocode_verified == undefined || geocode_verified.indexOf('end') == -1) ) {
+                	this.webapp.geocoders[0].geocode(endInput.val(), function(results) {
+
+                                ctrl = that.this.widgets[that.widget_id].controls.locations.endInput;
+			
+				ctrl.data('results', ctrl[0].module.getResultLookup(results) );
+
+                                if (that.geocode_verified == undefined) that.geocode_verified = [];
+                                that.geocode_verified.push('end');
+
+                                that.this.planTripFunction(that.existingQueryParams, that.apiMethod, that.geocode_verified);
+        	        });
+			return;
+		}
+		else if (start_result['pos'] == undefined || end_result['pos'] == undefined) {
+			if (start_result['pos'] == undefined) this.startLatLng = null;
+			if (end_result['pos'] == undefined) this.endLatLng = null;
+		}
+
+	}
+ 
         //this.noTripWidget.hide();
     	
     	if(this.currentRequest !== null)
@@ -319,8 +429,11 @@ otp.modules.planner.PlannerModule =
     	
     	apiMethod = apiMethod || 'plan';
         var url = otp.config.hostname + '/' + otp.config.restService + '/' + apiMethod;
+
+	// Each time we receive a request, clear the old path to avoid confusion
         this.pathLayer.clearLayers();        
-        
+        this.pathMarkerLayer.clearLayers();
+ 
         var this_ = this;
         
         var queryParams = null;
