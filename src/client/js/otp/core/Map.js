@@ -54,18 +54,20 @@ otp.core.Map = otp.Class({
         
         var mapProps = { 
             layers  : [ defaultBaseLayer ],
-            center : (otp.config.initLatLng || new L.LatLng(0,0)),
-            zoom : (otp.config.initZoom || 2),
-            zoomControl : false
+            center : (new L.LatLng(28.061643, -82.413189)), //(otp.config.initLatLng || new L.LatLng(0,0)),
+            zoom : (18), //otp.config.initZoom || 2),
+            zoomControl : true //false
         }
         if(otp.config.minZoom) mapProps['minZoom'] = otp.config.minZoom;  //_.extend(mapProps, { minZoom : otp.config.minZoom });
         if(otp.config.maxZoom) mapProps['maxZoom'] = otp.config.maxZoom; //_.extend(mapProps, { maxZoom : otp.config.maxZoom });
-        
+
         // http://stackoverflow.com/questions/15671949/why-does-calling-leaflets-setzoom-twice-results-on-the-second-being-ignored
+/*
         if (L.DomUtil.TRANSITION) {
         	L.Map.addInitHook(function() {
         		L.DomEvent.on(this._mapPane, L.DomUtil.TRANSITION_END, function() {
         			var zoom = this._viewActions.shift();
+console.log("hook: " + zoom);
         			if (zoom != undefined) {
         				this.setView(zoom[0], zoom[1]);
         			}
@@ -76,6 +78,8 @@ otp.core.Map = otp.Class({
         L.Map.include(!L.DomUtil.TRANSITION ? {} : {
         	_viewActions: [],
         	queueView: function(latlng, zoom) {
+console.log("queue: " + latlng + " " + zoom);
+
         		if (this._animatingZoom) {
         			this._viewActions.push([latlng, zoom]);
         		}
@@ -84,9 +88,10 @@ otp.core.Map = otp.Class({
         		}
         	}
         });
+*/
 		
         this.lmap = new L.Map('map', mapProps);        
-		
+
         /*Locates user's current location if geoLocation in config.js is set to true*/
         var marker = new L.marker();
         var tempM = new L.marker();
@@ -104,8 +109,8 @@ otp.core.Map = otp.Class({
 				otp.config.mapBoundary = new L.latLngBounds(new L.latLng(data.lowerLeftLatitude, data.lowerLeftLongitude), new L.latLng(data.upperRightLatitude, data.upperRightLongitude));
 		
 				if(otp.config.geoLocation){
-					this_.lmap.locate({watch: true, enableHighAccuracy: true});
-					this_.lmap.on('locationfound', onLocationFound);
+					//this_.lmap.locate({watch: true, enableHighAccuracy: true});
+					//this_.lmap.on('locationfound', onLocationFound);
 				}						
 				
             }

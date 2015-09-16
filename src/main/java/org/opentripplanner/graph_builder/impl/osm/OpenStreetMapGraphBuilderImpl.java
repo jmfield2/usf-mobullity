@@ -1553,12 +1553,12 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                 StreetTraversalPermission permissions = getPermissionsForWay(way,
                         wayData.getPermission());
 
-                if (way.getTag("cycleway") != null && way.getTag("highway") != null) {
+                if (permissions != null && way.getTag("cycleway") != null && way.getTag("highway") != null) {
                 	permissions = permissions.add(StreetTraversalPermission.BICYCLE_LANE);
                 	System.out.println(permissions);
                 }
                 
-                if (!isWayRoutable(way) || permissions.allowsNothing())
+                if (!isWayRoutable(way) || (permissions != null && permissions.allowsNothing()))
                     continue;
 
                 // handle duplicate nodes in OSM ways
@@ -2447,7 +2447,7 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                                                       IntersectionVertex end, OSMWay way, int index, long startNode, long endNode,
                                                       StreetTraversalPermission permissions, LineString geometry) {
             // No point in returning edges that can't be traversed by anyone.
-            if (permissions.allowsNothing()) {
+            if (permissions != null && permissions.allowsNothing()) {
                 return new P2<PlainStreetEdge>(null, null);
             }
 
@@ -2459,7 +2459,7 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
             StreetTraversalPermission permissionsFront = permissionPair.getFirst();
             StreetTraversalPermission permissionsBack = permissionPair.getSecond();
 
-            if (permissionsFront.allowsAnything()) {
+            if (permissionsFront != null && permissionsFront.allowsAnything()) {
                 street = getEdgeForStreet(start, end, way, index, startNode, endNode, length,
                         permissionsFront, geometry, false);
             }
@@ -2484,6 +2484,8 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
          */
         private P2<StreetTraversalPermission> getPermissions(StreetTraversalPermission permissions,
                                                              OSMWay way) {
+
+	    if (permissions == null) permissions = StreetTraversalPermission.NONE;
 
             StreetTraversalPermission permissionsFront = permissions;
             StreetTraversalPermission permissionsBack = permissions;

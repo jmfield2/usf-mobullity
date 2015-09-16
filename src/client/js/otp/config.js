@@ -69,7 +69,7 @@ otp.config = {
     //if user does not allow location finding default location set
     initLatLng : new L.LatLng(28.061062, -82.413200), 
     mapBoundary: false,
-    initZoom : 15,
+    initZoom : 20,
     minZoom : 9,
     maxZoom : 20,
     gpsZoom : 17
