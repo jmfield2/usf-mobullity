@@ -1554,7 +1554,6 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                         wayData.getPermission());
 
 		// Handle roads with bike lanes
-                if (permissions != null && way.getTag("cycleway") != null && way.getTag("highway") != null) {
                 if (permissions != null && (way.getTag("cycleway") != null && way.getTag("highway") != null) || 
 			way.getTag("cycleway:left") != null || way.getTag("cycleway:right") != null) {
                 	permissions = permissions.add(StreetTraversalPermission.BICYCLE_LANE);
