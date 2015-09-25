@@ -303,11 +303,27 @@ otp.modules.planner.PlannerModule =
       	this.endLatLng = otp.util.Geo.stringToLatLng(otp.util.Itin.getLocationPlace(queryParams.toPlace));
     	this.setEndPoint(this.endLatLng, false);
     },
-   
+  
+    validate : function(step) {
+	/* Ensure the trip options form is correct and attempt to automatically fix issues */
+
+
+	this.validated = true;
+
+    },
+ 
     planTrip : function(existingQueryParams, apiMethod, geocode_verified) {
     
         if(typeof this.planTripStart == 'function') this.planTripStart();
-   
+
+	if ( ! this.validated || this.validated == undefined) {   
+		// Show ajax throbber
+
+		this.validated = false;
+		this.validate();
+		return;
+	}
+
 	// CHECK START/END AGAINST AUTOCOMPLETE RESULTS
 	widget_id = -1;
    	for (i=0; i < this.widgets.length; i++) {
