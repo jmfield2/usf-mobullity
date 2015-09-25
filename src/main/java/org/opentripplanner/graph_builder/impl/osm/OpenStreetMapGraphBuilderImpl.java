@@ -1574,7 +1574,6 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                         permissions = permissions.add(StreetTraversalPermission.BICYCLE);
 		}
 
-                if (!isWayRoutable(way) || (permissions != null && permissions.allowsNothing()))
                 if (permissions != null && (!isWayRoutable(way) || permissions.allowsNothing()))
                     continue;
 
