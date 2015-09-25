@@ -78,6 +78,16 @@ public enum StreetTraversalPermission {
         return get(this.getCode() | perm.getCode());
     }
 
+    /**
+     * Returns intersection of allowed permissions between current permissions and given permissions
+     *
+     * @param perm
+     * @return
+     */
+    public StreetTraversalPermission intersection(StreetTraversalPermission perm) {
+        return get(this.code & perm.code);
+    }
+
     public StreetTraversalPermission remove(StreetTraversalPermission perm) {
         return get(this.getCode() & ~perm.getCode());
     }

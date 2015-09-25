@@ -46,11 +46,6 @@ public abstract class StreetEdge extends EdgeWithElevation {
 		super(v1, v2);
 	}
 
-	/**
-	 * Returns true if this RoutingRequest can traverse this edge.
-	 */
-	public abstract boolean canTraverse(RoutingRequest options);
-	
 	public abstract boolean canTraverse(TraverseModeSet modes);
 	
 	public abstract String getLabel();

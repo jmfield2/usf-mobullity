@@ -104,7 +104,7 @@ public class TraversalRequirements {
             }
         }
         
-        return e.getPermission().allows(modes);        
+        return e.canTraverse(modes);        
     }
 
     /**

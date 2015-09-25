@@ -61,4 +61,12 @@ public class OSMNode extends OSMWithTags {
         return hasTag("highway") && "traffic_signals".equals(getTag("highway"));
     }
 
+    /**
+     * Checks if this node is bollard
+     * @return true if it is
+     */
+    public boolean isBollard() {
+        return isTag("barrier", "bollard");
+    }
+
 }

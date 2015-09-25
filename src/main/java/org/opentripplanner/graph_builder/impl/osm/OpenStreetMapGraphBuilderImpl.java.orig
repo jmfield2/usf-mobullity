@@ -87,7 +87,13 @@ import org.opentripplanner.routing.graph.Vertex;
 import org.opentripplanner.routing.spt.GraphPath;
 import org.opentripplanner.routing.spt.ShortestPathTree;
 import org.opentripplanner.routing.util.ElevationUtils;
-import org.opentripplanner.routing.vertextype.*;
+import org.opentripplanner.routing.vertextype.BikeRentalStationVertex;
+import org.opentripplanner.routing.vertextype.ElevatorOffboardVertex;
+import org.opentripplanner.routing.vertextype.ElevatorOnboardVertex;
+import org.opentripplanner.routing.vertextype.ExitVertex;
+import org.opentripplanner.routing.vertextype.IntersectionVertex;
+import org.opentripplanner.routing.vertextype.ParkAndRideVertex;
+import org.opentripplanner.routing.vertextype.TransitStopStreetVertex;
 import org.opentripplanner.util.MapUtils;
 import org.opentripplanner.visibility.Environment;
 import org.opentripplanner.visibility.VLPoint;
@@ -1547,6 +1553,14 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                 StreetTraversalPermission permissions = getPermissionsForWay(way,
                         wayData.getPermission());
 
+<<<<<<< Updated upstream
+                if (permissions != null && way.getTag("cycleway") != null && way.getTag("highway") != null) {
+                	permissions = permissions.add(StreetTraversalPermission.BICYCLE_LANE);
+                	System.out.println(permissions);
+                }
+                
+                if (!isWayRoutable(way) || (permissions != null && permissions.allowsNothing()))
+=======
 		// Handle roads with bike lanes
                 if (permissions != null && (way.getTag("cycleway") != null && way.getTag("highway") != null) || 
 			way.getTag("cycleway:left") != null || way.getTag("cycleway:right") != null) {
@@ -1562,8 +1576,9 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                         permissions = permissions.add(StreetTraversalPermission.BICYCLE);
 		}
 
-                if (!isWayRoutable(way) || (permissions != null && permissions.allowsNothing()))
+
                 if (permissions != null && (!isWayRoutable(way) || permissions.allowsNothing()))
+>>>>>>> Stashed changes
                     continue;
 
                 // handle duplicate nodes in OSM ways
@@ -1641,7 +1656,6 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                     if (intersectionNodes.containsKey(endNode) || i == nodes.size() - 2
                             || nodes.subList(0, i).contains(nodes.get(i))
                             || osmEndNode.hasTag("ele")
-			    || osmEndNode.isBollard()
                             || "bus_stop".equals(osmEndNode.getTag("highway"))
                             || "tram_stop".equals(osmEndNode.getTag("railway"))
                             || "station".equals(osmEndNode.getTag("railway"))
@@ -2458,7 +2472,11 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                                                       IntersectionVertex end, OSMWay way, int index, long startNode, long endNode,
                                                       StreetTraversalPermission permissions, LineString geometry) {
             // No point in returning edges that can't be traversed by anyone.
+<<<<<<< Updated upstream
             if (permissions != null && permissions.allowsNothing()) {
+=======
+            if (permissions == null || permissions.allowsNothing()) {
+>>>>>>> Stashed changes
                 return new P2<PlainStreetEdge>(null, null);
             }
 
@@ -2798,16 +2816,9 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
             // single-level case
             long nid = node.getId();
             iv = intersectionNodes.get(nid);
-
-            Coordinate coordinate = getCoordinate(node);
-            String label = getNodeLabel(node);
-
-	    if (node.isBollard()) {
-		BarrierVertex bv = new BarrierVertex(graph, label, coordinate.x, coordinate.y);
-		iv = bv;
- 	    }
-
             if (iv == null) {
+                Coordinate coordinate = getCoordinate(node);
+                String label = getNodeLabel(node);
                 String highway = node.getTag("highway");
                 if ("motorway_junction".equals(highway)) {
                     String ref = node.getTag("ref");
