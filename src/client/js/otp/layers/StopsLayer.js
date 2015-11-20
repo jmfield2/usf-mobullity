@@ -18,21 +18,38 @@ var bullrunnerStopIcon = L.Icon.extend({
     options: {
         iconUrl: resourcePath + 'images/busStopButton.png',
         shadowUrl: null,
-        iconSize: new L.Point(8,8),
+        iconSize: new L.Point(10,10),
         iconAnchor: new L.Point(10, 10),
         popupAnchor: new L.Point(0, -5)
     }
 });
 
+var bullrunnerStopIcon = {
+    icon: 'bus',
+    markerColor: 'green',
+    prefix: 'fa',
+/*   iconSize: new L.Point(16, 16), */
+};
+
+var hartStopIcon = {
+    icon: 'bus',
+    iconColor: 'black',
+    markerColor: 'white',
+    prefix: 'fa',
+/*    iconSize: new L.Point(16, 16), */
+};
+
+/*
 var hartStopIcon = L.Icon.extend({
     options: {
         iconUrl: resourcePath + 'images/stop20.png',
         shadowUrl: null,
-        iconSize: new L.Point(8,8),
+        iconSize: new L.Point(10,10),
         iconAnchor: new L.Point(10, 10),
         popupAnchor: new L.Point(0, -5)
     }
 });
+*/
 
 otp.layers.StopsLayer = 
     otp.Class(L.LayerGroup, {
@@ -109,8 +126,9 @@ otp.layers.StopsLayer =
 
 	    if (!flag) continue;
 
-            var bullIcon = new bullrunnerStopIcon();
-            var hartIcon = new hartStopIcon();
+	    // XXX this could be in it's own function...
+            var bullIcon = L.AwesomeMarkers.icon( bullrunnerStopIcon );
+            var hartIcon = L.AwesomeMarkers.icon( hartStopIcon );
             
             var context = _.clone(stop);
             context.agencyStopLinkText = otp.config.agencyStopLinkText || "Agency Stop URL";
