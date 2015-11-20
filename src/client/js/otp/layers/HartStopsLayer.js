@@ -14,16 +14,6 @@
 
 otp.namespace("otp.layers");
 
-var hartStopIcon = L.Icon.extend({
-    options: {
-        iconUrl: resourcePath + 'images/stop20.png',
-        shadowUrl: null,
-        iconSize: new L.Point(8,8),
-        iconAnchor: new L.Point(10, 10),
-        popupAnchor: new L.Point(0, -5)
-    }
-});
-
 otp.layers.HartStopsLayer = 
     otp.Class(L.LayerGroup, {
     	   

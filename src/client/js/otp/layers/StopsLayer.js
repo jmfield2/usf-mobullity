@@ -48,16 +48,18 @@ otp.layers.StopsLayer =
         this.module.stopViewerWidget = new otp.widgets.transit.StopViewerWidget('otp-'+this.id+'-StopViewerWidget', this.module);
         
         this.stopsLookup = {};
-       
+        this.markers = {};
+
         this.stopsLayer = this.module.addLayer("stops", this);
         
-        this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
+        this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this) );
         
     },
     
     refresh : function() {
-        this.clearLayers();                
         var lmap = this.module.webapp.map.lmap;
+	
+	// Update the markers on the map only if the zoom is valid, otherwise clear everything
         if(lmap.getZoom() >= this.minimumZoomForStops) {
             this.module.webapp.transitIndex.loadStopsInRadius(null, lmap.getCenter(), this, function(data) {
                 this.stopsLookup = {};
@@ -68,15 +70,22 @@ otp.layers.StopsLayer =
                 this.updateStops();
             });
         }
+	else this.clear();
     },
-    
+   
+    clear : function() {
+	this.markers = {};
+	this.clearLayers();
+    },
+ 
     updateStops : function(stops) {
         var stops = _.values(this.stopsLookup);
         var this_ = this;
         var routeData = this.module.webapp.transitIndex.routes;
 
        	// USF Bull Runner_A index, routeData
- 
+ 	m = {};
+
         for(var i=0; i<stops.length; i++) {
 
             var stop = stops[i];
@@ -87,8 +96,11 @@ otp.layers.StopsLayer =
 	    // Make sure at least one route served by stop is marked as visible in layers
 	    for (x in stop.routes) {
 		r = stop.routes[x];
+
 		// if the BullRunner route layer is active
-                if (webapp.modules[0].busLayers.visible.indexOf(r.shortName) != -1) flag = true;
+                if (webapp.modules[0].busLayers.visible.indexOf(r.shortName) != -1) 
+			flag = true;
+
 		// if the HART layer is active (which manipulates otp.config)
 		if (otp.config.showHartBusStops && r.agency.name == "Hillsborough Area Regional Transit") {
 			flag = true;
@@ -136,22 +148,52 @@ otp.layers.StopsLayer =
                 }
             }
 
+	    // Add the BullRunner or HART marker to the list if it should be added
             if(stop.agency == "USF Bull Runner" && otp.config.showBullRunnerStops == true){
-            	//only want to display USF BullRunner stops in this layer
-            	L.marker([stop.lat, stop.lon], {
-            		icon : bullIcon,
-            	}).addTo(this_)
-            	.bindPopup(popupContent.get(0));
+
+		if (this.markers[ stop.id ] == undefined) {
+
+	            	//only want to display USF BullRunner stops in this layer
+        	    	m[stop.id] = L.marker([stop.lat, stop.lon], {
+            			icon : bullIcon,
+				ZIndexOffset : 1000,
+	            	}).bindPopup(popupContent.get(0));
+
+			this.addLayer( m[stop.id] );
+
+			this.markers[stop.id] = m[stop.id];
+		}
+		else m[stop.id] = this.markers[stop.id]; // don't remove it
+
             }
             
             else if(stop.agency == "Hillsborough Area Regional Transit" && otp.config.showHartBusStops == true){
-            	//only want to display Hart stops in this layer
-            	L.marker([stop.lat, stop.lon], {
-            		icon : hartIcon,
-            	}).addTo(this_)
-            	.bindPopup(popupContent.get(0));
+		
+		if (this.markers[ stop.id ] == undefined) {
+	            	//only want to display Hart stops in this layer
+        	    	m[stop.id] = L.marker([stop.lat, stop.lon], {
+            			icon : hartIcon,
+                                ZIndexOffset : 1000,
+	            	}).bindPopup(popupContent.get(0));
+
+			this.addLayer( m[stop.id] );
+
+			this.markers[stop.id] = m[stop.id];
+		}
+                else m[stop.id] = this.markers[stop.id]; // don't remove it
+
             }
             
         }
+
+	// Check if markers were added or deleted and update layer accordingly
+	for (var x in this.markers) {
+		if (m[x] == undefined) {
+			ret = this.removeLayer(this.markers[x]);		
+		}
+	}
+
+	this.markers = m;
+
     },
 });

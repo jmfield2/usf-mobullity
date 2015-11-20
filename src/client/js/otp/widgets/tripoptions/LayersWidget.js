@@ -99,8 +99,7 @@ otp.widgets.LayersWidget =
 			$("#bus_hart .box").addClass('active');
 		}
 
-		ev.data.module.stopsLayer.refresh();
-
+		webapp.modules[0].stopsLayer.refresh();
 	});
   
 	// Bike rental layers
