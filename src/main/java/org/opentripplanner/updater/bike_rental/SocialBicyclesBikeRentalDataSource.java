@@ -96,6 +96,8 @@ public class SocialBicyclesBikeRentalDataSource implements BikeRentalDataSource,
 	            }
         	    String data = builder.toString();
 
+	System.out.println(data);
+
 		    int tmp_page;
 		    if (this.dataType.equals("hubs")) tmp_page = parseJson(data);
 		    else tmp_page = parseBikesJson(data);

@@ -152,7 +152,7 @@ public class GenericAStar implements SPTService { // maybe this should be wrappe
         // print debug info
         if (verbose) {
             double w = runState.pq.peek_min_key();
-            System.out.println("pq min key = " + w);
+            //System.out.println("pq min key = " + w);
         }
         
         // interleave some heuristic-improving work (single threaded)

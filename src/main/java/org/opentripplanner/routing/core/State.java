@@ -130,6 +130,7 @@ public class State implements Cloneable {
             Arrays.fill(this.pathParserStates, AutomatonState.START);
         }
         stateData.routeSequence = new AgencyAndId[0];
+	
     }
 
     /**

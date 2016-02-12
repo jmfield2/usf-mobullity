@@ -44,6 +44,9 @@ otp.widgets.ItinerariesWidget =
             closeable : true,
             persistOnClose : true,
         });
+
+	this.mainDiv.appendTo(module.optionsWidget.$());
+
         //this.$().addClass('otp-itinsWidget');
         //this.$().resizable();
         //this.minimizable = true;

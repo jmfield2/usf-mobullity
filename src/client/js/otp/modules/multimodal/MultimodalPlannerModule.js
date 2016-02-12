@@ -81,7 +81,7 @@ otp.modules.multimodal.MultimodalPlannerModule =
 
         this.optionsWidget.addSeparator();
         this.optionsWidget.addControl("submit", new otp.widgets.tripoptions.Submit(this.optionsWidget));
-        
+       
         this.optionsWidget.applyQueryParams(this.defaultQueryParams);
         
         //Add layers

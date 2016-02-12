@@ -318,9 +318,9 @@ public class PlainStreetEdge extends StreetEdge implements Cloneable {
 	    case SAFE_LANES:
 		weight = elevationProfileSegment.getSlopeSpeedEffectiveLength() / speed;
 	
-	        if ((traverseMode.equals(TraverseMode.BICYCLE)) && permission.allows(StreetTraversalPermission.BICYCLE_LANE))
+	        if ((traverseMode.equals(TraverseMode.BICYCLE)) && permission.allows(StreetTraversalPermission.BICYCLE_LANE)) {
 			weight *= 0.66; 
-	
+		}
 		
                 break;
             case GREENWAYS:

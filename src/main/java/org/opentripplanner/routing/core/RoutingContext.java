@@ -317,6 +317,8 @@ public class RoutingContext implements Cloneable {
                 ((StreetLocation)vertex).setTemporaryEdgeVisibility(this);
             }
         }
+	
+	// XXX if routingRequest has CAR
 
         if (this.origin != null) {
             LOG.debug("Origin vertex inbound edges {}", this.origin.getIncoming());

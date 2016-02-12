@@ -463,6 +463,7 @@ otp.widgets.tripoptions.ModeSelector =
 		     "BICYCLE_RENT" : "Rented Bicycle",
                      "WALK" : 'Walk Only',
                      "CAR" : 'Drive Only',
+		     "CAR,WALK" : "Car + Walk"
                    },
     
 

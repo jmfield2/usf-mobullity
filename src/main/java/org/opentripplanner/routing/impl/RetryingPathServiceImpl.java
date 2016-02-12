@@ -131,11 +131,12 @@ public class RetryingPathServiceImpl implements PathService {
         while (paths.size() < options.numItineraries) {
             currOptions = optionQueue.poll();
             if (currOptions == null) {
-                LOG.debug("Ran out of options to try.");
+                LOG.info("Ran out of options to try.");
                 break;
             }
             currOptions.setMaxWalkDistance(maxWalk);
-            
+            System.out.println(currOptions);
+ 
             // apply appropriate timeout
             double timeout = paths.isEmpty() ? firstPathTimeout : multiPathTimeout;
             
@@ -147,7 +148,7 @@ public class RetryingPathServiceImpl implements PathService {
             ShortestPathTree spt = sptService.getShortestPathTree(currOptions, timeout);
             if (spt == null) {
                 // Serious failure, no paths provided. This could be signaled with an exception.
-                LOG.warn("Aborting search. {} paths found, elapsed time {} sec", 
+                LOG.info("Aborting search. {} paths found, elapsed time {} sec", 
                         paths.size(), (System.currentTimeMillis() - searchBeginTime) / 1000.0);
                 break;
             }
@@ -155,16 +156,17 @@ public class RetryingPathServiceImpl implements PathService {
             LOG.debug("END SUBSEARCH ({} msec of {} msec total)", 
                     System.currentTimeMillis() - subsearchBeginTime,
                     System.currentTimeMillis() - searchBeginTime);
-            LOG.debug("SPT provides {} paths to target.", somePaths.size());
+            LOG.info("SPT provides {} paths to target.", somePaths.size());
 
             /* First, accumulate any new paths found into the list of itineraries. */
             for (GraphPath path : somePaths) {
+		LOG.info(path.toString());
                 if ( ! paths.contains(path)) {
                     if (path.getWalkDistance() > maxWalk) {
                         maxWalk = path.getWalkDistance() * 1.25;
                     }
                     paths.add(path);
-                    LOG.debug("New trips: {}", path.getTrips());
+                    LOG.info("New trips: {}", path.getTrips());
                     // ban the trips in this path
                     // unless is is a non-transit trip (in which case this would cause a useless retry)
                     if ( ! path.getTrips().isEmpty()) {
@@ -178,11 +180,11 @@ public class RetryingPathServiceImpl implements PathService {
                     }           
                 }
             }
-            LOG.debug("{} / {} itineraries", paths.size(), currOptions.numItineraries);
+            LOG.info("{} / {} itineraries", paths.size(), currOptions.numItineraries);
             if (options.rctx.aborted) {
                 // search was cleanly aborted, probably due to a timeout. 
                 // There may be useful paths, but we should stop retrying.
-                break;
+                continue;
             }
 
             /* Vary weight, time, and walk constraints for next iteration. */
@@ -190,7 +192,7 @@ public class RetryingPathServiceImpl implements PathService {
                 /* the worst trip we are willing to accept is at most twice as bad or twice as long */
                 if (somePaths.isEmpty()) {
                     // if there is no first path, there won't be any other paths
-                    return null;
+                    continue; //return null;
                 }
                 GraphPath path = somePaths.get(0);
                 long duration = path.getDuration();
@@ -206,6 +208,7 @@ public class RetryingPathServiceImpl implements PathService {
                     maxWalk = path.getWalkDistance() * 1.25;
                 }
             }
+
             if (somePaths.isEmpty()) {
                 //try again doubling maxwalk
                 LOG.debug("No paths were found.");
@@ -216,8 +219,9 @@ public class RetryingPathServiceImpl implements PathService {
                 optionQueue.add(currOptions);
                 continue;
             }
-
         }
+	LOG.info("PATHS=" + paths.size() );
+
         if (paths.size() == 0) {
             return null;
         }

@@ -200,4 +200,4 @@ otp.config = {
     timeFormat  : "h:mma",
     dateFormat  : "MMM Do YYYY"
     	
-}
+};
