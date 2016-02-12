@@ -972,6 +972,10 @@ p#splash-text span {
     background-color: green;
 }
 
+.other div#bluephone .box.active {
+    background-color: #2880ca;
+}
+
 .otp-layerView-inner fieldset { border-top:1px solid #9CCB3B; }
 .otp-layerView-inner fieldset legend { text-align:center; }
 
