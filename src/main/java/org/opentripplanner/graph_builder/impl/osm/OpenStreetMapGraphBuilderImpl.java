@@ -802,6 +802,30 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                 processBikeRentalNodes();
             }
 
+            // Post-process POIs and convert way nd ids to lat,lng
+            for (String pk : graph.pois.keySet()) {
+                for (int i=0; i < graph.pois.get(pk).size(); i++) {
+                    PoiNode p = graph.pois.get(pk).get(i);
+
+                    if (p.type == "node") continue;
+
+                    ArrayList<String> tmplocs = new ArrayList<String>();
+
+             System.out.println( p.locations );
+
+                    for (String id : p.locations.split(",")) {
+                        if (! _nodes.containsKey( Long.parseLong(id) )) continue;
+
+                        OSMNode n1 = _nodes.get( Long.parseLong(id) );
+                        tmplocs.add( String.format("%s,%s", n1.getLat(), n1.getLon() ) );
+                    }
+
+                    p.locations = String.join(';', tmplocs.toArray());
+                    graph.pois.get(pk).set(i, p);
+                }
+ 
+            }
+ 
             // Remove all simple islands
             HashSet<Long> _keep = new HashSet<Long>(_nodesWithNeighbors);
             _keep.addAll(_areaNodes);

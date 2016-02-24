@@ -5,6 +5,10 @@ import static org.opentripplanner.api.resource.ServerInfo.Q;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+import org.opentripplanner.routing.graph.PoiNode;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -34,13 +38,32 @@ public class POIs {
 
 		@GET
 		@Produces({ MediaType.APPLICATION_JSON })
-		public String get(@PathParam("routerId") String routerId,
+		public Map<String, ArrayList<String>> get(@PathParam("routerId") String routerId,
             @PathParam("query") String query) {
 
 			Graph g = graphService.getGraph(routerId);
 			if (g == null) return null;
-			
-		    return g.pois.toString();
+		
+            Map<String, ArrayList<String>> res = new HashMap<String, ArrayList<String>>();
+            
+            Map<String, ArrayList<PoiNode>> q = new HashMap<String, ArrayList<PoiNode>>();
+
+            if (g.pois.containsKey( query )) {
+                // XXX either an exact match, or key:value* iterative matching
+
+                q.put( query, g.pois.get(query) );
+            }
+            else q = g.pois;
+
+	        for (String k : q.keySet()) {
+                ArrayList<PoiNode> ps = q.get(k);
+                res.put( k, new ArrayList<String>() );
+
+                for (PoiNode p : ps) 
+                    res.get(k).add( String.format("{type: '%s', tags: '%s', locations: '%s'}", p.type, p.tags.toString(), p.locations.toString()));
+            }
+    
+		    return res;
 		}
 	
 }
