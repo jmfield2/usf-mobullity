@@ -38,32 +38,32 @@ public class POIs {
 
 		@GET
 		@Produces({ MediaType.APPLICATION_JSON })
-		public Map<String, ArrayList<String>> get(@PathParam("routerId") String routerId,
-            @PathParam("query") String query) {
+		public Map<String, ArrayList<PoiNode>> get(@PathParam("routerId") String routerId,
+            @QueryParam("query") String query) {
 
 			Graph g = graphService.getGraph(routerId);
 			if (g == null) return null;
 		
-            Map<String, ArrayList<String>> res = new HashMap<String, ArrayList<String>>();
+            // Map for result
+            Map<String, ArrayList<PoiNode>> res = new HashMap<String, ArrayList<PoiNode>>();
             
+            // Map of matching POI keys 
             Map<String, ArrayList<PoiNode>> q = new HashMap<String, ArrayList<PoiNode>>();
 
+            // Exact match on POI Key
             if (g.pois.containsKey( query )) {
-                // XXX either an exact match, or key:value* iterative matching
-
                 q.put( query, g.pois.get(query) );
             }
-            else q = g.pois;
-
-	        for (String k : q.keySet()) {
-                ArrayList<PoiNode> ps = q.get(k);
-                res.put( k, new ArrayList<String>() );
-
-                for (PoiNode p : ps) 
-                    res.get(k).add( String.format("{type: '%s', tags: '%s', locations: '%s'}", p.type, p.tags.toString(), p.locations.toString()));
+            // iterative matching for e.g: key:value* queries
+            else {
+                for (String k : g.pois.keySet()) {
+                    if ( ! k.toLowerCase().contains( query.toLowerCase() )) continue;
+                    q.put( k, g.pois.get(k) );
+                }
             }
-    
-		    return res;
+
+            // Find all matching PoiNodes, and create JSON string
+            return q;
 		}
 	
 }

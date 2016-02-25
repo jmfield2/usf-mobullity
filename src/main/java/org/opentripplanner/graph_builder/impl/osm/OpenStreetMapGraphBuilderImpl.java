@@ -811,16 +811,16 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
 
                     ArrayList<String> tmplocs = new ArrayList<String>();
 
-             System.out.println( p.locations );
+                    String tmp = p.locations.replace("[", "").replace("]", "");
 
-                    for (String id : p.locations.split(",")) {
+                    for (String id : tmp.split(", ")) {
                         if (! _nodes.containsKey( Long.parseLong(id) )) continue;
 
                         OSMNode n1 = _nodes.get( Long.parseLong(id) );
                         tmplocs.add( String.format("%s,%s", n1.getLat(), n1.getLon() ) );
                     }
 
-                    p.locations = String.join(';', tmplocs.toArray());
+                    p.locations = String.join(";", tmplocs);
                     graph.pois.get(pk).set(i, p);
                 }
  
