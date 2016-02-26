@@ -2069,7 +2069,7 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
                 
                         PoiNode p = new PoiNode();
                         p.type = "node";
-                        p.tags = node.getTags().toString();
+                        p.tags = node.getTags();
                         p.locations = String.format("%s,%s", node.getLat(), node.getLon());
 
                         if (!graph.pois.containsKey( key )) graph.pois.put( key, new ArrayList<PoiNode>() );
@@ -2112,7 +2112,7 @@ public class OpenStreetMapGraphBuilderImpl implements GraphBuilder {
 
                         PoiNode p = new PoiNode();
                         p.type = "way";
-                        p.tags = way.getTags().toString(); 
+                        p.tags = way.getTags(); 
                         p.locations = way.getNodeRefs().toString();
 
                         if (!graph.pois.containsKey( key )) graph.pois.put( key, new ArrayList<PoiNode>() );

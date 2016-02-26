@@ -67,7 +67,7 @@ otp.widgets.LayersWidget =
         
         // Layer group toggle code
         
-	// Bullrunner bus stops+routes
+	    // Bullrunner bus stops+routes
         $('#usf_A').bind('click', {'this_': this}, function(ev) {
         	this_.toggle_bus_layer("A");        	        
         });
@@ -87,86 +87,135 @@ otp.widgets.LayersWidget =
         	this_.toggle_bus_layer("F");        	        
         });
       
-	// HART bus stops
-	$('#bus_hart').bind('click', {'module': this.module}, function(ev) {
+    	// HART bus stops
+	    $('#bus_hart').bind('click', {'module': this.module}, function(ev) {
 
-		if (otp.config.showHartBusStops) {
-			otp.config.showHartBusStops = false;
-                        $("#bus_hart .box").removeClass('active');
-		}
-		else {
-			otp.config.showHartBusStops = true;
-			$("#bus_hart .box").addClass('active');
-		}
+		    if (otp.config.showHartBusStops) {
+			    otp.config.showHartBusStops = false;
+                $("#bus_hart .box").removeClass('active');
+    		}
+	    	else {
+		    	otp.config.showHartBusStops = true;
+			    $("#bus_hart .box").addClass('active');
+    		}
 
-		ev.data.module.stopsLayer.refresh();
-
-	});
+	    	ev.data.module.stopsLayer.refresh();
+    	});
   
-	// Bike rental layers
+    	// Bike rental layers
         $('#bike_stations').bind('click', {'module': this.module}, function(ev) {
 
         	var id = L.stamp( ev.data.module.bikeLayers );
         	                	
         	if (ev.data.module.bikeLayers.visible) {
         		ev.data.module.bikeLayers.visible = false;
-			$("#bike_stations .box").removeClass('active');
-		}
+	    		$("#bike_stations .box").removeClass('active');
+		    }
         	else {
         		ev.data.module.bikeLayers.visible = true;
-			$("#bike_stations .box").addClass('active');
-		}
+			    $("#bike_stations .box").addClass('active');
+    		}
 		
-		ev.data.module.bikeLayers.setMarkers(); // refresh
-        	
+	    	ev.data.module.bikeLayers.setMarkers(); // refresh        	
         });
 
         $('#bike_lanes').bind('click', {'module': this.module}, function(ev) {
        
-		if (ev.data.module.bikeLanes.visible) {
-			ev.data.module.bikeLanes.visible = false;
-			$("#bike_lanes .box").removeClass('active');
-		}
-		else { 
-			ev.data.module.bikeLanes.visible = true;
-			$("#bike_lanes .box").addClass('active');
-		}
+    		if (ev.data.module.bikeLanes.visible) {
+	    		ev.data.module.bikeLanes.visible = false;
+		    	$("#bike_lanes .box").removeClass('active');
+    		}
+	    	else { 
+		    	ev.data.module.bikeLanes.visible = true;
+			    $("#bike_lanes .box").addClass('active');
+    		}
 
-		ev.data.module.bikeLanes.refresh(); 
-               	
+	    	ev.data.module.bikeLanes.refresh();                	
         });
 
+        // dynamic static/poi layers
+        for (x in otp.config.layersWidget) {
+            opts = otp.config.layersWidget[x];
 
-        // CarShare
-        this.carshare_layer = L.layerGroup();
-        this.carshare_active = false;
+            this[opts['name'] + "_layer"] = L.layerGroup();
+            this[opts['name'] + "_active"] = false;
 
-        carshareicon = L.icon({angle:0, iconUrl: '/images/marker-carshare.svg', iconSize: new L.Point(30,60)});
-
-        marker =  L.marker(L.latLng(28.059951, -82.417575), {icon: carshareicon} );
-        marker.bindPopup("<a target='_blank' href='https://www.enterprisecarshare.com/us/en/programs/university/usf.html'>Reserve a car</a>");
-        marker._leaflet_id = L.stamp(marker);
-        this.carshare_layer.addLayer(marker);
-
-        marker =  L.marker(L.latLng(28.064287, -82.412130), {icon: carshareicon} );
-        marker.bindPopup("<a target='_blank' href='https://www.enterprisecarshare.com/us/en/programs/university/usf.html'>Reserve a car</a>");
-        marker._leaflet_id = L.stamp(marker);
-        this.carshare_layer.addLayer(marker);       
- 
-        $('#carshare').bind('click', {'module': this}, function(ev) {
-
-            if (ev.data.module.carshare_active) {
-                $('#carshare .box').removeClass("active");
-                webapp.map.lmap.removeLayer( ev.data.module.carshare_layer );
+            if (opts['type'] == "static") this.setLayerMarkers( opts, opts['locations'] );
+            else if (opts['type'] == "poi") {
+                $.ajax( 'http://localhost:8080/otp/routers/default/pois', { 
+                    dataType: 'JSON',
+                    data: {query: opts['search']}, 
+                    context: {'module': this, 'opts': opts},
+                    success: function(data) {
+                        locations = [];
+                        for (x in data) locations.push.apply( locations, data[x] );
+                        this.module.setLayerMarkers( this.opts, locations );
+                    },
+                });
             }
-            else {
-                $('#carshare .box').addClass("active");
-                ev.data.module.carshare_layer.addTo( webapp.map.lmap );
-            }   
 
-            ev.data.module.carshare_active = ! ev.data.module.carshare_active;     
-        });
-        
+            $(opts['target']).bind('click', {'module': this, 'layer': opts}, function(ev) {
+
+                var layerName = ev.data.layer['name'] + "_layer";
+                var activeName = layerName + "_active";
+                var isLayerActive = ev.data.module[ activeName ];
+
+                if (isLayerActive) {
+                    $(ev.data.layer['target'] + ' .box').removeClass('active');
+                    webapp.map.lmap.removeLayer( ev.data.module[ layerName ] );
+                }
+                else {
+                    $(ev.data.layer['target'] + ' .box').addClass('active');
+                    ev.data.module[ layerName ].addTo( webapp.map.lmap );
+                }
+
+                ev.data.module[activeName] = ! ev.data.module[activeName];                
+            })
+        }
+
     },
     
+    setLayerMarkers: function(opts, locations) {
+            for (y in locations) {
+                y = locations[y];
+
+                if ('tags' in y) {
+                    vals = y['tags'];
+
+                    if (y['locations'].split(";").length > 1) { 
+                        x = y['locations'].split(';');
+                        // XXX curently, just use the first for ways
+                        v = x[0].split(',');
+                        latlng = [ v[0], v[1] ];
+                    }
+                    else if (y['locations'].split(',').length > 1) {
+                       v = y['locations'].split(',');
+                       latlng = [ v[0], v[1] ];
+                    }
+                    else continue;
+
+                    if ('condition' in opts && ! (opts['condition'] in y['tags'])) continue;
+                    
+                }
+                else {
+                    latlng = [y[0], y[1]];
+                    vals = {};
+                }
+
+                marker =  L.marker(L.latLng(latlng[0], latlng[1])/*, {icon: opts['icon']}*/ );
+                marker._leaflet_id = L.stamp(marker);
+
+                var html = false;
+                if ('popup' in opts) html = opts['popup'];
+                else if ('popupTemplate' in opts) {
+                    html = ich[ opts['popupTemplate'] ]( vals ).html();                    
+                }
+
+                if (html != false) marker.bindPopup( html );
+
+                this[ opts['name'] + "_layer" ].addLayer( marker );
+            }
+
+    },
+
 });

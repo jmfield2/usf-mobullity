@@ -963,7 +963,8 @@ p#splash-text span {
 	background-color: #8f6a51;
 }
 
-.bikes div#bike_stations .box.active {
+.bikes div#bike_stations .box.active,
+.bikes div#bikerepair .box.active {
 	background-color: green;
 }
 
@@ -975,10 +976,16 @@ p#splash-text span {
 	background-color: green;
 }
 
-.other div#carshare .box.active {
+.other div#carshare .box.active,
+.other div#carcharging .box.active,
+.other div#parkinglots .box.active
+ {
     background-color: green;
 }
 
+.other div#bluephone .box.active {
+    background-color: blue;
+}
 
 .leaflet-control-locate a {
 	padding: 3px 0px 0px 0px;
@@ -1206,6 +1213,11 @@ p#splash-text span {
   	float: left;
   	margin: 0 0 0 0.5em;
   }
-  
 
 }
+
+.layersIcon-blue {
+    background-image: url('/images/marker-blue.svg');
+    width: 50px; height: 50px;
+}
+

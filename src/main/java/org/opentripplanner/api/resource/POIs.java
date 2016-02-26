@@ -57,7 +57,7 @@ public class POIs {
             // iterative matching for e.g: key:value* queries
             else {
                 for (String k : g.pois.keySet()) {
-                    if ( ! k.toLowerCase().contains( query.toLowerCase() )) continue;
+                    if ( query != null && ! k.toLowerCase().contains( query.toLowerCase() )) continue;
                     q.put( k, g.pois.get(k) );
                 }
             }

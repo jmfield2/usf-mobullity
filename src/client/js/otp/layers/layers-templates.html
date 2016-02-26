@@ -111,6 +111,12 @@
 </div>
 <div style="clear:left;"></div>
 
+<div id="bikerepair" class="route-menu-item selected">
+<div class="box"></div><div class="color"></div>
+<div class="name">Bike Repair Stations</div>
+</div>
+<div style="clear:left;"></div>
+
 <div id="bike_lanes" class="route-menu-item selected">
 <div class="box"></div><div class="color"></div>
 <div class="name">Bike Lanes</div>
@@ -124,10 +130,32 @@
 <legend>Other</legend>
 <div class=other>
 
+<div id="parkinglots" class="route-menu-item selected">
+<div class="box"></div><div class="color"></div>
+<div class="name">Parking Lots</div>
+</div>
+<div style="clear:left;"></div>
+
+<div id="carcharging" class="route-menu-item selected">
+<div class="box"></div><div class="color"></div>
+<div class="name">Electric Car Charging</div>
+</div>
+<div style="clear:left;"></div>
+
 <div id="carshare" class="route-menu-item selected">
 <div class="box"></div><div class=color></div>
 <div class=name>Enterprise CarShare</div>
 </div>
+<div style="clear:left;"></div>
+
+<div id="bluephone" class="route-menu-item selected">
+
+<table border=0 cellspacing=0 cellpadding=3 width=100%>
+<tr>
+<td class=box_col align=center><div class='box'></div><div class=color></div></td>
+<td width=90%><div class=name>Blue Light <br> Emergency Phones</div></td>
+</tr>
+</table>
 
 </div>
 </fieldset>
@@ -190,3 +218,22 @@
 </div>
 </script>
 	
+<script id="bikeRepair-template" type="text/html">
+<div>
+{{ name }}
+</div>
+</script>
+
+<script id="carCharging-template" type="text/html">
+<div>
+{{ name }}
+</div>
+</script>
+
+<script id="parkingLots-template" type="text/html">
+<div>
+{{ name }}<br>
+Permit Types: {{ permits }}
+</div>
+</script>
+

@@ -19,12 +19,14 @@ import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.lang.ClassNotFoundException;
 
+import java.util.Map;
+
 public class PoiNode implements Serializable {
         public String type; /* node or way */
         public String locations; /* list of lat,lng to accomodate way nd refs */
-        public String tags;
+        public Map<String, String> tags;
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2L;
     
         private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
             aInputStream.defaultReadObject();
