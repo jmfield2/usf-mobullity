@@ -114,8 +114,13 @@ otp.core.Map = otp.Class({
             }
         });		    
 		           
-        this.overLayMaps ={
-        	//"CUTR" : marker,
+        this.overLayMaps = { "Hybrid": 
+            {
+            name: 'Hybrid',
+            tileUrl: 'http://{s}.mqcdn.com/tiles/1.0.0/hyb/{z}/{x}/{y}.png',
+            subdomains : ['otile1','otile2','otile3','otile4'],
+            attribution : 'Data, imagery and map information provided by <a href="http://open.mapquest.com" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
+            }
         };
 	   
         /* here are the controls for layers and zooming on the map */
