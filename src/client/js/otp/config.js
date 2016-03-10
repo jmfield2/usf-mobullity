@@ -64,7 +64,16 @@ otp.config = {
             overlayUrl: "http://{s}.mqcdn.com/tiles/1.0.0/hyb/{z}/{x}/{y}.png",
             subdomains : ['otile1','otile2','otile3','otile4'],
             attribution : 'Data, imagery and map information provided by <a href="http://open.mapquest.com" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
-        }, 
+        },
+        
+        {
+            name: "Mapbox",
+            tileUrl: '//api.tiles.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoib3BlbnRyaXBwbGFubmVyaGlnaCIsImEiOiJjaWxpYTh2aTEyeG4zdjZtMDkwdzlldWUxIn0.p1ewmJnrIKGuVsdh2ExwjA',
+            attribution:
+                    'Imagery from <a href="http://mapbox.com/about/maps/">MapBox</a> &mdash; ' +
+                    'Map data {attribution.OpenStreetMap}',
+        },
+ 
     ],
     
 
