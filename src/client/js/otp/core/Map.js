@@ -47,10 +47,22 @@ otp.core.Map = otp.Class({
             if(layerConfig.subdomains) layerProps['subdomains'] = layerConfig.subdomains;
 
             var layer = new L.TileLayer(layerConfig.tileUrl, layerProps);
+            L.stamp(layer);
 
-            this.baseLayers[layerConfig.name] = layer;
-            if(i == 0) defaultBaseLayer = layer;            
-                
+            if ('overlayUrl' in layerConfig) {
+                var hybLayer = L.layerGroup();
+                L.stamp(hybLayer);
+                hybLayer.addLayer( layer );
+                hybLayer.addLayer( new L.TileLayer(layerConfig.overlayUrl, layerProps) );
+
+                this.baseLayers[layerConfig.name] = hybLayer;     
+            }
+            else {
+                this.baseLayers[layerConfig.name] = layer;
+            }
+
+            if(i == 0) defaultBaseLayer = layer;           
+ 
             if(typeof layerConfig.getTileUrl != 'undefined') {
                     layer.getTileUrl = otp.config.getTileUrl;
             }
@@ -114,14 +126,7 @@ otp.core.Map = otp.Class({
             }
         });		    
 		           
-        this.overLayMaps = { "Hybrid": 
-            {
-            name: 'Hybrid',
-            tileUrl: 'http://{s}.mqcdn.com/tiles/1.0.0/hyb/{z}/{x}/{y}.png',
-            subdomains : ['otile1','otile2','otile3','otile4'],
-            attribution : 'Data, imagery and map information provided by <a href="http://open.mapquest.com" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
-            }
-        };
+        this.overLayMaps = { };
 	   
         /* here are the controls for layers and zooming on the map */
         L.control.layers(this.baseLayers, this.overLayMaps).addTo(this.lmap);
