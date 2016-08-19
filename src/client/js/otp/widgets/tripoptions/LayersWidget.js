@@ -68,6 +68,12 @@ otp.widgets.LayersWidget =
 
         ich['usf-layer-menu']({}).appendTo(this.mainDiv);
 
+        $('.otp-layerView-inner legend').bind('click', function(ev) {
+            $(this).next().toggle();
+            return false;
+        });
+        $('.otp-layerView-inner').css({'max-height': ($('#map').height() * 0.90) + 'px'});
+
         // remove layer checkbox if config is disabled for i.e: busPositions
         if (this.module.stopsLayer == undefined) $('.otplayerView-inner .stops').remove();
         if (this.module.busLayers == undefined) $('.otp-layerView-inner .bus').remove();
