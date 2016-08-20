@@ -694,11 +694,48 @@ div#otp-planner-optionsWidget-scollPanel {
 	border:none;
 	font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;	
 	text-align:left;
-	padding:10px;
+	padding: 0 10px 10px 10px;
 }
 
-.otp-layerView-inner fieldset { border-top:1px solid gray; }
-.otp-layerView-inner fieldset legend { text-align:center; }
+.otp-layerView-inner fieldset { 
+}
+
+.legend .border { 
+  border-top: 1px solid gray;
+}
+
+.otp-layerView-inner fieldset:before {
+   font-family: FontAwesome;
+   content: "\f077"; /* chevron-up to close */
+   position: relative;
+   background-color: white;
+   top: 0.5em;
+   padding-right: 5px;
+}
+.otp-layerView-inner fieldset.active:before {
+   font-family: FontAwesome;
+   content: "\f078"; /* chevron-down to expand */
+   background-color: white;
+   position: relative;
+   top: 0.5em;
+   padding-right: 5px;
+}
+.otp-layerView-inner fieldset .legend:hover {
+    cursor: pointer;
+}
+.otp-layerView-inner fieldset .legend h3 {
+    text-align:center;
+    margin-top: -1.2em;
+    height: 30px;
+    margin-bottom: 0.25em;
+}
+.legend span {
+    font-size: 13px;
+    font-weight: normal;
+    background-color: white;
+}
+.routes, .stops, .bikes, .other {
+}
 
 .layerView .bus, .layerView .bikes, .layerView .parking { padding: 5px; text-align:left; }
 /* .layerView .bus li { } */

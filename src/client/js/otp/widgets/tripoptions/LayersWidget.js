@@ -68,7 +68,11 @@ otp.widgets.LayersWidget =
 
         ich['usf-layer-menu']({}).appendTo(this.mainDiv);
 
-        $('.otp-layerView-inner legend').bind('click', function(ev) {
+        $('.otp-layerView-inner .legend').bind('click', function(ev) {
+
+            if ( $(this).next().css('display') != 'none' ) $(this).parent().addClass('active');
+            else $(this).parent().removeClass('active');
+
             $(this).next().toggle();
             return false;
         });
