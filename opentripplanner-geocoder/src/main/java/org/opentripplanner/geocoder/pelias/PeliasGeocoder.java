@@ -29,29 +29,28 @@ import org.opentripplanner.geocoder.GeocoderResult;
 import org.opentripplanner.geocoder.GeocoderResults;
 
 import com.vividsolutions.jts.geom.Envelope;
+import edu.cutr.pelias.PeliasRequest;
+import edu.cutr.pelias.PeliasResponse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geojson.Feature;
 import org.geojson.Point;
 
 public class PeliasGeocoder implements Geocoder {
-    private String mapzenUrl;
+    private String apiKey;
     private Integer resultLimit;
     private String viewBox;
     private String focusPoint;
     
-    private PeliasJsonDeserializer peliasJsonDeserializer; 
-    
     public PeliasGeocoder() {
-        peliasJsonDeserializer = new PeliasJsonDeserializer();
     }
     
-    public String getMapzenUrl() {
-        return mapzenUrl;
+    public String getapiKey() {
+        return apiKey;
     }
     
-    public void setMapzenUrl(String Url) {
-        this.mapzenUrl = Url; 
+    public void setapiKey(String Url) {
+        this.apiKey = Url; 
     }
 
     public String getFocusPoint() {
@@ -80,48 +79,78 @@ public class PeliasGeocoder implements Geocoder {
     
     @Override 
     public GeocoderResults geocode(String address, Envelope bbox) {
-        String content = null;
+        PeliasResponse response = null;
+        
         try {
-            // make json request
-            URL GeocoderUrl = getGeocoderUrl(address, bbox);
-            URLConnection conn = GeocoderUrl.openConnection();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
-            
-            StringBuilder sb = new StringBuilder(128);
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-                sb.append("\n");
-            }
-            reader.close();
-            content = sb.toString();
 
+            Double focusLat, focusLon;
+            if (bbox != null) {
+                focusLat = (bbox.getMinX() + bbox.getMaxX()) / 2;
+                focusLon = (bbox.getMinY() + bbox.getMaxY()) / 2;
+            } else {     
+                focusLat = new Double(focusPoint.split(",")[0]);
+                focusLon = new Double(focusPoint.split(",")[1]);
+            }
+
+            String rectMinLat, rectMinLon, rectMaxLat, rectMaxLon;
+            
+            if (bbox != null) {
+                rectMinLat = Double.toString(bbox.getMinX());
+                rectMinLon = Double.toString(bbox.getMinY());
+                rectMaxLat = Double.toString(bbox.getMinX() + bbox.getWidth());
+                rectMaxLon = Double.toString(bbox.getMinY() + bbox.getHeight());                
+            }
+            else {
+                rectMinLat = viewBox.split(";")[0].split(",")[0];
+                rectMinLon = viewBox.split(";")[0].split(",")[1];
+                rectMaxLat = viewBox.split(";")[1].split(",")[0];
+                rectMaxLon = viewBox.split(";")[1].split(",")[1];        
+            }
+            
+            response = new PeliasRequest.Builder(apiKey, address)
+                    .setSources("osm")
+                    .setSize(resultLimit)
+                    .setFocusPoint(focusLat, focusLon)
+                    .setBoundaryRect(rectMinLat, rectMinLon, rectMaxLat, rectMaxLon)                    
+                    .build().call();           
         } catch (IOException e) {
             e.printStackTrace();
             return noGeocoderResult("Error parsing geocoder response");
         }
            
         GeocoderResults Results = new GeocoderResults();
-        PeliasResponse jsonResults = null;
         Point p = null;
         
-        try {
-            jsonResults = peliasJsonDeserializer.parseResults(content);                                    
-        } catch (IOException ex) {
-            Logger.getLogger(PeliasGeocoder.class.getName()).log(Level.SEVERE, null, ex);
-        }
-                        
-        if (jsonResults != null) {
-            for (Feature x : jsonResults.features) {
+        if (response != null) {
+            for (Feature x : response.getFeatures()) {
                 
                 if (x.getGeometry().getClass() == Point.class) {
                     p = (Point) x.getGeometry();
 
                     Double lat = p.getCoordinates().getLatitude();
                     Double lng = p.getCoordinates().getLongitude();
-                    String displayName = x.getProperties().get("label").toString();
                     
-                    GeocoderResult geocoderResult = new GeocoderResult(lat, lng, displayName);
+                    StringBuilder name = new StringBuilder();
+                    
+                    name.append(x.getProperties().get("name").toString());
+                    if (x.getProperties().get("neighbourhood") != null) {
+                        name.append(", ");                    
+                        name.append(x.getProperties().get("neighbourhood").toString());
+                    }
+                    if (x.getProperties().get("locality") != null) {
+                        name.append(", ");                    
+                        name.append(x.getProperties().get("locality").toString());
+                    }
+                    if (x.getProperties().get("region_a") != null) {
+                        name.append(", ");                    
+                        name.append(x.getProperties().get("region_a").toString());                    
+                    }
+                    if (x.getProperties().get("country_a") != null) {
+                        name.append(", ");                    
+                        name.append(x.getProperties().get("country_a").toString());                     
+                    }
+                    
+                    GeocoderResult geocoderResult = new GeocoderResult(lat, lng, name.toString());
                     Results.addResult(geocoderResult);
                 }
             }
@@ -129,35 +158,7 @@ public class PeliasGeocoder implements Geocoder {
                       
         return Results;
     }
-    
-    private URL getGeocoderUrl(String address, Envelope bbox) throws IOException {        
-        
-        UriBuilder uriBuilder = UriBuilder.fromUri(mapzenUrl);
-
-        uriBuilder.queryParam("sources", "osm");
-        
-        uriBuilder.queryParam("text", address);
-        if (bbox != null) {
-            uriBuilder.queryParam("focus.point.lat", (bbox.getMinX() + bbox.getMaxX()) / 2 );
-            uriBuilder.queryParam("focus.point.lon", (bbox.getMinY() + bbox.getMaxY()) / 2 );
-        } else if (viewBox != null) {     
-            uriBuilder.queryParam("focus.point.lat", focusPoint.split(",")[0] );
-            uriBuilder.queryParam("focus.point.lon", focusPoint.split(",")[1] );            
-        }
-        
-        uriBuilder.queryParam("boundary.rect.min_lat", viewBox.split(";")[0].split(",")[0] );
-        uriBuilder.queryParam("boundary.rect.min_lon", viewBox.split(";")[0].split(",")[1] );                       
-        uriBuilder.queryParam("boundary.rect.max_lat", viewBox.split(";")[1].split(",")[0] );
-        uriBuilder.queryParam("boundary.rect.max_lon", viewBox.split(";")[1].split(",")[1] );                        
-        
-        if (resultLimit != null) {
-            uriBuilder.queryParam("size", resultLimit);
-        }
-        
-        URI uri = uriBuilder.build();
-        return new URL(uri.toString());
-    }  
-    
+       
     private GeocoderResults noGeocoderResult(String error) {
         return new GeocoderResults(error);
     }
