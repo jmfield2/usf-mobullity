@@ -197,9 +197,14 @@ otp.modules.planner.PlannerModule =
     
     restore : function() {
         // check URL params for restored trip
-        if("fromPlace" in this.webapp.urlParams && "toPlace" in this.webapp.urlParams) {
+        if("fromPlace" in this.webapp.urlParams || "toPlace" in this.webapp.urlParams) {
             if("itinIndex" in this.webapp.urlParams) this.restoredItinIndex = this.webapp.urlParams["itinIndex"];
-            this.restoreTrip(_.omit(this.webapp.urlParams, ["module", "itinIndex"]));
+            if("mode" in this.webapp.urlParams) 
+                this.restoreTrip(_.omit(this.webapp.urlParams, ["module", "itinIndex"]));
+            else {
+                this.restoreMarkers(this.webapp.urlParams);
+                this.zoomOnMarkers(this.webapp.urlParams);
+            }
         }
     },
     
@@ -207,9 +212,11 @@ otp.modules.planner.PlannerModule =
         var this_ = this;
         this.webapp.map.addContextMenuItem("Set as Start Location", function(latlng) {
             this_.setStartPoint(latlng, true);
+            this_.optionsWidget.updateURL();
         });
         this.webapp.map.addContextMenuItem("Set as End Location", function(latlng) {
             this_.setEndPoint(latlng, true);
+            this_.optionsWidget.updateURL();
         });
     },
 
@@ -224,7 +231,8 @@ otp.modules.planner.PlannerModule =
 
         if(this.startMarker == null && this.startLatLng != null) {
             this.startMarker = new L.Marker(this.startLatLng, {icon: this.icons.startFlag, draggable: true});
-            this.startMarker.bindPopup('<strong>Start</strong>');
+            this.startMarker.bindPopup('<strong>Start</strong> </br> <a href="javascript:new otp.modules.planner.PlannerModule().markerLocationLink(\'start\')">Link to the location</a> </br> \n\
+                                        <a href="javascript:new otp.modules.planner.PlannerModule().showStreetView(\'start\')">go to Street View</a>');
             this.startMarker.on('dragend', $.proxy(function() {
                 this.webapp.hideSplash();
                 this.startLatLng = this.startMarker.getLatLng();
@@ -255,7 +263,8 @@ otp.modules.planner.PlannerModule =
         this.endLatLng = (typeof latlng !== 'undefined') ? latlng : null;    	 
         if(this.endMarker == null && this.endLatLng != null) {
             this.endMarker = new L.Marker(this.endLatLng, {icon: this.icons.endFlag, draggable: true}); 
-            this.endMarker.bindPopup('<strong>Destination</strong>');
+            this.endMarker.bindPopup('<strong>Destination</strong> </br> <a href="javascript:new otp.modules.planner.PlannerModule().markerLocationLink(\'end\')">Link to the location</a> </br> \n\
+                                      <a href="javascript:new otp.modules.planner.PlannerModule().showStreetView(\'end\')">go to Street View</a>');
             this.endMarker.on('dragend', $.proxy(function() {
                 this.webapp.hideSplash();
                 this.endLatLng = this.endMarker.getLatLng();
@@ -279,6 +288,24 @@ otp.modules.planner.PlannerModule =
         }
     },
     
+    markerLocationLink : function(marker){
+        var params = otp.util.Text.getUrlParameters();
+        var url = otp.config.siteUrl + '?module=' + params.module + '&';
+        if(marker == 'start')
+            url += 'fromPlace=' + encodeURIComponent(params.fromPlace);
+        else url += 'toPlace=' + encodeURIComponent(params.toPlace);
+        window.open(url, '_blank').focus();
+    },
+    
+    showStreetView : function(marker) {
+        var params = otp.util.Text.getUrlParameters();
+        if(marker == 'start') 
+            var place = params.fromPlace;
+        else place = params.toPlace;
+        var latlng = otp.util.Itin.getLocationPlace(place);
+        var url = "http://maps.google.com/maps?q=&layer=c&cbll=" + latlng;
+        window.open(url, '_blank').focus();
+    },
     
     getStartOTPString : function() {
         return (this.startName !== null ? this.startName + "::" : "")
@@ -297,51 +324,72 @@ otp.modules.planner.PlannerModule =
     },
     
     restoreMarkers : function(queryParams) {
-      	this.startLatLng = otp.util.Geo.stringToLatLng(otp.util.Itin.getLocationPlace(queryParams.fromPlace));
-    	this.setStartPoint(this.startLatLng, false);
-    	
-      	this.endLatLng = otp.util.Geo.stringToLatLng(otp.util.Itin.getLocationPlace(queryParams.toPlace));
-    	this.setEndPoint(this.endLatLng, false);
+        if(queryParams.fromPlace){
+      		this.startLatLng = otp.util.Geo.stringToLatLng(otp.util.Itin.getLocationPlace(queryParams.fromPlace));
+    		this.setStartPoint(this.startLatLng, false);
+        }
+        
+    	if(queryParams.toPlace){
+      		this.endLatLng = otp.util.Geo.stringToLatLng(otp.util.Itin.getLocationPlace(queryParams.toPlace));
+    		this.setEndPoint(this.endLatLng, false);
+        }
+    },
+    
+    zoomOnMarkers : function(params) {
+        if (otp.config.zoomToFitResults) {
+            this.webapp.map.initialGeolocation = false;
+            if("fromPlace" in params && "toPlace" in params)
+                this.webapp.map.lmap.fitBounds(otp.util.Itin.getBoundsArray(this.startLatLng, this.endLatLng), { padding: [60, 60] });
+            else {
+                if("fromPlace" in params)
+                    var latLng = this.startLatLng;                
+                else 
+                    latLng = this.endLatLng;
+                this.webapp.map.lmap.setView(latLng, otp.config.gpsZoom);
+            }
+        }
     },
     
     checkAutocomplete: function(results, obj, inputSelected) {
-	// Array of autocomplete results, user input jquery object, start or end
-	// Look for a match in the autocomplete results with the value of the input box and verify that the latlng matches
+        // Array of autocomplete results, user input jquery object, start or end
+        // Look for a match in the autocomplete results with the value of the input box and verify that the latlng matches
 
-	ret = {};
-	resultsList = results['result']; // from validate
+        ret = {};
+        resultsList = results['result']; // from validate
 
         for (var key in resultsList) {
                 tmp = key;
+                desc = resultsList[key].description;
 
-		resultLatLng = "(" + parseFloat(resultsList[key].lat).toFixed(5) + ', ' + parseFloat(resultsList[key].lng).toFixed(5) + ")";
+                resultLatLng = "(" + parseFloat(resultsList[key].lat).toFixed(5) + ', ' + parseFloat(resultsList[key].lng).toFixed(5) + ")";
 
-		// Either an exact match, or (BUILDING) match, and "My Location"
-                if (key == obj.val() ||
-                    key.indexOf( "(" + obj.val().toUpperCase() + ")" ) == 0) {
-		
+                // Either an exact match, or (BUILDING) match, and "My Location"
+                if (desc == obj.val() ||
+                    desc.indexOf( "(" + obj.val().toUpperCase() + ")" ) == 0) {
+
         	        // Name matches, but latlng doesn't. Update the result
-			if (inputSelected == 'start' && this.startLatLng != resultLatLng) obj[0].selectItem( key );
-			else if (inputSelected == 'end' && this.endLatLng != resultLatLng) obj[0].selectItem( key );
+                    if (inputSelected == 'start' && this.startLatLng != resultLatLng) obj[0].selectItem( key );
+                    else if (inputSelected == 'end' && this.endLatLng != resultLatLng) obj[0].selectItem( key );
 
-	        	ret['pos'] = resultsList[key];
-			break;
-        	}
-                // The input is somewhere in the key 
-		// 1 result + 'my location'
-                else if (tmp.toLowerCase().indexOf( obj.val().toLowerCase() ) != -1 && Object.keys(resultsList).length == 2) {
+                    ret['pos'] = resultsList[key];
+                    break;
+                }
 
-			obj[0].selectItem( key );
-			
-                        ret['pos'] = resultsList[key];
-			break;
+                // The input is somewhere in the key
+                // 1 result + 'my location'
+                else if (desc.toLowerCase().indexOf( obj.val().toLowerCase() ) != -1 && Object.keys(resultsList).length == 2) {
+
+                    obj[0].selectItem( key );
+
+                    ret['pos'] = resultsList[key];
+                    break;
                 }
                 // XXX Input is in the key AND results.length > 1 (maybe more than 1 match) ... ask
-	}
+        }
 
-	if (typeof(ret) == "object" && ret['pos'] != undefined) return ret;
-	
-	return false;
+        if (typeof(ret) == "object" && ret['pos'] != undefined) return ret;
+
+        return false;
     },
   
     validate : function() {
@@ -517,7 +565,9 @@ otp.modules.planner.PlannerModule =
     },
  
     planTrip : function(existingQueryParams, apiMethod) {
-    
+   
+    logGAEvent('click', 'link', 'plan trip');
+
         if(typeof this.planTripStart == 'function') this.planTripStart();
 
 	this._queryParams = existingQueryParams;
@@ -701,8 +751,15 @@ otp.modules.planner.PlannerModule =
             if (leg.agencyId == "Hillsborough Area Regional Transit") {
                 polyline.setStyle({ color : '#0000FF', weight: weight });
             }
-            else if (leg.agencyId == "USF Bull Runner") { 
-                polyline.setStyle({ color: '#080', weight: weight });
+            else if (leg.agencyId == "USF Bull Runner") {
+                var colour = '#080';
+                if (leg.routeShortName == 'A') colour = '#00573C';
+                else if (leg.routeShortName == 'B') colour = '#0077D1';
+                else if (leg.routeShortName == 'C') colour = '#AC49D0';
+                else if (leg.routeShortName == 'D') colour = '#F70505';
+                else if (leg.routeShortName == 'E') colour = '#bca510';
+                else if (leg.routeShortName == 'F') colour = '#8F6A51';
+                polyline.setStyle({ color: colour, weight: weight });
             }
             else polyline.setStyle({ color : this.getModeColor(leg.mode), weight: weight });
 
@@ -766,7 +823,7 @@ otp.modules.planner.PlannerModule =
         }
         if (otp.config.zoomToFitResults) {
 		this.webapp.map.initialGeolocation = false; // Make sure we aren't waiting for our initial GPS fix - only zoom/pan to the trip, NOT the location too
-		this.webapp.map.lmap.fitBounds(itin.getBoundsArray());
+		this.webapp.map.lmap.fitBounds(otp.util.Itin.getBoundsArray(this.startLatLng, this.endLatLng), { padding: [60, 60] });
 	}
 
     },
@@ -808,7 +865,7 @@ otp.modules.planner.PlannerModule =
     
     getModeColor : function(mode) {
         if(mode === "WALK") return '#444';
-        if(mode === "BICYCLE") return '#9944DD';
+        if(mode === "BICYCLE") return '#080';
         if(mode === "SUBWAY") return '#f00';
         if(mode === "RAIL") return '#b00';
         if(mode === "BUS") return '#FF7700';

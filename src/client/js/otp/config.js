@@ -39,6 +39,10 @@ L.layersIcon = L.DivIcon.extend({
 otp.config = {
     debug: false,
     locale: otp.locale.English,
+
+    // in EM (4.615em is 60px on regular desktop browsers) - converted to PX in index.html by jQuery function
+    // Used by js/otp/modules/planner/PlannerModule.js zoomOnMarkers, and drawItinerary
+    zoomPadding: [4.615, 4.615],  
     
     //All available locales
     //key is translation name. Must be the same as po file or .json file
@@ -82,26 +86,22 @@ otp.config = {
      *     need to be updated to reflect this change. This attribute specify, based on the name,
      *     which layer will be use by default.
      */
-     
+ 
     baseLayers: [
         {
             name: 'Map',
-            tileUrl: 'https://{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
-            subdomains : ['otile1','otile2','otile3','otile4'],
-            attribution : 'Data, imagery and map information provided by <a href="http://open.mapquest.com" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
+            tileUrl: 'https://api.mapbox.com/styles/v1/opentripplannerhigh/ciqelzkgo000dcem78xyg4ll6/tiles/256/{z}/{x}/{y}{retina}?access_token=pk.eyJ1Ijoib3BlbnRyaXBwbGFubmVyaGlnaCIsImEiOiIyT2xxdVRjIn0.1n9CkukOWpsIgExzdcWfJg',
+            attribution : "&copy; <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a> &copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>",
         },
         {
             name: 'Satellite',
-            tileUrl: 'https://{s}-s.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png',
-            subdomains : ['otile1','otile2','otile3','otile4'],
-            attribution : 'Data, imagery and map information provided by <a href="http://open.mapquest.com" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
+            tileUrl: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}{retina}?access_token=pk.eyJ1Ijoib3BlbnRyaXBwbGFubmVyaGlnaCIsImEiOiIyT2xxdVRjIn0.1n9CkukOWpsIgExzdcWfJg',
+            attribution : "&copy; <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a> &copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>",
         },  
         {
             name: 'Hybrid',
-            tileUrl: 'https://{s}-s.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png',
-            overlayUrl: "https://{s}-s.mqcdn.com/tiles/1.0.0/hyb/{z}/{x}/{y}.png",
-            subdomains : ['otile1','otile2','otile3','otile4'],
-            attribution : 'Data, imagery and map information provided by <a href="http://open.mapquest.com" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.'
+            tileUrl: 'https://api.mapbox.com/styles/v1/opentripplannerhigh/ciqe3awnp0001c7nkk713k81b/tiles/256/{z}/{x}/{y}{retina}?access_token=pk.eyJ1Ijoib3BlbnRyaXBwbGFubmVyaGlnaCIsImEiOiIyT2xxdVRjIn0.1n9CkukOWpsIgExzdcWfJg',
+            attribution : "&copy; <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a> &copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>",
         }, 
     ],
     
@@ -117,6 +117,7 @@ otp.config = {
     //if user does not allow location finding default location set
     initLatLng : new L.LatLng(28.061062, -82.413200), 
     mapBoundary: false,
+    usfTampaBounds: new L.latLngBounds(new L.latLng(28.054512, -82.426146), new L.latLng(28.069156, -82.401856)),
     initZoom : 15, /* Default zoom w/o GPS (15 = entire viewport big enough for Tampa campus) */
     minZoom : 13, /* Smaller numbers allow farther zooms (zoom OUT) */
     maxZoom : 18, /* Larger numbers allow closer zooms (zoom IN) */
@@ -227,8 +228,10 @@ otp.config = {
         },
         {	
         title: 'Send Feedback',
-        content: sendfeedback() + '<p>Like hacking things? This project is open-source - see how you can help at <a style="color:white" href="https://github.com/CUTR-at-USF/usf-mobullity">usf-mobullity on Github</a>. </p>' 
+        content: sendfeedback() + '<p>Suggest and vote on new features on <a target="_blank" href="http://feathub.com/CUTR-at-USF/usf-mobullity" style="color:white">FeatHub</a></p> <p>Like hacking things? This project is open-source - see how you can help at <a style="color:white" href="https://github.com/CUTR-at-USF/usf-mobullity">usf-mobullity on Github</a>. </p> <p>Please review our <a style="color:white" href="https://raw.githubusercontent.com/CUTR-at-USF/usf-mobullity/mobullityrebase/privacy_policy.md" target="_blank">Privacy Policy</a>.</p>'
+
         },
+
 
     ],
 

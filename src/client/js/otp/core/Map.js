@@ -38,13 +38,21 @@ otp.core.Map = otp.Class({
                 
         //var baseLayers = {};
         var defaultBaseLayer = null;
-        
+
+        // http://stackoverflow.com/questions/19689715/what-is-the-best-way-to-detect-retina-support-on-a-device-using-javascript
+        function isRetina(){
+            return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx), only screen and (min-resolution: 75.6dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)').matches)) || (window.devicePixelRatio && window.devicePixelRatio >= 2)) && /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+        }
+ 
         for(var i=0; i<otp.config.baseLayers.length; i++) { //otp.config.baseLayers.length-1; i >= 0; i--) {
             var layerConfig = otp.config.baseLayers[i];
 
             var layerProps = { };
             if(layerConfig.attribution) layerProps['attribution'] = layerConfig.attribution;
             if(layerConfig.subdomains) layerProps['subdomains'] = layerConfig.subdomains;
+
+            if (isRetina()) layerConfig.tileUrl = layerConfig.tileUrl.replace("{retina}", "@2x");
+            else layerConfig.tileUrl = layerConfig.tileUrl.replace("{retina}", "");
 
             var layer = new L.TileLayer(layerConfig.tileUrl, layerProps);
             L.stamp(layer);
@@ -92,11 +100,13 @@ otp.core.Map = otp.Class({
         L.Map.include(!L.DomUtil.TRANSITION ? {} : {
         	_viewActions: [],
         	queueView: function(latlng, zoom) {
-        		if (this._animatingZoom) {
-        			this._viewActions.push([latlng, zoom]);
-        		}
-        		else {
-        			this.setView(latlng, zoom);
+        		if (!(location.href.includes("fromPlace") || location.href.includes("toPlace"))) {
+        			if (this._animatingZoom) {
+        				this._viewActions.push([latlng, zoom]);
+        			}
+        			else {
+        				this.setView(latlng, zoom);
+        			}
         		}
         	}
         });
@@ -276,7 +286,47 @@ otp.core.Map = otp.Class({
 		}				
 
         // Set initial map view and zoom when first GPS location found
-		this.queueView(e.latlng, otp.config.gpsZoom);
+		if (window.matchMedia("screen and (max-width: 768px)").matches) //Map localization on mobile
+		{
+			if (location.hash == "#trip")
+			{
+				this.queueView(new L.LatLng((e.latlng.lat + 0.00120),(e.latlng.lng)), otp.config.gpsZoom);
+			}
+			else if (location.hash == "#layers") 
+			{
+				this.queueView(new L.LatLng((e.latlng.lat),(e.latlng.lng - 0.00060)), otp.config.gpsZoom);
+			}
+			else if (location.hash == "#map") 
+			{
+				this.queueView(otp.config.initLatLng, otp.config.gpsZoom);
+			}
+			else //If the user didn't specify anything we check the cookies
+			{
+				var widgetUsedName = "widgetUsed=";
+				var widgetUsed = "trip";
+				var parts = document.cookie.split("; ");
+				for (var i = 0; i < parts.length; i++) // This will iterate throught all the combinaison of key and value
+				{
+					var part = parts[i];
+					if (part.indexOf(widgetUsedName) == 0) // This look if the key match 
+					{
+						widgetUsed =  part.substring(widgetUsedName.length);// This will return the value of the key "visited"
+					}
+				}
+				if(widgetUsed == "layers")
+				{
+					this.queueView(new L.LatLng((e.latlng.lat),(e.latlng.lng - 0.00060)), otp.config.gpsZoom);
+				}
+				else if (widgetUsed == "trip")
+				{
+					this.queueView(new L.LatLng((e.latlng.lat + 0.00120),(e.latlng.lng)), otp.config.gpsZoom);
+				}
+			}
+		}
+		else
+		{
+			this.queueView(e.latlng, otp.config.gpsZoom);
+		}
  	 }
 
 	 // Save the location on otp.core.Map for use elsewhere
