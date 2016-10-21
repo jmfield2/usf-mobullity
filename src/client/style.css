@@ -712,7 +712,7 @@ div#otp-planner-optionsWidget-scollPanel {
    top: 0.5em;
    padding-right: 5px;
 }
-.otp-layerView-inner fieldset.active:before {
+.otp-layerView-inner fieldset.layers_hidden:before {
    font-family: FontAwesome;
    content: "\f078"; /* chevron-down to expand */
    background-color: white;

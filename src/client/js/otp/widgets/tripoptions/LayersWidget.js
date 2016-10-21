@@ -19,7 +19,8 @@ otp.widgets.LayersWidget =
 
     module : null,
     minimumZoom : 15,
-    
+    layersUsed : [],
+ 
     toggle_bus_layer : function(rte) {
     	
     	var id = L.stamp( this.module.busLayers );
@@ -73,13 +74,63 @@ otp.widgets.LayersWidget =
 
         $('.otp-layerView-inner .legend').bind('click', function(ev) {
 
-            if ( $(this).next().css('display') != 'none' ) $(this).parent().addClass('active');
-            else $(this).parent().removeClass('active');
+            var is_on = $(this).next().css('display') != 'none'; 
+            var id = $(this).parent()[0].id;
 
-            $(this).next().toggle();
+            if (is_on) {
+                logGAEvent("click", "link", "layers closed: " + id);
+                if (this_.layersUsed.indexOf( id ) >= 0) this_.layersUsed.splice( this_.layersUsed.indexOf(id), 1 );
+
+                $(this).parent().addClass('layers_hidden');
+                $(this).next().css('display', 'none');
+            }
+            else {
+                logGAEvent("click", "link", "layers opened: " + id);
+                if (this_.layersUsed.indexOf( id ) < 0) this_.layersUsed.push( id );
+
+                $(this).parent().removeClass('layers_hidden');
+                $(this).next().css('display', 'block');
+            }
+
+            document.cookie = 'layersUsed='+ this_.layersUsed.join(',') +'; expires=' + moment().add(moment.duration({'years':1})).format('ddd, D MMM YYYY HH:mm:ss zz') + ' UTC';
+
             return false;
         });
         $('.otp-layerView-inner').css({'max-height': ($('#map').height() * 0.90) + 'px'});
+
+        // on load, check for layersUsed cookie and isMobile
+        var items = $('.otp-layerView-inner fieldset');
+        this.layersUsed = [];
+
+        // Mobile only sees usf routes by default, otherwise all are open
+        if (isMobile()) this.layersUsed = ['fieldset_usf_routes']; 
+        else {
+            for (x=0; x < items.length; x++) this.layersUsed.push( items[x].id );
+        }
+        
+        // load cookie
+        cookieLoaded = false;
+        var parts = document.cookie.split("; ");
+        for (part in parts) {
+            cookie = parts[part].split("=");
+            if (cookie[0] != "layersUsed") continue;
+
+            this.layersUsed = cookie[1].split(",");
+            cookieLoaded = true;
+            break;
+        }
+
+        // set cookie
+        if (false == cookieLoaded) {
+            document.cookie = 'layersUsed='+ this.layersUsed.join(',') +'; expires=' + moment().add(moment.duration({'years':1})).format('ddd, D MMM YYYY HH:mm:ss zz') + ' UTC';
+        }
+
+        for (x=0; x < items.length; x++) {
+            if (this.layersUsed.indexOf( items[x].id ) >= 0) continue;
+
+            $( '#' + items[x].id + ' > div').next().css('display', 'none');
+            $( '#' + items[x].id ).addClass( 'layers_hidden' );
+        }
 
         // remove layer checkbox if config is disabled for i.e: busPositions
         if (this.module.stopsLayer == undefined) $('.otplayerView-inner .stops').remove();
