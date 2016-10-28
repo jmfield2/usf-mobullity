@@ -72,20 +72,23 @@ otp.widgets.LayersWidget =
 
         ich['usf-layer-menu']({}).appendTo(this.mainDiv);
 
-        $('.otp-layerView-inner .legend, .otp-layerView-inner .legend::before').bind('click', function(ev) {
+        $('.otp-layerView-inner .legend').bind('click', function(ev) {
 
             var is_on = $(this).next().css('display') != 'none'; 
             var id = $(this).parent()[0].id;
 
+            var id_to_ga_name = {"fieldset_usf_routes": "USF Bus Routes", "fieldset_city_bus": "City Bus", "fieldset_usf_bikes": "Bike & Carshare", "fieldset_other": "Parking", "fieldset_campus_living": "On-Campus Living", "fieldset_help": "Help"};
+            var ga_name = (id in id_to_ga_name) ? id_to_ga_name[id] : id;
+
             if (is_on) {
-                logGAEvent("click", "link", "layers closed: " + id);
+                logGAEvent("click", "link", "layers closed: " + ga_name);
                 if (this_.layersUsed.indexOf( id ) >= 0) this_.layersUsed.splice( this_.layersUsed.indexOf(id), 1 );
 
                 $(this).parent().find('.chevron').removeClass('fa-chevron-up').addClass('fa-chevron-down');
                 $(this).next().css('display', 'none');
             }
             else {
-                logGAEvent("click", "link", "layers opened: " + id);
+                logGAEvent("click", "link", "layers opened: " + ga_name);
                 if (this_.layersUsed.indexOf( id ) < 0) this_.layersUsed.push( id );
 
                 $(this).parent().find('.chevron').removeClass('fa-chevron-down').addClass('fa-chevron-up');
