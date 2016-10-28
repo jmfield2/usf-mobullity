@@ -72,7 +72,7 @@ otp.widgets.LayersWidget =
 
         ich['usf-layer-menu']({}).appendTo(this.mainDiv);
 
-        $('.otp-layerView-inner .legend').bind('click', function(ev) {
+        $('.otp-layerView-inner .legend, .otp-layerView-inner .legend::before').bind('click', function(ev) {
 
             var is_on = $(this).next().css('display') != 'none'; 
             var id = $(this).parent()[0].id;
@@ -81,14 +81,14 @@ otp.widgets.LayersWidget =
                 logGAEvent("click", "link", "layers closed: " + id);
                 if (this_.layersUsed.indexOf( id ) >= 0) this_.layersUsed.splice( this_.layersUsed.indexOf(id), 1 );
 
-                $(this).parent().addClass('layers_hidden');
+                $(this).parent().find('.chevron').removeClass('fa-chevron-up').addClass('fa-chevron-down');
                 $(this).next().css('display', 'none');
             }
             else {
                 logGAEvent("click", "link", "layers opened: " + id);
                 if (this_.layersUsed.indexOf( id ) < 0) this_.layersUsed.push( id );
 
-                $(this).parent().removeClass('layers_hidden');
+                $(this).parent().find('.chevron').removeClass('fa-chevron-down').addClass('fa-chevron-up');
                 $(this).next().css('display', 'block');
             }
 
@@ -129,7 +129,7 @@ otp.widgets.LayersWidget =
             if (this.layersUsed.indexOf( items[x].id ) >= 0) continue;
 
             $( '#' + items[x].id + ' > div').next().css('display', 'none');
-            $( '#' + items[x].id ).addClass( 'layers_hidden' );
+            $( '#' + items[x].id ).find('.chevron').removeClass('fa-chevron-up').addClass( 'fa-chevron-down' );
         }
 
         // remove layer checkbox if config is disabled for i.e: busPositions

@@ -701,38 +701,46 @@ div#otp-planner-optionsWidget-scollPanel {
 }
 
 .legend .border { 
-  border-top: 1px solid gray;
+  border-top: 1px solid black;
+}
+.otp-layerView-inner .legend {
+}
+.otp-layerView-inner .legend .border {
+    position: relative;
+    top: 0.9em;
+    z-index: 1;
+    width: 90%;
+}
+.otp-layerView-inner .legend h3 {
+    width: 95%;
+    float: left;
+    position: relative;
+    z-index: 100;
+    line-height: 1em;
+    text-align:center;
 }
 
-.otp-layerView-inner fieldset:before {
-   font-family: FontAwesome;
-   content: "\f077"; /* chevron-up to close */
-   position: relative;
-   background-color: white;
-   top: 0.5em;
-   padding-right: 5px;
+.otp-layerView-inner .legend .chevron {
+    float: left;
+    width: 5%;
+    font-family: FontAwesome;
+    content: "\f077"; /* chevron-up to close */
+    background-color: white;
+    font-weight: normal;
+    height: 15px;
+    padding-top: 0.2em;
+    position: relative;
+    z-index: 100;
 }
-.otp-layerView-inner fieldset.layers_hidden:before {
-   font-family: FontAwesome;
-   content: "\f078"; /* chevron-down to expand */
-   background-color: white;
-   position: relative;
-   top: 0.5em;
-   padding-right: 5px;
-}
+
 .otp-layerView-inner fieldset .legend:hover {
     cursor: pointer;
-}
-.otp-layerView-inner fieldset .legend h3 {
-    text-align:center;
-    margin-top: -1.2em;
-    height: 30px;
-    margin-bottom: 0.25em;
 }
 .legend span {
     font-size: 13px;
     font-weight: normal;
     background-color: white;
+    padding: 0 0.2em 0 0.2em;
 }
 .routes, .stops, .bikes, .other {
 }
