@@ -25,13 +25,19 @@ otp.core.PopupMenu = otp.Class({
         var this_ = this;
         
         this.menu = $('<div class="otp-popupMenu"></div>');
+
+        this.contextClick = false;
         
         $(document).bind("click", function(event) {
-            if(this_.suppressHide) {
-                this_.suppressHide = false;
-                return;
+            if (!this_.contextClick) {
+                if(this_.suppressHide) {
+                    this_.suppressHide = false;
+                    return;
+                }
+
+                if (!this_.contextClick) this_.menu.hide();
             }
-            this_.menu.hide();
+            this_.contextClick = false;
         });
     },
     

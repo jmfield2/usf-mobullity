@@ -26,8 +26,10 @@ otp.core.ContextMenu =
         var this_ = this;
         
         this.parent = parent;
-        
+                
         parent.on('contextmenu', function(event) {
+            this_.contextClick = true;
+
             if(event.preventDefault) event.preventDefault();
             this_.menu.show();
             this_.menu.offset(this_.getOffset(event)).appendTo("body");
