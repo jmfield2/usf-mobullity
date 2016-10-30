@@ -491,7 +491,11 @@ otp.widgets.tripoptions.ModeSelector =
         $(html).appendTo(this.$());
 
 	// Add Bicycle Safety
+<<<<<<< HEAD
 	html = "<div class='notDraggable',> Bicycle Lanes: ";
+=======
+	html = "<div class='notDraggable',> Bicycle Safety: ";
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
 	html += "<select id='bike_safety'>";
 	html += "<option value=''>No Preference</option>";
 	html += "<option value='1'>Prefer Lanes</option>";

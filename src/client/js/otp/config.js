@@ -67,14 +67,15 @@ otp.config = {
     //set init lat lng in map.js with geolocation
     geoLocation: true,
     //if user does not allow location finding default location set
-    initLatLng : new L.LatLng(28.058499, -82.416945), 
-	mapBoundary: false,
-    initZoom : 15,
-    minZoom : 8,
-    maxZoom : 20,
+    initLatLng : new L.LatLng(28.061062, -82.413200), 
+    mapBoundary: false,
+    initZoom : 15, /* Default zoom w/o GPS (15 = entire viewport big enough for Tampa campus) */
+    minZoom : 13, /* Smaller numbers allow farther zooms (zoom OUT) */
+    maxZoom : 18, /* Larger numbers allow closer zooms (zoom IN) */
+    gpsZoom : 17, /* The default zoom on load when GPS location is available */
     
     /* Whether the map should be moved to contain the full itinerary when a result is received. */
-    zoomToFitResults    : false,
+    zoomToFitResults    : true,
 
     	  
     /**
@@ -170,8 +171,7 @@ otp.config = {
     	title: 'Icon Legend',
     	content: '<p><img src="images/locationSpot.svg" height="15" width="15"> : Current Location<br>\
     		<img src="images/busStopButton.png" height="15" width="15"> : BullRunner Bus Stop<br>\
-    		<img src="images/stop20.png" height="15" width="15"> : HART Bus Stop<br>\
-    		<img src="images/busLocation.png" height="15" width="15"> : BullRunner Bus Position</p>'        	
+    		<img src="images/stop20.png" height="15" width="15"> : HART Bus Stop<br>'      	
         },
         {	
 	title: 'Contact',
@@ -187,7 +187,7 @@ otp.config = {
      */
      
     showAddThis     : true,
-    siteURL			: 'http://mobullity.forest.usf.edu',
+    siteURL			: 'http://mobullity.forest.usf.edu/index.html',
     addThisTitle    : 'Check out the MoBullity Webapp!',
     siteDescription : 'OpenTripPlanner for USF',
     addThisPubId    : 'ra-525818cf0207df3a',

@@ -135,11 +135,15 @@ otp.widgets.LayersWidget =
 		ev.data.module.bikeLanes.refresh(); 
                	
         });
+<<<<<<< HEAD
        
 
 	// Turn on first route as an example
 	$('#usf_A').click();
  
+=======
+        
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
     },
     
 });

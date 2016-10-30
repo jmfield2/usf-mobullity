@@ -40,6 +40,7 @@ public class BikeLanes {
 			Graph g = graphService.getGraph(routerId);
 			if (g == null) return null;
 			
+<<<<<<< HEAD
 			for (EncodedPolylineBean s : g.getBikeLanesStr().get(0))
 				tmp.add(s.getPoints());
 			
@@ -60,5 +61,13 @@ public class BikeLanes {
                         return tmp;
                 }
 
+=======
+			for (EncodedPolylineBean s : g.getBikeLanesStr())
+				tmp.add(s.getPoints());
+			//tmp.add(g.getBikeLanesStr().getPoints());
+			
+			return tmp;
+		}
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
 	
 }

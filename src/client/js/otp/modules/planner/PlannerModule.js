@@ -122,21 +122,36 @@ otp.modules.planner.PlannerModule =
     
 	getCookie : function()
     {
-		var value = document.cookie.split(';');
-		return value[0];
+		name = "visited=";
+		var parts = document.cookie.split("; ");
+		for (var i = 0; i < parts.length; i++) // This will iterate throught all the combinaison of key and value
+		{
+			var part = parts[i];
+			if (part.indexOf(name) == 0) // This look if the key match 
+			{
+				return part.substring(name.length); // This will return the value of the key "visited"
+			}
+		}
+		return false; //If the key is not found then it was never initialized
     },
     
     
     checkCookie : function() {
     	var test = this.getCookie();
     	if(test != "true"){
-    		document.cookie = "true";
+    		document.cookie = "visited=true; expires=Fri, 13 Dec 2041 12:00:00 UTC ";
             //Set Pop up Menu to give user info on how to use the app when the page firsts loads
             this.WelcomeWidget = this.createWidget("otp-WelcomeWidget", "<font color=red>Do NOT use this application while driving a vehicle!</font><br><br>" +
             		"<li>View Current Live Bull Runner Bus Feed by<br>" +
+<<<<<<< HEAD
             		"selecting a route on the left.</li>" +
             		"<li>Plan a trip by clicking 'Trip Planner' on top.</li>" +
             		"Click the Help button for more information.", this);
+=======
+            		"clicking Layers at the top and selecting a route on the left.</li>" +
+            		"<li>Plan a trip by using the menu on the left.</li>" +
+            		"<li>Click the Help button for more information.</li>", this);
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
             this.WelcomeWidget.center();
             this.WelcomeWidget.setTitle("Welcome!");
             this.addWidget(this.WelcomeWidget);
@@ -471,7 +486,7 @@ otp.modules.planner.PlannerModule =
             // Added specific code for the HART bus line so that the hart bus line route will be highlighted in blue
             // Any other route will be highlighted in the default color which is green.
             if(leg.agencyId == "Hillsborough Area Regional Transit"){polyline.setStyle({ color : '#0000FF', weight: weight});}
-            if(leg.agencyId == "USF_BullRunner"){polyline.setStyle({color: '#080', weight: weight});}
+            if(leg.agencyId == "USF Bull Runner"){polyline.setStyle({color: '#080', weight: weight});}
             else{polyline.setStyle({ color : this.getModeColor(leg.mode), weight: weight});}
             this.pathLayer.addLayer(polyline);
             polyline.leg = leg;

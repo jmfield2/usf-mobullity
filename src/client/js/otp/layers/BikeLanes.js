@@ -27,9 +27,15 @@ otp.layers.BikeLanesLayer =
         L.LayerGroup.prototype.initialize.apply(this);
         this.module = module;
         
+<<<<<<< HEAD
         this.bikeLanes = {"both":[], "oneway":[]}
         this.module.addLayer("bikelanes", this);        
 //        this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
+=======
+        this.bikeLanes = []
+        this.module.addLayer("bikelanes", this);        
+        this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
         
         $.ajax({
         	url: '/otp/routers/default/bike_lanes', 
@@ -42,6 +48,7 @@ otp.layers.BikeLanesLayer =
         			
         			var p = otp.util.Geo.decodePolyline(row);
         			
+<<<<<<< HEAD
         			this.this_.bikeLanes['both'].push( p );        			        			        	
         		}
         	},
@@ -63,12 +70,20 @@ otp.layers.BikeLanesLayer =
                 },
         });
 
+=======
+        			this.this_.bikeLanes.push( p );        			        			        	
+        		}
+        	},
+        });
+        
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
     },
     
     refresh : function() {
         this.clearLayers();                
         var lmap = this.module.webapp.map.lmap;
         if(lmap.getZoom() >= this.minimumZoomForStops && this.visible) {
+<<<<<<< HEAD
         	for (p in this.bikeLanes['both']) {
 
     			ret=L.polyline(this.bikeLanes['both'][p], {color: 'red'});    			
@@ -84,6 +99,16 @@ otp.layers.BikeLanesLayer =
                 }
 
 		this.addTo(lmap);
+=======
+        	for (p in this.bikeLanes) {
+
+    			ret=L.polyline(this.bikeLanes[p], {color: 'red'});    			
+
+    			this.addLayer(ret).addTo(lmap);
+    			
+            		
+        	}
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
         }
     },
     

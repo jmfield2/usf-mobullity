@@ -189,9 +189,15 @@ public class Graph implements Serializable {
     @Getter
     private final Date buildTime = new Date();
 
+<<<<<<< HEAD
     private ArrayList<ArrayList<EncodedPolylineBean>> bikeLanesStr;
 
     public ArrayList<ArrayList<EncodedPolylineBean>> getBikeLanesStr() {
+=======
+    private ArrayList<EncodedPolylineBean> bikeLanesStr;
+
+    public ArrayList<EncodedPolylineBean> getBikeLanesStr() {
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
     	return bikeLanesStr;
     }   
 
@@ -641,6 +647,7 @@ public class Graph implements Serializable {
             // Generate bike lane polyline string for use by UI later
             // XXX regenerate this if graph is reloaded?
             // XXX a better way to intelligently split different segments?
+<<<<<<< HEAD
 
 	    // [0] -> lane both ways, [1] -> lane one way
             graph.bikeLanesStr = new ArrayList<ArrayList<EncodedPolylineBean>>();
@@ -674,10 +681,24 @@ public class Graph implements Serializable {
 					
 					tmp_edges.remove(rev);
 
+=======
+    		graph.bikeLanesStr = new ArrayList<EncodedPolylineBean>();
+    		
+            ArrayList<Coordinate> pts = new ArrayList<Coordinate>();
+            double lat[] = {0,0};
+            double lon[] = {0,0};
+    		for (Edge e : graph.getEdges()) {					
+    			if (e.getClass() == PlainStreetEdge.class) {
+    				if (((PlainStreetEdge) e).getPermission().allows(StreetTraversalPermission.BICYCLE_LANE)) {
+    							
+    					//pts.add( new Coordinate(e.getFromVertex().getLon(), e.getFromVertex().getLat()) );
+    					//pts.add( new Coordinate(e.getToVertex().getLon(), e.getToVertex().getLat()) );
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
     					lon[0] = e.getToVertex().getLon();
     					lon[1] = e.getFromVertex().getLon();
     					lat[0] = e.getToVertex().getLat();
     					lat[1] = e.getFromVertex().getLat();
+<<<<<<< HEAD
 
     					graph.bikeLanesStr.get(0).add( PolylineEncoder.createEncodings( lat, lon ) );						
     				}								
@@ -693,6 +714,17 @@ public class Graph implements Serializable {
 		graph.bikeLanesStr.get(1).add( PolylineEncoder.createEncodings( lat, lon ) );
 	    }
 
+=======
+    					graph.bikeLanesStr.add( PolylineEncoder.createEncodings( lat, lon ) );						
+    				}								
+    				
+    			}				
+    		}		
+    		LOG.info("bikelane=" + graph.bikeLanesStr.size() );
+    		
+            //graph.bikeLanesStr = PolylineEncoder.createEncodings(pts, -1);            
+            
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
             if (level == LoadLevel.FULL) {
                 return graph;
             }

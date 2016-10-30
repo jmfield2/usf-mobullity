@@ -638,10 +638,21 @@ otp.layers.BusPositionsLayer =
 						marker.setIcon( iconESW );
 						break;
 					case 270:
+<<<<<<< HEAD
 						marker.setIcon( iconEW );
 						break;
 					case 315:
 						marker.setIcon( iconENW );
+=======
+						marker = L.marker(coord,{icon : iconEW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
+						marker.on('mouseover', marker.openPopup.bind(marker));
+						e.push(marker);
+						break;
+					case 315:
+						marker = L.marker(coord,{icon : iconENW,}).bindPopup('Bus: ' + this_.vehicles[v].id + " Route: " + route);
+						marker.on('mouseover', marker.openPopup.bind(marker));
+						e.push(marker);
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
 						break;
 					default:
 						console.log("Error no dir available: " + route);
@@ -748,6 +759,21 @@ otp.layers.BusPositionsLayer =
 				var latlng = L.latLng(lat, lng);
 				routeF.push(latlng);
 			}
+<<<<<<< HEAD
+=======
+
+			if (this.visible.indexOf('A') != -1) this.drawRoutePolyline(this.route_polylines['A'], {color: '#00573C'} );
+
+			if (this.visible.indexOf('B') != -1) this.drawRoutePolyline(this.route_polylines['B'], {color: '#0077D1'} );
+
+			if (this.visible.indexOf('C') != -1) this.drawRoutePolyline(this.route_polylines['C'], {color: '#AC49D0'} );
+
+			if (this.visible.indexOf('D') != -1) this.drawRoutePolyline(this.route_polylines['D'], {color: '#F70505'} );
+
+			if (this.visible.indexOf('E') != -1) this.drawRoutePolyline(this.route_polylines['E'], {color: '#D4BA13'} );
+
+			if (this.visible.indexOf('F') != -1) this.drawRoutePolyline(this.route_polylines['F'], {color: '#8F6A51'} );
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
 
 			if (this.visible.indexOf('A') != -1) this.drawRoutePolyline(this.route_polylines['A'], {color: '#00573C'} );
 
@@ -771,4 +797,15 @@ otp.layers.BusPositionsLayer =
 			}
 		},
 
+<<<<<<< HEAD
+=======
+		drawRoutePolyline : function(route, opts) {
+
+			for (x in route) {
+				line = route[x]
+				L.polyline(otp.util.Geo.decodePolyline(line['points']), opts).addTo(this);
+			}
+		},
+
+>>>>>>> 2439d0475e9e17f1515977f7d94f6c15fec184ea
 	});
