@@ -840,17 +840,17 @@ otp.layers.BusPositionsLayer =
 				routeF.push(latlng);
 			}
 
-			if (this.visible.indexOf('A') != -1) this.drawRoutePolyline(this.route_polylines['A'], {color: '#00573C'} );
+			if (this.visible.indexOf('A') != -1) this.drawRoutePolyline(this.route_polylines['A'], {color: '#00573C', opacity:0.9} );
 
-			if (this.visible.indexOf('B') != -1) this.drawRoutePolyline(this.route_polylines['B'], {color: '#0077D1'} );
+			if (this.visible.indexOf('B') != -1) this.drawRoutePolyline(this.route_polylines['B'], {color: '#0077D1', opacity:0.9} );
 
-			if (this.visible.indexOf('C') != -1) this.drawRoutePolyline(this.route_polylines['C'], {color: '#AC49D0'} );
+			if (this.visible.indexOf('C') != -1) this.drawRoutePolyline(this.route_polylines['C'], {color: '#AC49D0', opacity:0.9} );
 
-			if (this.visible.indexOf('D') != -1) this.drawRoutePolyline(this.route_polylines['D'], {color: '#F70505'} );
+			if (this.visible.indexOf('D') != -1) this.drawRoutePolyline(this.route_polylines['D'], {color: '#F70505', opacity:0.9} );
 
-			if (this.visible.indexOf('E') != -1) this.drawRoutePolyline(this.route_polylines['E'], {color: '#bca510'} );
+			if (this.visible.indexOf('E') != -1) this.drawRoutePolyline(this.route_polylines['E'], {color: '#bca510', opacity:0.9} );
 
-			if (this.visible.indexOf('F') != -1) this.drawRoutePolyline(this.route_polylines['F'], {color: '#8F6A51'} );
+			if (this.visible.indexOf('F') != -1) this.drawRoutePolyline(this.route_polylines['F'], {color: '#8F6A51', opacity:0.9} );
 
 		},
 
