@@ -1,6 +1,14 @@
 /* =html5doctor.com Reset Stylesheet \\v1.6.1 \\ Last Updated: 2010-09-17 \\ http://richclarkdesign.com \\ @rich_clark
 -------------------------------------------------------------- */
 
+#panel-icon {
+	float:left;
+}
+
+#nav-panel {
+	z-index:1;
+}
+
 html, body, div, span, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 abbr, address, cite, code,
@@ -264,13 +272,9 @@ body {
   right: 50px;
 }
 
-/*I have no done anything with the logo not sure where it is/what it is */
 /* the logo */
 #logo {
-  display: none;
   float: left;
-  height:30px;
-  margin: 10px 0px 0px 10px;
 }
 
 }
@@ -470,11 +474,12 @@ z-index: 9002;
 -------------------------------------------------------------- */
 
 #map {
-  position: absolute;
+/*  position: absolute;
   top: 3.5em;
   right: 0;
   bottom: 0;
   left: 0;
+*/
   z-index: 1;
 }
 

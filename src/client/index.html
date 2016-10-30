@@ -25,6 +25,11 @@
 <script src="js/lib/jquery-ui/addons/jquery-ui-timepicker.js"></script>
 <link rel="stylesheet" href="js/lib/jquery-ui/addons/jquery-ui-timepicker.css" />
 
+<!--<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>-->
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+
 <!-- backbone -->
 <script src="js/lib/underscore.js"></script>
 <script src="js/lib/backbone.js"></script>
@@ -211,7 +216,27 @@ $(document).ready(function() {
 </head>
 <body>
 
+
+<div data-role="panel" data-position="left" data-position-fixed="false" data-display="reveal" id="nav-panel" data-theme="a">
+
+	<ul data-role="listview" data-theme="a" data-divider-theme="a" style="margin-top:-16px;" class="nav-search">
+		<li data-icon="delete" style="background-color:#111;">
+			<a href="#" data-rel="close">Close menu</a>
+		</li>
+
+		<li>
+			<a href="#">Layers</a>
+		</li>
+		<li>
+			<a href="#">Trip Planner</a>
+		</li>
+		
+	</ul>
+</div>
+
 <header id="branding" role="banner" class="clearfix">
+
+	<a id=panel-icon href="#nav-panel" data-icon="bars" data-iconpos="notext">Menu</a>
 
 	<div class=logo></div>
 	

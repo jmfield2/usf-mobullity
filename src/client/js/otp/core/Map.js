@@ -104,7 +104,7 @@ otp.core.Map = otp.Class({
 				otp.config.mapBoundary = new L.latLngBounds(new L.latLng(data.lowerLeftLatitude, data.lowerLeftLongitude), new L.latLng(data.upperRightLatitude, data.upperRightLongitude));
 		
 				if(otp.config.geoLocation){
-					this_.lmap.locate({watch: true, enableHighAccuracy: true});
+					this_.lmap.locate({watch: false, enableHighAccuracy: true});
 					this_.lmap.on('locationfound', onLocationFound);
 				}						
 				
