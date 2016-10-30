@@ -308,28 +308,29 @@ otp.modules.planner.PlannerModule =
     validate : function(step) {
 	/* Ensure the trip options form is correct and attempt to automatically fix issues */
 
-
-	this.validated = true;
-
-    },
- 
-    planTrip : function(existingQueryParams, apiMethod, geocode_verified) {
-    
-        if(typeof this.planTripStart == 'function') this.planTripStart();
-
-	if ( ! this.validated || this.validated == undefined) {   
-		// Show ajax throbber
-
-		this.validated = false;
-		this.validate();
-		return;
-	}
-
 	// CHECK START/END AGAINST AUTOCOMPLETE RESULTS
 	widget_id = -1;
    	for (i=0; i < this.widgets.length; i++) {
 		if (this.widgets[i].id == "otp-planner-optionsWidget") widget_id = i;
 	} 
+
+
+	this.validated = true;
+
+    },
+ 
+    planTrip : function(existingQueryParams, apiMethod) {
+    
+        if(typeof this.planTripStart == 'function') this.planTripStart();
+
+	if ( ! this.validated || this.validated == undefined) {   
+		// Show ajax throbber
+		// XXX
+
+		this.validated = false;
+		this.validate();
+		return;
+	}
 
 	if (widget_id > -1) {
 		startInput = this.widgets[widget_id].controls.locations.startInput;

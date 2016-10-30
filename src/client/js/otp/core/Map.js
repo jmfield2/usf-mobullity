@@ -66,12 +66,10 @@ otp.core.Map = otp.Class({
         if(otp.config.maxZoom) mapProps['maxZoom'] = otp.config.maxZoom; //_.extend(mapProps, { maxZoom : otp.config.maxZoom });
 
         // http://stackoverflow.com/questions/15671949/why-does-calling-leaflets-setzoom-twice-results-on-the-second-being-ignored
-/*
         if (L.DomUtil.TRANSITION) {
         	L.Map.addInitHook(function() {
         		L.DomEvent.on(this._mapPane, L.DomUtil.TRANSITION_END, function() {
         			var zoom = this._viewActions.shift();
-console.log("hook: " + zoom);
         			if (zoom != undefined) {
         				this.setView(zoom[0], zoom[1]);
         			}
@@ -82,8 +80,6 @@ console.log("hook: " + zoom);
         L.Map.include(!L.DomUtil.TRANSITION ? {} : {
         	_viewActions: [],
         	queueView: function(latlng, zoom) {
-console.log("queue: " + latlng + " " + zoom);
-
         		if (this._animatingZoom) {
         			this._viewActions.push([latlng, zoom]);
         		}
@@ -92,7 +88,6 @@ console.log("queue: " + latlng + " " + zoom);
         		}
         	}
         });
-*/
 		
         this.lmap = new L.Map('map', mapProps);        
         
