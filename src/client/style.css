@@ -914,6 +914,35 @@ p#splash-text span {
   display: none;
 }
 
+<<<<<<< Updated upstream
+=======
+
+
+.otp-layerView { 
+	width:40%;
+	min-width: 160px;
+	max-width: 200px;
+	min-height:100px;
+	background-color: white; /*#F3F3F3;*/
+	border: 0px solid #9CCB3B;
+	color: black;	
+	padding:0px;
+}
+
+.otp-layerView-header { text-align:center; }
+
+.otp-layerView-inner {
+	min-height:100px;
+	border:none;
+	font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;	
+	text-align:left;
+	padding:10px;
+	border: 1px solid #9CCB3B;
+	border-top: none;	
+}
+
+.other div .box,
+>>>>>>> Stashed changes
 .routes div .box,
 .bikes div .box,
 .stops div .box {
@@ -925,6 +954,8 @@ p#splash-text span {
 	height: 15px;
 	float:left;
 }
+
+.other div .name,
 .routes div .name,
 .bikes div .name,
 .stops div .name {
@@ -963,6 +994,10 @@ p#splash-text span {
 
 .stops div#bus_hart .box.active {
 	background-color: green;
+}
+
+.other div#carshare .box.active {
+    background-color: green;
 }
 
 .otp-layerView-inner fieldset { border-top:1px solid #9CCB3B; }
