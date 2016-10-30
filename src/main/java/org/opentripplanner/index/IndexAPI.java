@@ -164,6 +164,9 @@ public class IndexAPI {
            List<StopShortRoutes> stopsRoutes = Lists.newArrayList();
            for (Stop s : stops) {
         	  StopShortRoutes sr = new StopShortRoutes(s);
+
+		// XXX add name filter here
+
               for (TripPattern pattern : index.patternsForStop.get(s)) {
                   sr.routes.add(pattern.route);
               }                           	  

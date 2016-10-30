@@ -268,10 +268,10 @@ otp.core.TransitIndex = otp.Class({
 
     /* TODO: find correct url from Index API for loadStopsById */
     loadStopsById : function(agencyId, id, callbackTarget, callback) {
-//        var params = {
-//            id : id,
-//            extended : true
-//        };
+        var params = {
+            id : id,
+            extended : true
+        };
         if(agencyId !== null) {
             params.agency = agencyId;
         }
@@ -281,7 +281,7 @@ otp.core.TransitIndex = otp.Class({
         
         var url = otp.config.hostname + '/' + otp.config.restService + '/index/stops/' + id;
         $.ajax(url, {
-//            data:       params,
+            data:       params,
             dataType:   'json',
                 
             success: function(data) {
@@ -291,28 +291,28 @@ otp.core.TransitIndex = otp.Class({
     },   
 
     /* TODO: Do no see anything in the IndexAPI.java for getting a stop by anything other than it's ID */
-//    loadStopsByName : function(agencyId, name, callbackTarget, callback) {
-//        var params = {
-//            name: name,
-//            extended : true
-//        };
-//        if(agencyId !== null) {
-//            params.agency = agencyId;
-//        }
-//        if(typeof otp.config.routerId !== 'undefined') {
-//            params.routerId = otp.config.routerId;
-//        }
-//        
-//        var url = otp.config.hostname + '/' + otp.config.restService + '/transit/stopsByName';
-//        $.ajax(url, {
-//            data:       params,
-//            dataType:   'jsonp',
-//                
-//            success: function(data) {
-//                callback.call(callbackTarget, data);                
-//            }
-//        });
-//    },  
+    loadStopsByName : function(agencyId, name, callbackTarget, callback) {
+        var params = {
+            name: name,
+            extended : true
+        };
+        if(agencyId !== null) {
+            params.agency = agencyId;
+        }
+        if(typeof otp.config.routerId !== 'undefined') {
+            params.routerId = otp.config.routerId;
+        }
+        
+        var url = otp.config.hostname + '/' + otp.config.restService + '/index/stops/';
+        $.ajax(url, {
+            data:       params,
+            dataType:   'jsonp',
+                
+            success: function(data) {
+                callback.call(callbackTarget, data);                
+            }
+        });
+    },  
     
     loadRoutesByStopId : function(agencyAndId, callbackTarget, callback) {
     	var agencyId = agencyAndId;

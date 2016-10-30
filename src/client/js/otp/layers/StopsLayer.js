@@ -41,6 +41,9 @@ otp.layers.StopsLayer =
     
     minimumZoomForStops : 15,
     
+    bullrunner_layer : null,
+    hart_layer : null,
+
     initialize : function(module) {
         L.LayerGroup.prototype.initialize.apply(this);
         this.module = module;
@@ -49,6 +52,9 @@ otp.layers.StopsLayer =
         
         this.stopsLookup = {};
        
+	this.bullrunner_layer = L.FeatureGroup();
+	this.hart_layer = L.FeatureGroup();
+
         this.stopsLayer = this.module.addLayer("stops", this);
         
         this.module.webapp.map.lmap.on('dragend zoomend', $.proxy(this.refresh, this));
@@ -56,15 +62,20 @@ otp.layers.StopsLayer =
     },
     
     refresh : function() {
-        this.clearLayers();                
         var lmap = this.module.webapp.map.lmap;
         if(lmap.getZoom() >= this.minimumZoomForStops) {
+
+     	    // XXX do we really need to loadStopsInRadius on each refresh?
+
+	    // update dictionary of STOPs within given radius of map
             this.module.webapp.transitIndex.loadStopsInRadius(null, lmap.getCenter(), this, function(data) {
                 this.stopsLookup = {};
                 for(var i = 0; i < data.length; i++) {
                     var agencyAndId = data[i].agency + "_" + data[i].id;
                     this.stopsLookup[agencyAndId] = data[i];
                 }
+	
+		// Update the stops on the map based on settings
                 this.updateStops();
             });
         }
@@ -75,8 +86,10 @@ otp.layers.StopsLayer =
         var this_ = this;
         var routeData = this.module.webapp.transitIndex.routes;
 
+	// USF - route A - [marker, ...]
+	var agency = {};
+
        	// USF Bull Runner_A index, routeData
- 
         for(var i=0; i<stops.length; i++) {
 
             var stop = stops[i];
@@ -136,22 +149,33 @@ otp.layers.StopsLayer =
                 }
             }
 
-            if(stop.agency == "USF Bull Runner" && otp.config.showBullRunnerStops == true){
-            	//only want to display USF BullRunner stops in this layer
-            	L.marker([stop.lat, stop.lon], {
+            if(stop.agency == "USF Bull Runner") {
+		if (otp.config.showBullRunnerStops == true) {
+	        //only want to display USF BullRunner stops in this layer
+        	tmp = L.marker([stop.lat, stop.lon], {
             		icon : bullIcon,
-            	}).addTo(this_)
-            	.bindPopup(popupContent.get(0));
+	        }).bindPopup(popupContent.get(0));
+
             }
-            
-            else if(stop.agency == "Hillsborough Area Regional Transit" && otp.config.showHartBusStops == true){
-            	//only want to display Hart stops in this layer
-            	L.marker([stop.lat, stop.lon], {
+            else if(stop.agency == "Hillsborough Area Regional Transit") {
+		if (otp.config.showHartBusStops == true){
+
+	        //only want to display Hart stops in this layer
+ 	        tmp = L.marker([stop.lat, stop.lon], {
             		icon : hartIcon,
-            	}).addTo(this_)
-            	.bindPopup(popupContent.get(0));
+	        }).bindPopup(popupContent.get(0));
+			
+		this.hart_layer.addLayer();
             }
             
         }
+
+	if (bullrunner.length > 0) {
+		this.bullrunner_layer.addLayer(bullrunner).addTo(this_);
+	}
+	if (hart.length > 0) {
+		this.hart_layer.addLayer(hart).addTo(this_);
+	}
+
     },
 });
