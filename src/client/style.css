@@ -970,6 +970,7 @@ p#splash-text span {
 	border-top: none;	
 }
 
+.other div .box,
 .routes div .box,
 .bikes div .box,
 .stops div .box {
@@ -981,6 +982,8 @@ p#splash-text span {
 	height: 15px;
 	float:left;
 }
+
+.other div .name,
 .routes div .name,
 .bikes div .name,
 .stops div .name {
@@ -1019,6 +1022,10 @@ p#splash-text span {
 
 .stops div#bus_hart .box.active {
 	background-color: green;
+}
+
+.other div#carshare .box.active {
+    background-color: green;
 }
 
 .otp-layerView-inner fieldset { border-top:1px solid #9CCB3B; }
