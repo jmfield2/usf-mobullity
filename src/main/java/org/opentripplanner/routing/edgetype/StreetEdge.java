@@ -237,6 +237,9 @@ public class StreetEdge extends Edge implements Cloneable {
             permission = permission.intersection(((BarrierVertex) tov).getBarrierPermissions());
         }
 
+if (!permission.allows(mode) && (fromv instanceof BarrierVertex || tov instanceof BarrierVertex)) 
+	System.out.println(" BARRIER " + getName());
+
         return permission.allows(mode);
     }
 
