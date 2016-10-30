@@ -234,26 +234,69 @@ otp.widgets.tripoptions.LocationsSelector =
         
     initInput : function(input, setterFunction) {
         var this_ = this;
+
+	input[0].module = this_;
+	input[0].selectItem = function(key) {
+
+		var result = $(this).data("results")[key];
+
+		$(this).data('selected-item', result);
+
+		if (key == "My Location" && result.lat == 0) {
+
+                        this.module.tripWidget.module.webapp.map.lmap.locate({watch: False, enableHighAccuracy: true});
+                        this.module.tripWidget.module.webapp.map.lmap.on('locationfound', function(e) {
+
+				var result = $(this).data('results');
+console.log(result);
+				result['My Location'].lat = e.latlng.lat;
+				result['My Location'].lng = e.latlng.lng;
+	
+				$(this).selectItem( "My Location" );
+			});
+
+			return;
+		}
+
+		var latlng = new L.LatLng( result.lat, result.lng );
+
+		this.module.tripWidget.module.webapp.map.lmap.panTo(latlng);			
+		setterFunction.call(this.module.tripWidget.module, latlng, false, result.description);
+		this.module.tripWidget.inputChanged();
+	}.bind(input[0]);
+
         input.autocomplete({
 	    autoFocus: true,
             source: function(request, response) {
                 this_.geocoders[this_.activeIndex].geocode(request.term, function(results) {
+
+  		    results.push( { 'description': "My Location", "lat":0, "lng":0 } );
+
                     console.log("got results "+results.length);
                     response.call(this, _.pluck(results, 'description'));
                     input.data("results", this_.getResultLookup(results));
                 });
             },
             select: function(event, ui) {
-                var result = input.data("results")[ui.item.value];
-                var latlng = new L.LatLng(result.lat, result.lng);
-                this_.tripWidget.module.webapp.map.lmap.panTo(latlng);
-                setterFunction.call(this_.tripWidget.module, latlng, false, result.description);
-                this_.tripWidget.inputChanged();
+		$(this)[0].selectItem( ui.item.value );
             },
         })
         .change(function() {
         	$(this).select();
-        });
+        })
+	.blur(function(e) {
+
+		results = $(this).data('results');
+		if (results == undefined) return;
+
+		keys = Object.keys(results);
+
+		// If current destination value is 'in' the list of results
+		// *and* the selected-item result == the .val() from results
+		if (keys.indexOf( $(this).val() ) != -1 && results[$(this).val()] == $(this).data('selected-item')) return;
+
+		$(this)[0].selectItem( keys[0] );
+	});
 //        .dblclick(function() {
 //            $(this).select();
 //        });
