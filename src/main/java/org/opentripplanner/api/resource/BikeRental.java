@@ -63,13 +63,19 @@ public class BikeRental {
         }
         Collection<BikeRentalStation> stations = bikeRentalService.getStations();
         List<BikeRentalStation> out = new ArrayList<BikeRentalStation>();
+	List<BikeRentalStation> outHubs = new ArrayList<BikeRentalStation>();
         for (BikeRentalStation station : stations) {
-            if (envelope.contains(station.x, station.y)) {
-                out.add(station);
+            if (false == envelope.contains(station.x, station.y)) continue;
+
+	    if (station.spacesAvailable == 0) out.add(station);
+	    else {
+                outHubs.add(station);
             }
+
         }
         BikeRentalStationList brsl = new BikeRentalStationList();
         brsl.stations = out;
+	brsl.hubs = outHubs;
         return brsl;
     }
 

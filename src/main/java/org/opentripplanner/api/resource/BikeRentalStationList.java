@@ -19,11 +19,21 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import org.opentripplanner.routing.bike_rental.BikeRentalStation;
 
-@XmlRootElement(name="BikeRentalStationList")
+@XmlRootElement(name="BikeRentalStationList1")
 public class BikeRentalStationList {
-    @XmlElements(value = { @XmlElement(name="station") })
+    @JacksonXmlElementWrapper(localName="stations")
+    @JacksonXmlProperty(localName="station")
     public List<BikeRentalStation> stations = new ArrayList<BikeRentalStation>();
+
+    @JacksonXmlElementWrapper(localName="hubs")
+    @JacksonXmlProperty(localName="hub")
+    public List<BikeRentalStation> hubs = new ArrayList<BikeRentalStation>();
+	
 }
